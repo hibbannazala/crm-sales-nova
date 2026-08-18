@@ -1,0 +1,104 @@
+rules_version = '2';
+service cloud.firestore {
+  match /databases/{database}/documents {
+    
+    // ===============================================================
+    // Helper Functions
+    // ===============================================================
+    function isAuthenticated() {
+      return request.auth != null;
+    }
+    
+    function getUserData() {
+      return get(/databases/$(database)/documents/users/$(request.auth.uid)).data;
+    }
+    
+    function isLord() {
+      return isAuthenticated() && 
+        (getUserData().role == 'lord' || 
+         (request.auth.token.email == "hibban25nzl@gmail.com" && request.auth.token.email_verified == true));
+    }
+    
+    function isAdmin() {
+      return isAuthenticated() && (getUserData().role == 'admin' || isLord());
+    }
+    
+    function isStaff() {
+      return isAuthenticated() && getUserData().role == 'staff';
+    }
+    
+    function isAuthorized() {
+      return isAdmin() || isStaff() || isLord();
+    }
+
+    // ===============================================================
+    // Collections
+    // ===============================================================
+
+    match /users/{userId} {
+      allow read: if isAuthenticated();
+      allow create: if isAuthenticated() && request.auth.uid == userId;
+      allow update: if isAdmin() || isLord();
+    }
+
+    match /leads/{leadId} {
+      allow read: if isAuthorized();
+      allow create: if isAuthorized();
+      allow update: if isAuthorized();
+      allow delete: if isAuthorized();
+    }
+
+    match /editRequests/{requestId} {
+      allow read: if isAuthorized();
+      allow create: if isAuthorized();
+      allow update: if isAdmin() || isLord();
+    }
+
+    match /tasks/{taskId} {
+      allow read: if isAuthorized();
+      allow create: if isAuthorized();
+      allow update: if isAuthorized();
+      allow delete: if isAdmin() || isLord() || (isAuthenticated() && resource.data.createdBy == request.auth.uid);
+    }
+
+    match /globalTargets/{targetId} {
+      allow read: if isAuthorized();
+      allow create, update, delete: if isAdmin();
+    }
+
+    match /individualTargets/{targetId} {
+      allow read: if isAuthorized();
+      allow create, update, delete: if isAdmin();
+    }
+
+    match /globalAuditLogs/{logId} {
+      allow read: if isAuthorized();
+      allow create: if isAuthorized();
+      allow update, delete: if isAuthorized();
+    }
+
+    match /leads/{leadId}/history/{historyId} {
+      allow read: if isAuthorized();
+      allow create: if isAuthorized();
+      // Allow editors to modify/delete their own history
+      allow update, delete: if isAdmin() || (isAuthenticated() && resource.data.by == getUserData().name);
+    }
+
+    match /oiForecasts/{forecastId} {
+      allow read: if isAuthorized();
+      allow create, update: if isAuthorized();
+      allow delete: if isAuthorized();
+    }
+
+    match /oiTargets/{targetId} {
+      allow read: if isAuthorized();
+      allow create, update: if isAuthorized();
+      allow delete: if isAdmin() || isLord();
+    }
+
+    match /settings/{settingId} {
+      allow read: if isAuthorized();
+      allow create, update, delete: if isLord() || (settingId == 'categories' && isAuthorized());
+    }
+  }
+}

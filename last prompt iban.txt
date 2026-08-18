@@ -1,0 +1,39 @@
+Edited task.md
+Created walkthrough.md
+
+Seluruh kendala teknis *syntax error* pada file React-nya dan implementasi fitur yang Anda minta tadi sudah 100% selesai dan siap digunakan! 🎉
+
+Semua pembaruan ini sekarang sudah aktif menyala di layar Anda lantaran sebelumnya saya melihat proses *development server* (*npm run dev*) sudah Anda jalankan. 
+
+Hal utama yang saya tambahkan dari pembahasan kita:
+1. **Fitur "Hold"**: Status *Hold* sudah dikenalkan ke dalam keseluruhan ekosistem, termasuk `Leads Pipeline`, warna badge di dasbor, *Firebase Blueprint*, hingga `Import Modal`.
+2. **Ghosted Lead Alert Widget**: Widget ajaib yang akan mendata brand-brand yang sudah diabaikan selama 14 hari *(untuk peringatan normal)* atau hingga 30 hari lebih *(menjadi peringatan kritis)*. Data ini *All Time* dan menembus sistem Filter Tanggal yang Anda letakkan di atas Dasbor, serta akan memberikan peringkas *"udah lebih dari X hari nih statusnya hold gamau di coba lagi?"*.
+3. **Format Import Excel/Spreadsheet**: Untuk memecahkan polemik *"kalo sales mau migrasi gimana pola isi datanya?"*, saya telah menaruh sebuah tombol cerdas bertuliskan **"Download Template CSV"** yang bisa diklik di Menu Layar 1 saat proses Import (di bagian *Source File Selection*). 
+
+Tim Anda tinggal klik tombol itu, format Excel (*.csv*) yang paling sesuai standar database Anda akan langsung ter-*download*. Mereka tinggal mengisi rapih isinya lewat *Microsoft Excel* dan kemudian meng-upload filenya tanpa *error*.
+
+Silakan review [walkthrough.md](file:///C:/Users/Hibban/.gemini/antigravity/brain/00a7ccf8-5994-4507-a51a-8d322cb891a1/walkthrough.md) jika Anda ingin membacanya lebih rinci. Coba testing terlebih dahulu di halaman Anda, apakah widget alarm baru kita ini bekerja dan terlihat super mewah seperti target performa tim yang diharapkan? 👀
+
+hmm super import tuh hanya untuk migrasi data lama kan ya, nah template csv yang anda bikin itu tuh mirip sama data lama saya saat ini, oke boleh tetep dipertahanin fitur tempalte tersebut cuman ya untuk data lama yang ingin di migrasi ke aplikasi ini, nah untuk data baru, mungkin filenya formatnya di bikin per orang aja kali ya, misal tgl leads masuk | No. | Nama Brand | No.WA | status | minat/interest | tgl chated | tgl responsed | tgl set meeting | tgl close win | notes | action plan |
+
+nah jadi nanti pilih kategori brand, dan nama pic dulu setelah itu upload file csv dengan format seperti diatas. misal ada data nama brand yg udah ada dan sama, berarti sistem cukup meng update statusnya sesuai tanggal chated, responsed, set meeting, close win, notes dan action plan pun juga cuman gada tanggalnya kan bikin nodate aja atau invalid jika mengharuskan ada tanggal. nah minimal data yang di input tuh wajib ada nama brand dan no wa nya, jika yang lainnya kosong ya gapapa berarti jadi data yang fresh histori hanya ngaruh jika ada tanggalnya, pahamkan sehingga tidak ada data dobel, dan mungkin juga tambahin list data nama brand yang terdobel, begitu juga jika input leads satu satu menggunakan fitur tambah lead baru, nah yang muncul itu cukup nama brand dan no.wa ya yang duplikat, kenapa ga nama brand aja? ya menurut saya bisa jadi ada tim yang nambahin leads baru ternyata no wanya beda, nah itu tim suruh pilih aja mana no wa yang berubah, dan histori perubahannya juga muncul ya di log, paham ga samapai sini?, tolong bupdate firebase-blueprintnya sampai detik ini, dan tolong bikinin hal apa saja yang sudah kita update hari ini biar nanti learning AI Agent kayak anda gampang dan sepemahaman dengan saya
+
+Ran command: `dir src\components`
+Listed directory components
+Viewed LeadModal.tsx:1-307
+Edited implementation_plan.md
+
+Saya telah menyusun sebuah rancangan alur *"Anti-Double Data System"* di dalam `[implementation_plan.md]` agar import CSV yang sifatnya *"Per-Individu"* beserta proses tambah *manual* di CRM tidak lagi menyebabkan duplikasi yang mengganggu akurasi data Anda.
+
+Inti dari solusi ini:
+1. **Untuk Import Masal (CSV):** Sistem akan dirubah. Anda akan bisa memilih siapa tim sales (PIC) ketika mau (*upload*) csv, dan format *template*-nya disesuaikan untuk per orang (dengan 12 buah kolom: *Tgl Pengisian - No. - Nama Brand - No. WA* - dan seterusnya). Ketika terdeteksi ada `Nama Brand` & `No. WA` yang persis sama, baris CSV itu hanya akan menambah/memperbarui tanggal histori datanya di sistem lama (Tanpa membuat *record* baru).
+2. **Saat Input Manual (Satu per satu):** Bila staf memasukkan `Nama Brand` yang ganda namun dengan `No. WA` yang berbeda, seketika muncul *Pop-up Warning* untuk menyuruh "Pilih, pakai `WA` yang lama atau mau disesuaikan (`Update`) ke WA baru ini?". Kalau Di-*Update*, di **Log History** akan ada informasi transparan siapa yang merubah.
+
+Tetapi sebelum saya menulis deretan kode ini, tolong bantu jawab 2 pertanyaan berikut (sudah saya tulis di dalam _Implementation Plan_):
+
+1. **Kasus Duplikat di Import Masal (CSV)**: Bila data dari CSV si PIC punya `Nama Brand` yang sama tapi `No. WA` ternyata beda (mungkin dia salah ketik atau nomornya ganti). Karena ini dilakukan *masal (ratusan baris)* tanpa pop-up peringatan manual, mau diapakan data WA ini? **Apakah kita paksa nomor WA dari Excel menjadi meng-*overwrite* (mengganti) WA lama di database, atau diabaikan saja kolom WA-nya (tetap pakai data base aslinya)?**
+2. **Kolom No.** Format Excel Anda punya "No." (Nomor Urut). Ini kan tidak terekam secara khusus ya (karena *Firebase* sudah mengurutkan otomatis pakai *timestamp*). Apakah gpp kolom *No.* dari CSV ini hanya dibaca sekilas lalu diabaikan saat masuk ke sistem?
+
+Begitu Anda mengkonfirmasi poin-poin tersebut, saya siap merombaknya! 🚀
+
+silahkan baca komen saya, pokoknya kayak gitu yaa langsung di gas aja, oiya sekalian ubahin dong, nama aplikasi saya ini menjadi CoreDesk Sales TNT, oiya tambahkan di firebase-blue print juga ya semua perubahannya jadi ketika saya coba agent AI lain bisa sama sama satu pemahaman, mungkin ini tugas terakhir anda untuk hari ini setelah ini aman saya mau istirahat dulu, jadi pastikan semuanya sesuai yaa broo

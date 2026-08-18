@@ -1,0 +1,148 @@
+{
+  "projectInfo": {
+    "name": "CoreDesk Sales TNT",
+    "description": "Sales Intelligence Portal for TNT Media Group.",
+    "changelog": {
+      "2026-03-31": [
+        "Renamed app to CoreDesk Sales TNT.",
+        "Implemented 'Hold' status for pipelines.",
+        "Added Ghosted Lead Alert for 14+ / 30+ days tracking.",
+        "Added Anti-Duplicate logic in LeadModal (manual add popup) and ImportModal (auto-update with log generation)."
+      ]
+    }
+  },
+  "entities": {
+    "User": {
+      "title": "User",
+      "description": "User profile and role information.",
+      "type": "object",
+      "properties": {
+        "uid": { "type": "string" },
+        "email": { "type": "string", "format": "email" },
+        "name": { "type": "string" },
+        "role": { "type": "string", "enum": ["lord", "admin", "staff", "pending"] }
+      },
+      "required": ["uid", "email", "name", "role"]
+    },
+    "Lead": {
+      "title": "Lead",
+      "description": "Sales lead information and funnel history.",
+      "type": "object",
+      "properties": {
+        "id": { "type": "string" },
+        "dateInput": { "type": "string", "format": "date" },
+        "category": { "type": "string" },
+        "brandName": { "type": "string" },
+        "contact": { "type": "string" },
+        "status": { "type": "string", "enum": ["Leads", "Chated", "Responsed", "Set Meeting", "Hold", "Close Win", "Close Lost"] },
+        "interestLevel": { "type": "string", "enum": ["HOT", "WARM", "COLD", "-"] },
+        "actionPlan": { "type": "string" },
+        "notes": {
+          "type": "array",
+          "items": {
+            "type": "object",
+            "properties": {
+              "text": { "type": "string" },
+              "author": { "type": "string" },
+              "timestamp": { "type": "string", "format": "date-time" },
+              "isLog": { "type": "boolean" }
+            }
+          }
+        },
+        "funnelHistory": {
+          "type": "array",
+          "items": {
+            "type": "object",
+            "properties": {
+              "stage": { "type": "string" },
+              "date": { "type": "string" },
+              "by": { "type": "string" },
+              "timestamp": { "type": "number" }
+            }
+          }
+        },
+        "dateChated": { "type": "string" },
+        "dateResponsed": { "type": "string" },
+        "dateSetMeeting": { "type": "string" },
+        "dateClosed": { "type": "string" },
+        "dealValue": { "type": "number" }
+      },
+      "required": ["dateInput", "category", "brandName", "contact", "status"]
+    },
+    "EditRequest": {
+      "title": "Edit Request",
+      "description": "Request from staff to edit master data (Brand/WA).",
+      "type": "object",
+      "properties": {
+        "id": { "type": "string" },
+        "leadId": { "type": "string" },
+        "oldBrand": { "type": "string" },
+        "newBrand": { "type": "string" },
+        "oldContact": { "type": "string" },
+        "newContact": { "type": "string" },
+        "requestedBy": { "type": "string" },
+        "timestamp": { "type": "string", "format": "date-time" },
+        "status": { "type": "string", "enum": ["pending", "approved", "rejected"] }
+      },
+      "required": ["leadId", "oldBrand", "newBrand", "oldContact", "newContact", "requestedBy", "timestamp", "status"]
+    },
+    "Task": {
+      "title": "Task",
+      "description": "Sales-related task.",
+      "type": "object",
+      "properties": {
+        "id": { "type": "string" },
+        "title": { "type": "string" },
+        "description": { "type": "string" },
+        "dueDate": { "type": "string", "format": "date" },
+        "priority": { "type": "string", "enum": ["Low", "Medium", "High"] },
+        "status": { "type": "string", "enum": ["Todo", "In Progress", "Done"] },
+        "assignedTo": { "type": "string" },
+        "assignedToName": { "type": "string" },
+        "createdBy": { "type": "string" },
+        "createdByName": { "type": "string" },
+        "createdAt": { "type": "string", "format": "date-time" },
+        "leadId": { "type": "string" },
+        "leadName": { "type": "string" }
+      },
+      "required": ["title", "dueDate", "priority", "status", "assignedTo", "createdBy", "createdAt"]
+    },
+    "GlobalTarget": {
+      "title": "Global Target",
+      "description": "Monthly global sales target goals.",
+      "type": "object",
+      "properties": {
+        "id": { "type": "string" },
+        "monthYear": { "type": "string" },
+        "targetChat": { "type": "number" },
+        "targetMeeting": { "type": "number" },
+        "targetRevenue": { "type": "number" },
+        "updatedAt": { "type": "string", "format": "date-time" },
+        "updatedBy": { "type": "string" }
+      },
+      "required": ["monthYear", "targetChat", "targetMeeting", "targetRevenue"]
+    }
+  },
+  "firestore": {
+    "/users/{userId}": {
+      "schema": "User",
+      "description": "User profiles."
+    },
+    "/leads/{leadId}": {
+      "schema": "Lead",
+      "description": "Sales leads."
+    },
+    "/editRequests/{requestId}": {
+      "schema": "EditRequest",
+      "description": "Edit requests for leads."
+    },
+    "/tasks/{taskId}": {
+      "schema": "Task",
+      "description": "Sales tasks."
+    },
+    "/globalTargets/{targetId}": {
+      "schema": "GlobalTarget",
+      "description": "Global performance targets tracking."
+    }
+  }
+}
