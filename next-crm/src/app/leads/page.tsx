@@ -76,10 +76,8 @@ export default async function LeadsPage() {
         leads={mappedLeads}
         user={currentUser as any}
         users={(users || []) as any}
-        targets={globalTargets as any}
-        individualTargets={individualTargets as any}
+        approvals={[]}
       />
     </div>
   );
 }
-

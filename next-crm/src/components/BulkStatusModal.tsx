@@ -1,3 +1,4 @@
+"use client";
 import { useState } from 'react';
 import { Lead, UserProfile, LeadStatus, InterestLevel } from '../types';
 import { X, Calendar, Edit3, MessageSquare } from 'lucide-react';
@@ -442,3 +443,4 @@ export default function BulkStatusModal({ isOpen, onClose, selectedLeads, user, 
     </AnimatePresence>
   );
 }
+

@@ -1,1068 +1,901 @@
-'use client';
-import React, { useState, useMemo, useEffect } from 'react';
-import { Lead, UserProfile, LeadStatus, GlobalTarget, IndividualTarget } from '@/types';
-import { Database, Send, ReplyAll, Handshake, Trophy, Filter, TrendingUp, Users, Target, Search, Bolt, Phone, Info, Check, Clock, AlertTriangle, Square, CheckSquare, Pen, MessageSquare, Plus } from 'lucide-react';
-import { cn } from '@/lib/utils';
-import { format, startOfMonth, endOfDay, isWithinInterval } from 'date-fns';
-import { AnimatePresence, motion } from 'motion/react';
-import BulkStatusModal from './BulkStatusModal';
-import { useRouter } from 'next/navigation';
+"use client";
 import { createClient } from '@/utils/supabase/client';
+import React, { useState, useMemo, useEffect } from 'react';
+import { useRouter } from 'next/navigation';
+import { Lead, UserProfile, LeadStatus, InterestLevel, EditRequest } from '../types';
+import { Search, Plus, Trash2, Pencil, Bolt, FileDown, Upload, MessageSquare, Phone, Database, Filter, AlertTriangle, Mail, Package, Clock } from 'lucide-react';
+import { cn } from '../lib/utils';
+import { motion, AnimatePresence } from 'motion/react';
 import { toast } from 'sonner';
-import ImportModalClient from './ImportModalClient';
 import LeadModalClient from './LeadModalClient';
 import StatusModalClient from './StatusModalClient';
 import NotesModalClient from './NotesModalClient';
+import ImportModalClient from './ImportModalClient';
+import ConfirmModal from './ConfirmModal';
+import BulkStatusModal from './BulkStatusModal';
 
-interface DashboardProps {
+interface LeadsTableProps {
   leads: Lead[];
   user: UserProfile;
   users: UserProfile[];
-  targets?: GlobalTarget[];
-  individualTargets?: IndividualTarget[];
+  approvals: EditRequest[];
 }
 
-export default function LeadsClient({ leads, user, users, targets = [], individualTargets = [] }: DashboardProps) {
+export default function LeadsClient({ leads, user, users, approvals }: LeadsTableProps) {
   const router = useRouter();
-  const supabase = createClient();
-  const [filterAdmin, setFilterAdmin] = useState('ALL');
-  const [filterCategory, setFilterCategory] = useState('ALL');
-  const [filterProduct, setFilterProduct] = useState<string[]>([]);
-  const [filterStatus, setFilterStatus] = useState<LeadStatus | 'ALL'>('ALL');
-  const [filterStart, setFilterStart] = useState(format(startOfMonth(new Date()), 'yyyy-MM-dd'));
-  const [filterEnd, setFilterEnd] = useState(format(new Date(), 'yyyy-MM-dd'));
+  const navigate = router.push;
+  const isAdmin = user.role === 'admin' || user.role === 'lord';
   const [search, setSearch] = useState('');
-  const [selectedLeadIds, setSelectedLeadIds] = useState<string[]>([]);
-  const [isBulkModalOpen, setIsBulkModalOpen] = useState(false);
-  const [isImportModalOpen, setIsImportModalOpen] = useState(false);
+  const [filterStatus, setFilterStatus] = useState<LeadStatus | 'ALL'>('ALL');
+  const [filterProduct, setFilterProduct] = useState('ALL');
+  const [filterDate, setFilterDate] = useState('');
+  const [sortField, setSortField] = useState<'dateInput' | 'brandName' | 'status'>('dateInput');
+  const [sortOrder, setSortOrder] = useState<'asc' | 'desc'>('desc');
+  const [selectedIds, setSelectedIds] = useState<Set<string>>(new Set());
   const [isLeadModalOpen, setIsLeadModalOpen] = useState(false);
   const [isStatusModalOpen, setIsStatusModalOpen] = useState(false);
   const [isNotesModalOpen, setIsNotesModalOpen] = useState(false);
+  const [isImportModalOpen, setIsImportModalOpen] = useState(false);
+  const [viewMode, setViewMode] = useState<'active' | 'trash'>('active');
+  const [isBulkModalOpen, setIsBulkModalOpen] = useState(false);
   const [editingLead, setEditingLead] = useState<Lead | null>(null);
   const [activeLead, setActiveLead] = useState<Lead | null>(null);
-  const [loading, setLoading] = useState(false);
+  const [confirmConfig, setConfirmConfig] = useState<{
+    isOpen: boolean;
+    title: string;
+    message: string;
+    onConfirm: () => void;
+    confirmText?: string;
+    type?: 'danger' | 'primary' | 'success';
+  }>({
+    isOpen: false,
+    title: '',
+    message: '',
+    onConfirm: () => {}
+  });
 
   const [currentPage, setCurrentPage] = useState(1);
-  const itemsPerPage = 30;
-
-  const toggleSelectAll = () => {
-    const paginatedIds = paginatedTableLeads.map(l => l.id);
-    const allSelected = paginatedIds.length > 0 && paginatedIds.every(id => selectedLeadIds.includes(id));
-    if (allSelected) {
-      setSelectedLeadIds(prev => prev.filter(id => !paginatedIds.includes(id)));
-    } else {
-      setSelectedLeadIds(prev => Array.from(new Set([...prev, ...paginatedIds])));
-    }
-  };
-
-  const toggleSelectRow = (e: React.MouseEvent, id: string) => {
-    e.stopPropagation();
-    setSelectedLeadIds(prev => prev.includes(id) ? prev.filter(i => i !== id) : [...prev, id]);
-  };
-
-  const STAGE_RANK: Record<string, number> = {
-    'Input Data': 0,
-    'Leads': 1,
-    'Chated': 2,
-    'Responsed': 3,
-    'Set Meeting': 4,
-    'Hold': 5,
-    'Close Win': 6,
-    'Close Lost': 6
-  };
-  const getStageRank = (stage: string) => STAGE_RANK[stage] || 0;
-
-  const parseDateString = (dStr: string) => {
-    if (!dStr) return 0;
-    let parsed = new Date(dStr).getTime();
-    if (!isNaN(parsed)) return parsed;
-    const parts = dStr.split(/[-/]/);
-    if (parts.length === 3) {
-      if (parts[0].length === 4) {
-        return new Date(`${parts[0]}-${parts[2]}-${parts[1]}`).getTime();
-      } else if (parts[2].length === 4) {
-        return new Date(`${parts[2]}-${parts[1]}-${parts[0]}`).getTime();
-      }
-    }
-    return 0;
-  };
+  const supabase = createClient();
+  const itemsPerPage = 50;
 
   useEffect(() => {
     setCurrentPage(1);
-  }, [filterAdmin, filterCategory, filterProduct, filterStatus, filterStart, filterEnd, search]);
+  }, [search, filterStatus, filterProduct, filterDate, sortField, sortOrder, viewMode]);
 
-  const categories = useMemo(() => {
-    const cats = new Set<string>();
-    leads.forEach(l => cats.add(l.category));
-    return Array.from(cats).sort();
+  useEffect(() => {
+    if (activeLead) {
+      const updated = leads.find(l => l.id === activeLead.id);
+      if (updated) setActiveLead(updated);
+    }
   }, [leads]);
 
-  const admins = useMemo(() => {
-    return users
-      .filter(u => u.role !== 'lord')
-      .map(u => u.name)
-      .sort();
-  }, [users]);
+  const showConfirm = (title: string, message: string, onConfirm: () => void, confirmText = "Konfirmasi", type: 'danger' | 'primary' | 'success' = 'danger') => {
+    setConfirmConfig({ isOpen: true, title, message, onConfirm, confirmText, type });
+  };
 
-  const currentTargetMonth = filterEnd.slice(0, 7) || format(new Date(), 'yyyy-MM');
-  const activeTarget = useMemo(() => targets?.find(t => t.monthYear === currentTargetMonth), [targets, currentTargetMonth]);
+  const addAuditLog = async (action: string, details: string) => {
+    try {
+      
+      await supabase.from('global_audit_logs').insert([{
+        action,
+        details,
+        user: user.name,
+        timestamp: new Date().toISOString()
+      }]);
 
-  const stats = useMemo(() => {
-    const m = { total: 0, chated: 0, responsed: 0, meeting: 0, win: 0, lost: 0, revenue: 0 };
+    } catch (e) {
+      console.error("Audit log failed", e);
+    }
+  };
 
-    const isAllTime = !filterStart || !filterEnd;
-    const start = isAllTime ? new Date(0) : new Date(filterStart);
-    const end = isAllTime ? new Date(8640000000000000) : endOfDay(new Date(filterEnd));
+  const filteredLeads = useMemo(() => {
+    // Note: leads in App.tsx are already pre-filtered for active view,
+    // but for the trash view we need the ones where isDeleted is true.
+    // Wait, let's fix the App.tsx fetching logic first if it's too restrictive.
+    // Actually, App.tsx fetched ALL leads but I added a manual filter there.
+    // I should ensure App.tsx passes BOTH active and deleted leads or handles it.
+    
+    // For now, let's assume 'leads' prop contains the relevant leads for the current viewMode
+    // but I'll add a safety check here.
+    let result = leads.filter(l => {
+      const isTrash = l.isDeleted === true;
+      if (viewMode === 'active' && isTrash) return false;
+      if (viewMode === 'trash' && !isTrash) return false;
 
-    m.total = leads.filter(l => {
-      if (l.isDeleted) return false;
-      return (filterCategory === 'ALL' || l.category === filterCategory) &&
-             (filterAdmin === 'ALL' || l.funnelHistory.some(h => h.by === filterAdmin)) &&
-             (filterProduct.length === 0 || (l.productOffered || []).some(p => filterProduct.includes(p)));
-    }).length;
-
-    leads.forEach(l => {
-      if (l.isDeleted) return;
-      if (filterCategory !== 'ALL' && l.category !== filterCategory) return;
-      if (filterProduct.length > 0 && !(l.productOffered || []).some(p => filterProduct.includes(p))) return;
-
-      const stageLatest: Record<string, any> = {};
-
-      l.funnelHistory.forEach(h => {
-        const matchesAdmin = filterAdmin === 'ALL' || h.by === filterAdmin;
-        if (!matchesAdmin) return;
-
-        const actionTime = parseDateString(h.date);
-        if (actionTime === 0) return;
+      const bName = l.brandName || '';
+      const cContact = l.contact || '';
+      
+      let matchesDate = true;
+      if (filterDate) {
+        let dateVal = '';
+        if (filterStatus === 'ALL' || filterStatus === 'Leads') dateVal = l.dateInput || '';
+        else if (filterStatus === 'Chated') dateVal = l.dateChated || l.dateInput || '';
+        else if (filterStatus === 'Responsed') dateVal = l.dateResponsed || l.dateInput || '';
+        else if (filterStatus === 'Set Meeting') dateVal = l.dateSetMeeting || l.dateInput || '';
+        else if (filterStatus === 'Close Win' || filterStatus === 'Close Lost') dateVal = l.dateClosed || l.dateInput || '';
+        else dateVal = l.dateInput || '';
         
-        const actionDate = new Date(actionTime);
-        const isInRange = isAllTime || isWithinInterval(actionDate, { start, end });
-        if (!isInRange) return;
-        
-        if (!stageLatest[h.stage] || actionTime > parseDateString(stageLatest[h.stage].date) || (actionTime === parseDateString(stageLatest[h.stage].date) && (h as any).timestamp > (stageLatest[h.stage].timestamp || 0))) {
-          stageLatest[h.stage] = h;
+        if (!dateVal.includes(filterDate)) {
+           matchesDate = false;
         }
-      });
+      }
 
-      Object.values(stageLatest).forEach(h => {
-        if (h.stage === 'Chated') m.chated++;
-        if (h.stage === 'Responsed') m.responsed++;
-        if (h.stage === 'Set Meeting') {
-          m.meeting++;
-        }
-        if (h.stage === 'Close Win') {
-          m.win++;
-          m.revenue += (h.dealValue !== undefined ? h.dealValue : (l.dealValue || 0));
-        }
-        if (h.stage === 'Close Lost') m.lost++;
-      });
+      return (bName.toLowerCase().includes(search.toLowerCase()) || 
+              cContact.includes(search)) &&
+             (filterStatus === 'ALL' || l.status === filterStatus) &&
+             (filterProduct === 'ALL' || (l.productOffered || []).includes(filterProduct as any)) &&
+             matchesDate;
     });
 
-    return m;
-  }, [leads, filterAdmin, filterCategory, filterProduct, filterStart, filterEnd]);
+    result.sort((a, b) => {
+      let comparison = 0;
+      if (sortField === 'dateInput') {
+        let dateA = a.dateInput || '';
+        let dateB = b.dateInput || '';
+        
+        if (filterStatus === 'Chated') { dateA = a.dateChated || dateA; dateB = b.dateChated || dateB; }
+        else if (filterStatus === 'Responsed') { dateA = a.dateResponsed || dateA; dateB = b.dateResponsed || dateB; }
+        else if (filterStatus === 'Set Meeting') { dateA = a.dateSetMeeting || dateA; dateB = b.dateSetMeeting || dateB; }
+        else if (filterStatus === 'Close Win' || filterStatus === 'Close Lost') { dateA = a.dateClosed || dateA; dateB = b.dateClosed || dateB; }
 
-  const tableLeads = useMemo(() => {
-    return leads.filter(l => {
-      if (l.isDeleted) return false;
-      let effectiveStatus = l.status;
-      let effectiveTime = parseDateString(l.dateInput);
+        comparison = new Date(dateA || 0).getTime() - new Date(dateB || 0).getTime();
+      } else if (sortField === 'brandName') {
+        comparison = (a.brandName || '').localeCompare(b.brandName || '');
+      } else if (sortField === 'status') {
+        comparison = (a.status || '').localeCompare(b.status || '');
+      }
+
+      return sortOrder === 'asc' ? comparison : -comparison;
+    });
+
+    return result;
+  }, [leads, search, filterStatus, filterProduct, filterDate, sortField, sortOrder, viewMode]);
+
+  const paginatedLeads = useMemo(() => {
+    const startIndex = (currentPage - 1) * itemsPerPage;
+    return filteredLeads.slice(startIndex, startIndex + itemsPerPage);
+  }, [filteredLeads, currentPage]);
+
+  const toggleSort = (field: 'dateInput' | 'brandName' | 'status') => {
+    if (sortField === field) {
+      setSortOrder(sortOrder === 'asc' ? 'desc' : 'asc');
+    } else {
+      setSortField(field);
+      setSortOrder('desc');
+    }
+  };
+
+  const toggleSelect = (id: string) => {
+    const next = new Set(selectedIds);
+    if (next.has(id)) next.delete(id);
+    else next.add(id);
+    setSelectedIds(next);
+  };
+
+  const toggleSelectAll = () => {
+    if (selectedIds.size === filteredLeads.length) {
+      setSelectedIds(new Set());
+    } else {
+      setSelectedIds(new Set(filteredLeads.map(l => l.id)));
+    }
+  };
+
+  const handleDelete = async (id: string) => {
+    const lead = leads.find(l => l.id === id);
+    showConfirm(
+      "Pindahkan ke Sampah",
+      `Apakah Anda yakin ingin memindahkan "${lead?.brandName}" ke tempat sampah? Data akan dihapus permanen secara otomatis setelah 30 hari.`,
+      async () => {
+        try {
+          
+          const deletedAt = new Date();
+          const autoDeleteAt = new Date();
+          autoDeleteAt.setDate(deletedAt.getDate() + 30);
+
+          await supabase.from('leads').update({
+            isDeleted: true,
+            deletedAt: deletedAt.toISOString(),
+            autoDeleteAt: autoDeleteAt.toISOString()
+          }).eq('id', id);
+          
+          addAuditLog("MOVE_TO_TRASH", `Lead ${lead?.brandName} dipindahkan ke sampah oleh ${user.name}`);
+          toast.success("Lead dipindahkan ke sampah");
+        } catch (error: any) {
+          toast.error("Gagal: " + error.message);
+        }
+      },
+      "Buang ke Sampah"
+    );
+  };
+
+  const handleRestore = async (id: string) => {
+    const lead = leads.find(l => l.id === id);
+    try {
       
-      if (filterAdmin !== 'ALL') {
-        const userActivity = [...(l.funnelHistory || [])]
-          .filter(h => h.by === filterAdmin)
-          .sort((a,b) => {
-             const timeA = parseDateString(a.date);
-             const timeB = parseDateString(b.date);
-             if (timeA !== timeB) return timeB - timeA;
-             const tsA = (a as any).timestamp || 0;
-             const tsB = (b as any).timestamp || 0;
-             if (tsA !== tsB) return tsB - tsA;
-             return getStageRank(b.stage) - getStageRank(a.stage);
+      await supabase.from('leads').update({
+        isDeleted: false,
+        deletedAt: null,
+        autoDeleteAt: null
+      }).eq('id', id);
+      addAuditLog("RESTORE_LEAD", `Lead ${lead?.brandName} dipulihkan dari sampah oleh ${user.name}`);
+      toast.success("Lead berhasil dipulihkan");
+    } catch (error: any) {
+      toast.error("Gagal memulihkan: " + error.message);
+    }
+  };
+
+  const handlePermanentDelete = async (id: string) => {
+    const lead = leads.find(l => l.id === id);
+    showConfirm(
+      "Hapus Permanen",
+      "PERINGATAN: Tindakan ini akan menghapus data selamanya dan tidak bisa dibatalkan. Apakah Anda yakin?",
+      async () => {
+        try {
+          
+          const forecastSnap = await supabase.from('oi_forecasts').select('id').eq('lead_id', id); const docs = forecastSnap.data || [];
+          for (const fd of (forecastSnap.data || [])) {
+            await supabase.from('oi_forecasts').delete().eq('id', fd.id);
+          }
+          await supabase.from('leads').delete().eq('id', id);
+          addAuditLog("PERMANENT_DELETE", `Lead ${lead?.brandName} dihapus permanen oleh ${user.name}`);
+          toast.success("Lead dihapus secara permanen");
+        } catch (error: any) {
+          toast.error("Gagal menghapus permanen: " + error.message);
+        }
+      },
+      "Hapus Selamanya"
+    );
+  };
+
+  const handleBulkDelete = async () => {
+    showConfirm(
+      viewMode === 'active' ? "Pindahkan Massal ke Sampah" : "Hapus Massal Permanen",
+      viewMode === 'active' 
+        ? `Apakah Anda yakin ingin memindahkan ${selectedIds.size} data ke sampah?` 
+        : `PERINGATAN: ${selectedIds.size} data akan dihapus SELAMANYA. Lanjutkan?`,
+      async () => {
+        try {
+          
+          const deletedAt = new Date();
+          const autoDeleteAt = new Date();
+          autoDeleteAt.setDate(deletedAt.getDate() + 30);
+
+          const promises = Array.from(selectedIds).map((id: string) => {
+            if (viewMode === 'active') {
+              return supabase.from('leads').update({
+                isDeleted: true,
+                deletedAt: deletedAt.toISOString(),
+                autoDeleteAt: autoDeleteAt.toISOString()
+              }).eq('id', id);
+            } else {
+              return (async () => {
+                
+                const forecastSnap = await supabase.from('oi_forecasts').select('id').eq('lead_id', id); const docs = forecastSnap.data || [];
+                for (const fd of (forecastSnap.data || [])) {
+                  await supabase.from('oi_forecasts').delete().eq('id', fd.id);
+                }
+                return supabase.from('leads').delete().eq('id', id);
+              })();
+            }
           });
           
-        if (userActivity.length === 0) return false;
-
-        if (filterStatus !== 'ALL') {
-          // Find the specific stage entry for this admin, to sync with stats
-          const stageEntry = userActivity.find(h => h.stage === filterStatus);
-          if (!stageEntry) return false;
-          effectiveStatus = stageEntry.stage as LeadStatus;
-          effectiveTime = parseDateString(stageEntry.date);
-        } else {
-          effectiveStatus = userActivity[0].stage as LeadStatus;
-          effectiveTime = parseDateString(userActivity[0].date);
+          await Promise.all(promises);
+          addAuditLog(viewMode === 'active' ? "BULK_TRASH" : "BULK_PERMANENT_DELETE", `${selectedIds.size} leads diproses secara massal`);
+          setSelectedIds(new Set());
+          toast.success(`${promises.length} Lead berhasil diproses`);
+        } catch (error: any) {
+          toast.error("Gagal: " + error.message);
         }
-      } else {
-        if (filterStatus !== 'ALL') {
-          // For "All Admins" + specific tab: find the matching stage entry in history
-          const stageEntry = [...(l.funnelHistory || [])].find(h => h.stage === filterStatus);
-          if (!stageEntry) return false;
-          effectiveStatus = stageEntry.stage as LeadStatus;
-          effectiveTime = parseDateString(stageEntry.date);
-        } else {
-          const allActivity = [...(l.funnelHistory || [])].sort((a,b) => {
-               const timeA = parseDateString(a.date);
-               const timeB = parseDateString(b.date);
-               if (timeA !== timeB) return timeB - timeA;
-               const tsA = (a as any).timestamp || 0;
-               const tsB = (b as any).timestamp || 0;
-               if (tsA !== tsB) return tsB - tsA;
-               return getStageRank(b.stage) - getStageRank(a.stage);
-          });
-          if (allActivity.length > 0) {
-              effectiveTime = parseDateString(allActivity[0].date);
-          }
-        }
-      }
+      },
+      viewMode === 'active' ? "Pindahkan Semua" : "Hapus Semua Selamanya"
+    );
+  };
 
+  const handlePurgeOldData = async () => {
+    showConfirm(
+      "DANGER: Purge Pre-2026",
+      "PERINGATAN: Tindakan ini akan menghapus permanen SEMUA jejak funnel history sebelum tanggal 1 Januari 2026. Data tidak bisa di-undo atau dibatalkan setelah eksekusi. Yakin 100%?",
+      async () => {
+        try {
+          const toastId = toast.loading("Memproses penghapusan massal data pre-2026...");
+          
+          const { data: snapDocs } = await supabase.from('leads').select('*'); const snap = { docs: (snapDocs || []).map(d => ({ id: d.id, data: () => d })) };
+          const batchData = snap.docs.map(d => ({ id: d.id, ...(d.data() as any) }));
 
-      if (filterCategory !== 'ALL' && l.category !== filterCategory) return false;
-      if (filterProduct.length > 0 && !(l.productOffered || []).some(p => filterProduct.includes(p))) return false;
-      if (filterStatus !== 'ALL' && effectiveStatus !== filterStatus) return false;
+          let modifiedCount = 0;
+          const chunkSize = 400;
 
-      if (filterStart && filterEnd) {
-        const start = new Date(filterStart);
-        const end = endOfDay(new Date(filterEnd));
-        
-        let hasActivityInRange = false;
-        
-        if (filterStatus !== 'ALL') {
-          // Sync with Table Tab: If a specific tab is selected, the absolute LATEST status must have occurred in the date range.
-          // This perfectly synchronizes the table count with the KPI logic without allowing future statuses to leak into past reports.
-          hasActivityInRange = effectiveTime ? isWithinInterval(effectiveTime, { start, end }) : false;
-        } else {
-          // If viewing "Semua" Table Tab: we inclusively show all leads that the admin interacted with during the period.
-          if (filterAdmin !== 'ALL') {
-            hasActivityInRange = [...(l.funnelHistory || [])]
-              .filter(h => h.by === filterAdmin)
-              .some(h => {
-                const actionTime = parseDateString(h.date);
-                if (!actionTime) return false;
-                return isWithinInterval(actionTime, { start, end });
+          for (let i = 0; i < batchData.length; i += chunkSize) {
+            const batchUpdates = [];
+            const slice = batchData.slice(i, i + chunkSize);
+
+            for (const ld of slice) {
+              const hist = (ld.funnelHistory || []) as any[];
+              const preCount = hist.length;
+              
+              const newHist = hist.filter(h => {
+                const dTime = new Date(h.date).getTime();
+                return !isNaN(dTime) && dTime >= new Date("2026-01-01").getTime();
               });
-          } else {
-            const inputDate = new Date(l.dateInput);
-            const inputInRange = !isNaN(inputDate.getTime()) && isWithinInterval(inputDate, { start, end });
-            const historyInRange = [...(l.funnelHistory || [])].some(h => {
-              const actionTime = parseDateString(h.date);
-              if (!actionTime) return false;
-              return isWithinInterval(actionTime, { start, end });
-            });
-            hasActivityInRange = inputInRange || historyInRange;
+
+              if (newHist.length !== preCount) {
+                const sortedHist = [...newHist].sort((a, b) => {
+                   const timeA = new Date(a.date).getTime() || 0;
+                   const timeB = new Date(b.date).getTime() || 0;
+                   if (timeA !== timeB) return timeB - timeA;
+                   return (b.timestamp || 0) - (a.timestamp || 0);
+                });
+
+                const latest = sortedHist[0];
+                const newStatus = latest ? latest.stage : "Leads";
+
+                const getLatestDateForStage = (stageName: string) => {
+                  const stageEntries = sortedHist.filter(h => h.stage === stageName);
+                  return stageEntries.length > 0 ? stageEntries[0].date : "";
+                };
+
+                const updatePayload: any = {
+                  funnelHistory: newHist,
+                  status: newStatus,
+                  dateChated: getLatestDateForStage("Chated"),
+                  dateResponsed: getLatestDateForStage("Responsed"),
+                  dateSetMeeting: getLatestDateForStage("Set Meeting"),
+                  dateClosed: getLatestDateForStage("Close Win") || getLatestDateForStage("Close Lost")
+                };
+
+                batchUpdates.push({ id: ld.id, ...updatePayload });
+                modifiedCount++;
+              }
+            }
+            for (const u of batchUpdates) await supabase.from('leads').update(u).eq('id', u.id);
           }
+
+          addAuditLog("PURGE_PRE_2026", `Menghapus history pre-2026 pada ${modifiedCount} leads`);
+          toast.dismiss(toastId);
+          toast.success(`Selesai! Berhasil membersihkan history lama pada ${modifiedCount} leads.`);
+        } catch (error: any) {
+          toast.error("Gagal purge data: " + error.message);
         }
+      },
+      "Yakin, Hapus Permanen!",
+      "danger"
+    );
+  };
 
-        if (!hasActivityInRange) return false;
-      }
+  const handleEmptyTrash = async () => {
+    const trashLeads = leads.filter(l => l.isDeleted);
+    if (trashLeads.length === 0) {
+      toast.info("Tempat sampah sudah kosong!");
+      return;
+    }
+    showConfirm(
+      "🗑️ Kosongkan Semua Sampah",
+      `PERINGATAN: ${trashLeads.length} data di tempat sampah akan DIHAPUS SELAMANYA dari server dan tidak bisa dikembalikan. Lanjutkan?`,
+      async () => {
+        try {
+          const toastId = toast.loading(`Menghapus permanen ${trashLeads.length} data...`);
+          
+          let deletedCount = 0;
+          const CHUNK = 20;
+          for (let i = 0; i < trashLeads.length; i += CHUNK) {
+            const batchUpdates = [];
+            const slice = trashLeads.slice(i, i + CHUNK);
+            for (const lead of slice) {
+              const fcSnap = await supabase.from('oi_forecasts').select('id').eq('lead_id', lead.id);
+              for (const fd of (fcSnap.data || [])) { batchUpdates.push({ _table: 'oi_forecasts', _delete: true, id: fd.id }); }
+              batchUpdates.push({ _table: 'leads', _delete: true, id: lead.id });
+              deletedCount++;
+            }
+            for (const u of batchUpdates) await supabase.from('leads').update(u).eq('id', u.id);
+          }
+          addAuditLog("EMPTY_TRASH", `${deletedCount} leads dihapus permanen dari sampah oleh ${user.name}`);
+          toast.dismiss(toastId);
+          toast.success(`✅ ${deletedCount} data berhasil dihapus permanen dari server!`);
+        } catch (error: any) {
+          toast.error("Gagal mengosongkan sampah: " + error.message);
+        }
+      },
+      "Hapus Selamanya",
+      "danger"
+    );
+  };
 
-      if (search.trim()) {
-        const s = search.toLowerCase();
-        if (!l.brandName.toLowerCase().includes(s) && !l.contact.toLowerCase().includes(s)) return false;
-      }
-
-      return true;
+  const exportCSV = () => {
+    const targetLeads = selectedIds.size > 0 
+      ? leads.filter(l => selectedIds.has(l.id)) 
+      : filteredLeads;
+      
+    let csv = "Tgl Input,Nama Brand,Sumber Lead,Kategori,No WA,Email,Product Offered,Status Terbaru,Minat,Rekam Jejak Funnel\n";
+    targetLeads.forEach(l => {
+      const hLog = l.funnelHistory.map(h => `[${h.stage}: ${h.date} by ${h.by}${h.assignedBy ? ` (assigned by ${h.assignedBy})` : ''}${h.note ? ` - ${h.note}` : ''}]`).join(' | ');
+      const products = (l.productOffered || []).join(', ');
+      csv += `${l.dateInput},"${l.brandName}","${l.leadSource || ''}","${l.category}",${l.contact},"${l.email || ''}","${products}",${l.status},${l.interestLevel},"${hLog}"\n`;
     });
-  }, [leads, filterAdmin, filterCategory, filterProduct, filterStatus, filterStart, filterEnd, search]);
-
-  const paginatedTableLeads = useMemo(() => {
-    const startIndex = (currentPage - 1) * itemsPerPage;
-    return tableLeads.slice(startIndex, startIndex + itemsPerPage);
-  }, [tableLeads, currentPage]);
-
-  const rates = useMemo(() => {
-    return {
-      response: stats.chated ? ((stats.responsed / stats.chated) * 100).toFixed(1) + '%' : '0%',
-      interest: stats.responsed ? ((stats.meeting / stats.responsed) * 100).toFixed(1) + '%' : '0%',
-      conversion: stats.chated ? ((stats.win / stats.chated) * 100).toFixed(1) + '%' : '0%'
-    };
-  }, [stats]);
-
-  const stagnantLeads = useMemo(() => {
-    const alerts: any[] = [];
-    const now = Date.now();
-    const MS_PER_DAY = 1000 * 60 * 60 * 24;
-
-    leads.forEach(l => {
-      if (l.isDeleted) return;
-      if (!['Hold', 'Chated', 'Responsed', 'Set Meeting'].includes(l.status)) return;
-      
-      const lastHistory = l.funnelHistory[l.funnelHistory.length - 1];
-      if (!lastHistory) return;
-
-      const adminName = lastHistory.by;
-      
-      if (filterAdmin !== 'ALL' && adminName !== filterAdmin) return;
-      if (filterCategory !== 'ALL' && l.category !== filterCategory) return;
-      if (filterProduct.length > 0 && !(l.productOffered || []).some(p => filterProduct.includes(p))) return;
-
-      const lastDate = new Date(lastHistory.date).getTime();
-      if (isNaN(lastDate)) return;
-
-      const daysStagnant = Math.floor((now - lastDate) / MS_PER_DAY);
-      
-      if (daysStagnant >= 14) {
-        let msg = '';
-        if (l.status === 'Hold') msg = `udah lebih dari ${daysStagnant} hari nih statusnya hold gamau di coba lagi?`;
-        else if (l.status === 'Chated') msg = `${daysStagnant} hari berlalu, gamau coba follow up nih?`;
-        else if (l.status === 'Responsed') msg = `udah ${daysStagnant} hari, gimana hasilnya?, bisa di ajak meeting kah`;
-        else if (l.status === 'Set Meeting') msg = `udah ${daysStagnant} hari, gimana hasil meetingnya?, Bad or No?`;
-
-        alerts.push({
-          lead: l,
-          days: daysStagnant,
-          msg,
-          adminName
-        });
-      }
-    });
-
-    return alerts.sort((a, b) => b.days - a.days);
-  }, [leads, filterAdmin, filterCategory, filterProduct]);
-
-  const handleGlobalSync = async () => { alert("Global sync moved to Supabase SQL"); };
-
-  const fixSuperImportData = async () => { alert("Fix script moved to Supabase"); };
-
+    
+    const blob = new Blob([csv], { type: 'text/csv;charset=utf-8;' });
+    const link = document.createElement("a");
+    link.href = URL.createObjectURL(blob);
+    link.download = `TNT_Leads_Export_${new Date().toISOString().split('T')[0]}.csv`;
+    link.click();
+    toast.success(`${targetLeads.length} Lead berhasil diexport`);
+  };
 
   return (
     <div className="flex-1 flex flex-col overflow-hidden bg-slate-50">
-      <header className="py-4 md:h-20 bg-white border-b border-slate-200 flex flex-col md:flex-row md:items-center justify-between px-4 md:px-8 shrink-0 z-10 shadow-sm gap-4 overflow-y-auto custom-scrollbar md:overflow-visible">
-        <div className="flex flex-col shrink-0">
-          <h1 className="text-lg md:text-xl font-black text-slate-900 tracking-tight flex items-center gap-2">
-            <span className="w-2 h-5 md:h-6 bg-indigo-600 rounded-full"></span>
-            Performance Scorecard
+      <header className="h-20 bg-white border-b border-slate-200 flex items-center justify-between px-8 shrink-0 z-10 shadow-sm">
+        <div className="flex flex-col">
+          <h1 className="text-xl font-black text-slate-900 tracking-tight flex items-center gap-2">
+            <span className="w-2 h-6 bg-indigo-600 rounded-full"></span>
+            Database Leads
           </h1>
-          <p className="text-[10px] font-bold text-slate-400 uppercase tracking-widest mt-0.5">Real-time Analytics</p>
+          <p className="text-[10px] font-bold text-slate-400 uppercase tracking-widest mt-0.5">Total {leads.length} Records Found</p>
         </div>
-
-        <div className="flex flex-col md:flex-row md:items-center gap-3 md:gap-4 shrink-0">
-          <button 
-            onClick={() => { setEditingLead(null); setIsLeadModalOpen(true); }}
-            className="bg-indigo-600 hover:bg-indigo-700 text-white px-5 py-2.5 rounded-xl font-bold transition flex items-center justify-center gap-2 shadow-lg shadow-indigo-200 text-sm"
-          >
-            <Plus className="w-4 h-4" /> Tambah Data
-          </button>
-          <div className="flex flex-col items-end mr-2">
-            <span className="text-[9px] font-black text-indigo-400 uppercase tracking-widest">Role: {user.role}</span>
-            <span className="text-[9px] font-black text-slate-300 uppercase tracking-widest">Ver: 1.3</span>
-            {user.role === 'lord' && (
-              <div className="flex flex-col items-end gap-0.5">
-                <button 
-                  onClick={() => setIsImportModalOpen(true)}
-                  className="text-[8px] font-black text-indigo-500 hover:text-indigo-600 underline uppercase tracking-tighter mt-0.5"
-                >
-                  Super Import CSV
-                </button>
-                <button 
-                  onClick={handleGlobalSync}
-                  className="text-[8px] font-black text-emerald-500 hover:text-emerald-600 underline uppercase tracking-tighter"
-                >
-                  Sync All Data
-                </button>
-                <button 
-                  onClick={fixSuperImportData}
-                  className="text-[8px] font-black text-rose-500 hover:text-rose-600 underline uppercase tracking-tighter"
-                >
-                  Patch Data PIC
-                </button>
-              </div>
-            )}
+        
+        <div className="flex items-center gap-3">
+          <div className="flex p-1 bg-slate-100 rounded-xl border border-slate-200 mr-2">
+            <button 
+              onClick={() => setViewMode('active')}
+              className={cn(
+                "px-4 py-2 text-[10px] font-black uppercase tracking-widest rounded-lg transition-all flex items-center gap-2",
+                viewMode === 'active' ? "bg-white text-indigo-600 shadow-sm border border-slate-200" : "text-slate-400 hover:text-slate-600"
+              )}
+            >
+              <Database className="w-3 h-3" /> Active
+            </button>
+            <button 
+              onClick={() => setViewMode('trash')}
+              className={cn(
+                "px-4 py-2 text-[10px] font-black uppercase tracking-widest rounded-lg transition-all flex items-center gap-2",
+                viewMode === 'trash' ? "bg-rose-600 text-white shadow-md shadow-rose-200" : "text-slate-400 hover:text-slate-600"
+              )}
+            >
+              <Trash2 className="w-3 h-3" /> Sampah
+            </button>
           </div>
+
           <div className="relative group">
-            <Search className="absolute left-4 top-1/2 -translate-y-1/2 w-4 h-4 text-slate-400 group-focus-within:text-indigo-500 transition-colors" />
-            <input
-              type="text"
-              placeholder="Search Brand/WA..."
+            <Search className="absolute left-3.5 top-1/2 -translate-y-1/2 w-4 h-4 text-slate-400 group-focus-within:text-indigo-500 transition" />
+            <input 
+              type="text" 
+              placeholder="Cari brand atau kontak..." 
               value={search}
-              onChange={(e) => setSearch(e.target.value)}
-              className="pl-11 pr-4 py-2.5 bg-slate-100 border border-slate-200 rounded-xl text-xs font-bold text-slate-700 focus:ring-2 focus:ring-indigo-500 focus:bg-white transition-all w-full md:w-64 shadow-inner"
+              onChange={e => setSearch(e.target.value)}
+              className="pl-10 pr-4 py-2.5 bg-slate-100 border-none rounded-xl text-sm font-semibold text-slate-700 focus:ring-2 focus:ring-indigo-500 transition w-64 shadow-inner"
             />
           </div>
-
-          <div className="flex flex-wrap items-center gap-3 bg-slate-100 p-1 rounded-xl border border-slate-200 w-full md:w-auto">
-            <div className="flex-1 md:flex-none flex items-center gap-2 px-3 py-1.5 bg-white rounded-lg shadow-sm border border-slate-200">
-              <Users className="w-3.5 h-3.5 text-indigo-600" />
-              <select
-                value={filterAdmin}
-                onChange={(e) => setFilterAdmin(e.target.value)}
-                className="bg-transparent border-none text-xs font-black text-slate-700 focus:ring-0 cursor-pointer p-0"
+          
+          <div className="flex gap-2">
+            {selectedIds.size > 0 && (
+              <div className="flex gap-2 items-center mr-2">
+                <button 
+                  onClick={handleBulkDelete}
+                  className="bg-rose-600 hover:bg-rose-700 text-white px-4 py-2.5 rounded-xl font-bold transition flex items-center gap-2 text-sm shadow-lg shadow-rose-200"
+                >
+                  <Trash2 className="w-4 h-4" /> {viewMode === 'active' ? 'Buang' : 'Hapus'} ({selectedIds.size})
+                </button>
+                {viewMode === 'active' && (
+                  <button 
+                    onClick={() => setIsBulkModalOpen(true)}
+                    className="bg-indigo-600 hover:bg-indigo-700 text-white px-4 py-2.5 rounded-xl font-bold transition shadow-lg shadow-indigo-100 flex items-center gap-2 text-sm"
+                  >
+                    <Bolt className="w-4 h-4" /> Status ({selectedIds.size})
+                  </button>
+                )}
+                <div className="h-8 w-px bg-slate-200 mx-2" />
+              </div>
+            )}
+            
+            {user.role === 'lord' && (
+              <button 
+                onClick={handlePurgeOldData}
+                className="bg-rose-600 hover:bg-rose-700 text-white px-5 py-2.5 rounded-xl font-bold transition flex items-center gap-2 shadow-lg shadow-rose-200 text-sm mr-2"
+                title="Hapus History Pre-2026"
               >
-                <option value="ALL">All Team Members</option>
-                {admins.map(a => <option key={a} value={a}>{a}</option>)}
-              </select>
-            </div>
+                <Trash2 className="w-4 h-4 text-rose-100" /> Purge 2025
+              </button>
+            )}
 
-            <div className="flex-1 md:flex-none flex items-center gap-2 px-3 py-1.5">
-              <Target className="w-3.5 h-3.5 text-slate-400" />
-              <select
-                value={filterCategory}
-                onChange={(e) => setFilterCategory(e.target.value as any)}
-                className="bg-transparent border-none text-xs font-bold text-slate-500 focus:ring-0 cursor-pointer p-0"
+            {viewMode === 'trash' && (user.role === 'lord' || user.role === 'admin') && (
+              <button
+                onClick={handleEmptyTrash}
+                className="bg-rose-700 hover:bg-rose-800 text-white px-5 py-2.5 rounded-xl font-bold transition flex items-center gap-2 shadow-lg shadow-rose-300 text-sm mr-2 border-2 border-rose-400"
+                title="Hapus semua sampah selamanya"
               >
-                <option value="ALL">All Categories</option>
-                {categories.map(c => <option key={c} value={c}>{c}</option>)}
-              </select>
-            </div>
-          </div>
+                <Trash2 className="w-4 h-4" /> Kosongkan Sampah ({leads.filter(l => l.isDeleted).length})
+              </button>
+            )}
 
-          <div className="flex flex-wrap items-center gap-2 bg-white border border-slate-200 rounded-xl px-3 py-1.5 shadow-sm w-full md:w-auto">
-            <Filter className={cn("w-3.5 h-3.5", (!filterStart || !filterEnd) ? "text-indigo-500" : "text-slate-400")} />
-            {!filterStart || !filterEnd ? (
-              <span className="text-xs font-black text-indigo-600 px-2 py-0.5 tracking-widest uppercase">All Time</span>
-            ) : (
+            <button 
+              onClick={exportCSV}
+              className="bg-teal-600 hover:bg-teal-700 text-white px-5 py-2.5 rounded-xl font-bold transition flex items-center gap-2 shadow-lg shadow-teal-200 text-sm mr-2"
+            >
+              <FileDown className="w-4 h-4 text-teal-100" /> Super Export
+            </button>
+
+            {viewMode === 'active' && (
               <>
-                <input
-                  type="date"
-                  value={filterStart}
-                  onChange={(e) => setFilterStart(e.target.value)}
-                  className="bg-transparent border-none text-xs font-bold text-slate-600 focus:ring-0 p-0 w-24"
-                />
-                <span className="text-slate-300 font-bold">/</span>
-                <input
-                  type="date"
-                  value={filterEnd}
-                  onChange={(e) => setFilterEnd(e.target.value)}
-                  className="bg-transparent border-none text-xs font-bold text-slate-600 focus:ring-0 p-0 w-24"
-                />
+                <button 
+                  onClick={() => setIsImportModalOpen(true)}
+                  className="bg-slate-900 hover:bg-slate-800 text-white px-5 py-2.5 rounded-xl font-bold transition flex items-center gap-2 shadow-lg shadow-slate-200 text-sm"
+                >
+                  <Upload className="w-4 h-4 text-indigo-400" /> Super Import
+                </button>
+                
+                <button 
+                  onClick={() => { setEditingLead(null); setIsLeadModalOpen(true); }}
+                  className="bg-indigo-600 hover:bg-indigo-700 text-white px-5 py-2.5 rounded-xl font-bold transition flex items-center gap-2 shadow-lg shadow-indigo-200 text-sm"
+                >
+                  <Plus className="w-4 h-4" /> Add Lead
+                </button>
               </>
             )}
-            <button 
-              onClick={() => {
-                if (!filterStart || !filterEnd) {
-                  setFilterStart(format(startOfMonth(new Date()), 'yyyy-MM-dd'));
-                  setFilterEnd(format(new Date(), 'yyyy-MM-dd'));
-                } else {
-                  setFilterStart('');
-                  setFilterEnd('');
-                }
-              }}
-              className="ml-2 px-2 py-1 bg-slate-100 hover:bg-slate-200 rounded text-[9px] font-black text-slate-500 uppercase tracking-widest transition"
-            >
-              {(!filterStart || !filterEnd) ? 'Set Range' : 'Reset'}
-            </button>
           </div>
         </div>
       </header>
 
-      {/* Product Filter Strip */}
-      <div className="bg-white border-b border-slate-100 px-4 md:px-8 py-3 flex items-center gap-3 shrink-0">
-        <span className="text-[10px] font-black text-slate-400 uppercase tracking-widest mr-1">Produk:</span>
-        {[
-          { key: 'TNT', label: 'TNT', active: 'bg-indigo-600 text-white shadow-lg shadow-indigo-200 border-indigo-600', inactive: 'bg-white text-indigo-600 border-indigo-200 hover:bg-indigo-50' },
-          { key: 'Basemen', label: 'Basemen', active: 'bg-slate-800 text-white shadow-lg shadow-slate-200 border-slate-800', inactive: 'bg-white text-slate-700 border-slate-200 hover:bg-slate-50' },
-          { key: 'HYPE', label: 'HYPE', active: 'bg-amber-400 text-white shadow-lg shadow-amber-200 border-amber-400', inactive: 'bg-white text-amber-600 border-amber-200 hover:bg-amber-50' },
-        ].map(({ key, label, active, inactive }) => (
-          <button
-            key={key}
-            onClick={() => setFilterProduct(prev =>
-              prev.includes(key) ? prev.filter(p => p !== key) : [...prev, key]
+      <div className="p-8 flex-1 overflow-hidden flex flex-col">
+        <div className="mb-6 flex items-center justify-between bg-white p-4 rounded-2xl border border-slate-200 shadow-sm">
+          <div className="flex items-center gap-2">
+            <Filter className="w-4 h-4 text-slate-400 mr-2" />
+            <select
+              value={filterProduct}
+              onChange={(e) => setFilterProduct(e.target.value)}
+              className="px-4 py-1.5 rounded-lg text-xs font-bold transition-all border border-slate-200 bg-slate-50 text-slate-700 mr-2"
+            >
+              <option value="ALL">Semua Produk</option>
+              <option value="TNT">TNT</option>
+              <option value="Basemen">Basemen</option>
+              <option value="HYPE">HYPE</option>
+            </select>
+            {(['ALL', 'Leads', 'Chated', 'Responsed', 'Set Meeting', 'Hold', 'Close Win', 'Close Lost', 'Failed'] as const).map(s => (
+              <button
+                key={s}
+                onClick={() => setFilterStatus(s)}
+                className={cn(
+                  "px-4 py-1.5 rounded-lg text-xs font-bold transition-all",
+                  filterStatus === s 
+                    ? "bg-indigo-600 text-white shadow-md shadow-indigo-100" 
+                    : "text-slate-500 hover:bg-slate-100"
+                )}
+              >
+                {s === 'ALL' ? 'Semua' : s}
+              </button>
+            ))}
+            
+            <div className="h-4 w-px bg-slate-300 mx-1"></div>
+            
+            <input 
+              type="date"
+              value={filterDate}
+              onChange={(e) => setFilterDate(e.target.value)}
+              className="px-3 py-1.5 rounded-lg text-xs font-bold transition-all border border-slate-200 bg-white text-slate-700 outline-none focus:ring-2 focus:ring-indigo-500"
+              title="Filter tanggal (dinamis sesuai status tab)"
+            />
+            {filterDate && (
+              <button 
+                onClick={() => setFilterDate('')}
+                className="text-slate-400 hover:text-rose-500 transition-colors p-1"
+                title="Hapus Filter Tanggal"
+              >
+                <Trash2 className="w-3.5 h-3.5" />
+              </button>
             )}
-            className={cn(
-              "px-5 py-2 rounded-xl text-xs font-black uppercase tracking-widest border-2 transition-all duration-200",
-              filterProduct.includes(key) ? active : inactive
-            )}
-          >
-            {label}
-            {filterProduct.includes(key) && <span className="ml-1.5 text-[9px] opacity-75">✓</span>}
-          </button>
-        ))}
-        {filterProduct.length > 0 && (
-          <button
-            onClick={() => setFilterProduct([])}
-            className="ml-1 px-3 py-2 rounded-xl text-[10px] font-black text-slate-400 hover:text-red-500 hover:bg-red-50 border border-slate-200 hover:border-red-200 transition-all uppercase tracking-widest"
-          >
-            Reset
-          </button>
-        )}
-        {filterProduct.length > 0 && (
-          <span className="ml-auto text-[10px] font-black text-slate-400 uppercase tracking-widest">
-            Filter: {filterProduct.join(' + ')}
-          </span>
-        )}
-      </div>
-
-      <div className="flex-1 overflow-auto p-4 md:p-8 space-y-6 md:space-y-8 custom-scrollbar">
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
-          <StatCard label="TOTAL LEADS" value={stats.total} icon={<Database className="w-5 h-5" />} color="slate" />
-          <StatCard label="CHATED OUT" value={stats.chated} icon={<Send className="w-5 h-5" />} color="indigo" />
-          <StatCard label="RESPONSES" value={stats.responsed} icon={<ReplyAll className="w-5 h-5" />} color="purple" />
-          <StatCard label="MEETINGS SET" value={stats.meeting} icon={<Handshake className="w-5 h-5" />} color="amber" />
-        </div>
-
-
-
-        <div className="grid grid-cols-1 lg:grid-cols-3 gap-6 items-start">
-          <div className="grid grid-cols-1 md:grid-cols-2 gap-6 lg:col-span-2">
-            <div className="bg-slate-900 rounded-3xl p-8 text-white relative overflow-hidden shadow-2xl shadow-slate-200 group flex flex-col justify-between">
-              <div className="absolute top-0 right-0 p-4 md:p-6 opacity-10 group-hover:scale-110 transition-transform duration-500">
-                <Trophy className="w-24 md:w-40 h-24 md:h-40" />
-              </div>
-              <div className="relative z-10 w-full">
-                <div className="flex items-center justify-between mb-6">
-                  <div className="flex items-center gap-2">
-                    <span className="w-8 h-1 bg-indigo-500 rounded-full"></span>
-                    <p className="text-[10px] font-black uppercase tracking-[0.2em] text-slate-400">Conversion Success</p>
-                  </div>
-                </div>
-
-                <div className="mb-8">
-                  <h3 className="text-5xl font-black tracking-tighter mb-1 flex items-baseline gap-3">
-                    {stats.win} <span className="text-xl text-slate-400 font-bold tracking-tight">Deals Wan</span>
-                  </h3>
-                </div>
-
-                <div className="space-y-2">
-                  <p className="text-[10px] font-black uppercase tracking-widest text-emerald-500">Total Nominal Revenue</p>
-                  <div className="text-4xl lg:text-5xl font-black text-emerald-400 tracking-tighter truncate">
-                    {new Intl.NumberFormat('id-ID', { style: 'currency', currency: 'IDR', maximumFractionDigits: 0 }).format(stats.revenue)}
-                  </div>
-                </div>
-              </div>
-
-              <div className="relative z-10 mt-6 md:mt-10 pt-4 md:pt-6 border-t border-slate-800 flex items-center justify-between gap-4">
-                <div className="flex flex-col group/rate relative tooltip-container">
-                  <div className="flex items-center gap-2">
-                    <span className="text-2xl font-black text-indigo-400">{rates.conversion}</span>
-                    <Info className="w-3 h-3 text-slate-500" />
-                  </div>
-                  <span className="text-[9px] font-black text-slate-500 uppercase tracking-widest">Global Rate</span>
-                  <div className="absolute invisible group-hover/rate:visible opacity-0 group-hover/rate:opacity-100 transition bottom-full left-0 mb-2 w-48 bg-slate-800 text-white text-[10px] p-2 rounded-lg z-50 shadow-xl font-medium">
-                    Conversion Rate = (Total Deals Won ÷ Total Chated Out) × 100%. Tidak menghitung leads yang belum terhubung.
-                  </div>
-                </div>
-                <div className="w-px h-8 bg-slate-800"></div>
-                <div className="flex flex-col text-right">
-                  <span className="text-2xl font-black text-red-400">{stats.lost}</span>
-                  <span className="text-[9px] font-black text-slate-500 uppercase tracking-widest">Lost Deals</span>
-                </div>
-              </div>
-            </div>
-
-            <div className="flex flex-col gap-4 justify-center">
-              <RateCard label="Response Rate" value={rates.response} color="indigo" icon={<TrendingUp className="w-4 h-4" />} />
-              <RateCard label="Interest Rate" value={rates.interest} color="purple" icon={<TrendingUp className="w-4 h-4" />} />
-              <RateCard label="Efficiency Rate" value={rates.conversion} color="emerald" icon={<TrendingUp className="w-4 h-4" />} />
-            </div>
           </div>
-
-          <div className="bg-white rounded-3xl border border-slate-200 p-6 md:p-8 shadow-sm flex flex-col h-[400px] md:h-[420px]">
-            <h4 className="text-sm font-black text-slate-900 uppercase tracking-widest mb-6 flex items-center gap-2 shrink-0">
-              <div className="w-1.5 h-4 bg-indigo-600 rounded-full"></div>
-              Individual Target Contribution
-            </h4>
-            <div className="space-y-6 overflow-y-auto flex-1 pr-2 custom-scrollbar">
-              {(() => {
-                const adminPerformances = admins.map(admin => {
-                  let adminChat = 0;
-                  let adminMeet = 0;
-                  let adminRev = 0;
-
-                  const start = (filterStart && filterEnd) ? new Date(filterStart) : new Date(0);
-                  const end = (filterStart && filterEnd) ? endOfDay(new Date(filterEnd)) : new Date(8640000000000000);
-
-                  leads.forEach(l => {
-                    if (filterCategory !== 'ALL' && l.category !== filterCategory) return;
-                    if (filterProduct.length > 0 && !(l.productOffered || []).some(p => filterProduct.includes(p))) return;
-                    const stageLatest: Record<string, any> = {};
-                    l.funnelHistory.forEach(h => {
-                      if (h.by === admin) {
-                        const actionTime = parseDateString(h.date);
-                        if (actionTime !== 0) {
-                          const actionDate = new Date(actionTime);
-                          if (isWithinInterval(actionDate, { start, end })) {
-                            if (!stageLatest[h.stage] || actionTime > parseDateString(stageLatest[h.stage].date) || (actionTime === parseDateString(stageLatest[h.stage].date) && (h as any).timestamp > (stageLatest[h.stage].timestamp || 0))) {
-                              stageLatest[h.stage] = h;
-                            }
-                          }
-                        }
-                      }
-                    });
-
-                    Object.values(stageLatest).forEach(h => {
-                      if (h.stage === 'Chated') adminChat++;
-                      if (h.stage === 'Set Meeting') adminMeet++;
-                      if (h.stage === 'Close Win') adminRev += (h.dealValue !== undefined ? h.dealValue : (l.dealValue || 0));
-                    });
-                  });
-
-                  return { admin, adminChat, adminMeet, adminRev };
-                });
-
-                adminPerformances.sort((a, b) => {
-                  if (b.adminRev !== a.adminRev) return b.adminRev - a.adminRev;
-                  if (b.adminMeet !== a.adminMeet) return b.adminMeet - a.adminMeet;
-                  return b.adminChat - a.adminChat;
-                });
-
-                return adminPerformances.map(({ admin, adminChat, adminMeet, adminRev }, index) => {
-                  let pChat = 0, pMeet = 0, pRev = 0;
-                  const adminRef = users.find(u => u.name === admin);
-                  const personalTarget = adminRef ? (individualTargets || []).find(it => it.userId === adminRef.uid && it.monthYear === currentTargetMonth) : null;
-
-                  if (filterStart && filterEnd) {
-                    const tChat = personalTarget?.targetChat || 0;
-                    const tMeet = personalTarget?.targetMeeting || 0;
-                    const tRev = personalTarget?.targetRevenue || 0;
-
-                    pChat = tChat ? Math.min(100, (adminChat / Math.round(tChat / 4)) * 100) : 0;
-                    pMeet = tMeet ? Math.min(100, (adminMeet / Math.round(tMeet / 4)) * 100) : 0;
-                    pRev = tRev ? Math.min(100, (adminRev / tRev) * 100) : 0;
-                  }
-
-                  return (
-                    <div key={admin} className="group border-b border-slate-50 pb-4 last:border-0 relative">
-                      <div className="flex justify-between items-end mb-3">
-                        <span className="text-sm font-bold text-slate-700 group-hover:text-indigo-600 transition flex items-center gap-2">
-                          {index === 0 && <Trophy className="w-4 h-4 text-amber-400 fill-amber-400" />}
-                          {index === 1 && <Trophy className="w-4 h-4 text-slate-300 fill-slate-300" />}
-                          {index === 2 && <Trophy className="w-4 h-4 text-amber-700 fill-amber-700" />}
-                          {admin}
-                        </span>
-                        <span className="text-[10px] font-black tracking-widest text-emerald-600">
-                          {new Intl.NumberFormat('id-ID', { style: 'currency', currency: 'IDR', maximumFractionDigits: 0 }).format(adminRev)}
-                        </span>
-                      </div>
-
-                    <div className="space-y-3">
-                      <div>
-                        <div className="flex justify-between text-[9px] font-black uppercase tracking-widest text-slate-400 mb-1.5">
-                          <span>Chat ({adminChat})</span>
-                          {filterStart && filterEnd ? (
-                            <span>Target Mingguan: {personalTarget ? Math.round(personalTarget.targetChat / 4) : 0}</span>
-                          ) : null}
-                        </div>
-                        <div className="h-1.5 bg-slate-100 rounded-full overflow-hidden">
-                          <div className="h-full bg-indigo-500 rounded-full transition-all duration-1000" style={{ width: `${pChat}%` }}></div>
-                        </div>
-                      </div>
-
-                      <div>
-                        <div className="flex justify-between text-[9px] font-black uppercase tracking-widest text-slate-400 mb-1.5">
-                          <span>Meet ({adminMeet})</span>
-                          {filterStart && filterEnd ? (
-                            <span>Target Mingguan: {personalTarget ? Math.round(personalTarget.targetMeeting / 4) : 0}</span>
-                          ) : null}
-                        </div>
-                        <div className="h-1.5 bg-slate-100 rounded-full overflow-hidden">
-                          <div className="h-full bg-amber-500 rounded-full transition-all duration-1000" style={{ width: `${pMeet}%` }}></div>
-                        </div>
-                      </div>
-
-                      <div>
-                        <div className="flex justify-between text-[9px] font-black uppercase tracking-widest text-slate-400 mb-1.5">
-                          <span>Revenue</span>
-                          {filterStart && filterEnd ? (
-                            <span>Target: {new Intl.NumberFormat('id-ID', { notation: 'compact', style: 'currency', currency: 'IDR', maximumFractionDigits: 1 }).format(personalTarget?.targetRevenue || 0)}</span>
-                          ) : null}
-                        </div>
-                        <div className="h-1.5 bg-slate-100 rounded-full overflow-hidden">
-                          <div className="h-full bg-emerald-500 rounded-full transition-all duration-1000" style={{ width: `${pRev}%` }}></div>
-                        </div>
-                      </div>
-                    </div>
-                    </div>
-                  );
-                });
-              })()}
-              {(!activeTarget && filterStart && filterEnd) && (
-                <div className="text-xs font-bold text-amber-600 bg-amber-50 p-4 rounded-xl border border-amber-100">
-                  Belum ada target global di set untuk bulan {currentTargetMonth}.
-                </div>
-              )}
-              {(!filterStart || !filterEnd) && (
-                <div className="text-xs font-bold text-indigo-600 bg-indigo-50 p-4 rounded-xl border border-indigo-100">
-                  Target tidak ditampilkan karena mode All Time sedang aktif.
-                </div>
-              )}
-            </div>
+          
+          <div className="flex items-center gap-4 text-[11px] font-bold text-slate-400 uppercase tracking-widest">
+            <span>Urutkan:</span>
+            <select 
+              value={sortField}
+              onChange={e => toggleSort(e.target.value as any)}
+              className="bg-transparent border-none text-indigo-600 focus:ring-0 cursor-pointer p-0 font-black"
+            >
+              <option value="dateInput">Tgl Input</option>
+              <option value="brandName">Nama Brand</option>
+              <option value="status">Status</option>
+            </select>
           </div>
         </div>
 
-        <div className="grid grid-cols-1 xl:grid-cols-3 gap-6">
-          <div className="bg-white rounded-3xl border border-slate-200 shadow-sm overflow-hidden flex flex-col h-[500px] xl:col-span-2">
-            <div className="p-4 md:p-8 border-b border-slate-100 flex flex-col md:flex-row md:items-center justify-between shrink-0 gap-4">
-              <div className="flex items-center gap-3">
-                <div className="w-1.5 h-6 bg-indigo-600 rounded-full"></div>
-                <h3 className="text-base md:text-lg font-black text-slate-900 tracking-tight">Leads Pipeline</h3>
-              </div>
-              <div className="flex md:items-center gap-2 flex-wrap justify-start md:justify-end overflow-x-auto custom-scrollbar pb-1 md:pb-0">
-                {(['ALL', 'Leads', 'Chated', 'Responsed', 'Set Meeting', 'Hold', 'Close Win', 'Close Lost', 'Failed'] as const).map(s => (
-                  <button
-                    key={s}
-                    onClick={() => setFilterStatus(s as any)}
-                    className={cn(
-                      "px-4 py-1.5 rounded-lg text-xs font-bold transition-all",
-                      filterStatus === s
-                        ? "bg-indigo-600 text-white shadow-md shadow-indigo-100"
-                        : "text-slate-500 hover:bg-slate-100"
-                    )}
-                  >
-                    {s === 'ALL' ? 'Semua' : s}
-                  </button>
-                ))}
-              </div>
-            </div>
-
-            <div className="overflow-auto flex-1 custom-scrollbar">
-              <table className="w-full text-sm text-left border-collapse">
-                <thead className="bg-white border-b border-slate-100 sticky top-0 z-10">
-                  <tr>
-                    <th className="px-6 py-4 w-12 text-center border-r border-slate-50">
-                      <button onClick={toggleSelectAll} className="text-slate-300 hover:text-indigo-500 transition focus:outline-none">
-                        {paginatedTableLeads.length > 0 && paginatedTableLeads.every(l => selectedLeadIds.includes(l.id)) ? (
-                          <CheckSquare className="w-4 h-4 text-indigo-500 drop-shadow-sm" />
-                        ) : (
-                          <Square className="w-4 h-4" />
-                        )}
-                      </button>
-                    </th>
-                    <th className="px-8 py-4 text-[10px] font-black text-slate-400 uppercase tracking-widest text-left w-1/3">Brand & Info</th>
-                    <th className="px-8 py-4 text-[10px] font-black text-slate-400 uppercase tracking-widest text-left">Category</th>
-                    <th className="px-8 py-4 text-[10px] font-black text-slate-400 uppercase tracking-widest text-center">Produk</th>
-                    <th className="px-8 py-4 text-[10px] font-black text-slate-400 uppercase tracking-widest text-center">
-                      {filterAdmin === 'ALL' ? 'Status' : `Status ${filterAdmin}`}
-                    </th>
-                    {filterAdmin !== 'ALL' && (
-                      <th className="px-8 py-4 text-[10px] font-black text-slate-400 uppercase tracking-widest text-center">
-                        Status Global
-                      </th>
-                    )}
-                    <th className="px-8 py-4 text-[10px] font-black text-slate-400 uppercase tracking-widest text-right">
-                      {filterAdmin === 'ALL' ? 'Date' : `Date ${filterAdmin}`}
-                    </th>
-                  </tr>
-                </thead>
-                <tbody className="divide-y divide-slate-50">
-                  {paginatedTableLeads.map((lead) => {
-                    const sortedHistory = [...(lead.funnelHistory || [])].sort((a, b) => {
-                      const timeA = parseDateString(a.date);
-                      const timeB = parseDateString(b.date);
-                      if (timeA !== timeB) return timeB - timeA;
-                      const tsA = a.timestamp || 0;
-                      const tsB = b.timestamp || 0;
-                      if (tsA !== tsB) return tsB - tsA;
-                      return getStageRank(b.stage) - getStageRank(a.stage);
-                    });
-                    const globalLatest = sortedHistory[0];
-                    let picLatest = null;
-                    
-                    if (filterAdmin !== 'ALL') {
-                      picLatest = sortedHistory.find(h => h.by === filterAdmin);
-                    } else {
-                      picLatest = globalLatest;
-                    }
-
-                    const displayStatus = (() => {
-                      // If a specific status tab is selected, prefer showing that matching stage
-                      if (filterStatus !== 'ALL') {
-                        const matchingEntry = sortedHistory.find(h => {
-                          if (filterAdmin !== 'ALL') return h.stage === filterStatus && h.by === filterAdmin;
-                          return h.stage === filterStatus;
-                        });
-                        if (matchingEntry) return matchingEntry.stage;
-                      }
-                      return picLatest ? picLatest.stage : lead.status;
-                    })();
-                    const displayDate = (() => {
-                      if (filterStatus !== 'ALL') {
-                        const matchingEntry = sortedHistory.find(h => {
-                          if (filterAdmin !== 'ALL') return h.stage === filterStatus && h.by === filterAdmin;
-                          return h.stage === filterStatus;
-                        });
-                        if (matchingEntry) return matchingEntry.date;
-                      }
-                      return picLatest ? picLatest.date : lead.dateInput;
-                    })();
-                    const isOverriddenByOther = filterAdmin !== 'ALL' && globalLatest && picLatest && globalLatest.by !== filterAdmin && (globalLatest.timestamp || parseDateString(globalLatest.date)) >= (picLatest.timestamp || parseDateString(picLatest.date));
-
-                    const isValidDate = displayDate && parseDateString(displayDate) > 0;
-                    const formattedDate = isValidDate ? new Date(parseDateString(displayDate)).toLocaleDateString('id-ID', { year: 'numeric', month: 'short', day: 'numeric' }) : displayDate;
-
-                    return (
-                      <tr 
-                        key={lead.id} 
-                        className={cn(
-                          "transition group",
-                          selectedLeadIds.includes(lead.id) ? "bg-indigo-50/40" : "hover:bg-slate-50/50"
-                        )}
+        <div className="flex-1 overflow-auto crm-card">
+          <table className="w-full text-sm text-left border-collapse">
+            <thead>
+              <tr className="bg-slate-50/80 border-b border-slate-200">
+                <th className="px-6 py-4 w-10">
+                  <input 
+                    type="checkbox" 
+                    checked={selectedIds.size === filteredLeads.length && filteredLeads.length > 0}
+                    onChange={toggleSelectAll}
+                    className="rounded border-slate-300 text-indigo-600 focus:ring-indigo-500 cursor-pointer w-4 h-4" 
+                  />
+                </th>
+                <th className="px-6 py-4 text-[10px] font-black text-slate-400 uppercase tracking-widest">Brand & Info</th>
+                <th className="px-6 py-4 text-[10px] font-black text-slate-400 uppercase tracking-widest">Category</th>
+                <th className="px-6 py-4 text-[10px] font-black text-slate-400 uppercase tracking-widest text-center">Current Status</th>
+                <th className="px-6 py-4 text-[10px] font-black text-slate-400 uppercase tracking-widest text-center">Interest</th>
+                <th className="px-6 py-4 text-[10px] font-black text-slate-400 uppercase tracking-widest text-right">Actions</th>
+              </tr>
+            </thead>
+            <tbody className="divide-y divide-slate-100">
+              {paginatedLeads.map((lead) => (
+                <tr key={lead.id} className={cn("hover:bg-slate-50/50 transition group", selectedIds.has(lead.id) && "bg-indigo-50/30")}>
+                  <td className="px-6 py-5 text-center">
+                    <input 
+                      type="checkbox" 
+                      checked={selectedIds.has(lead.id)}
+                      onChange={() => toggleSelect(lead.id)}
+                      className="rounded border-slate-300 text-indigo-600 cursor-pointer w-4 h-4" 
+                    />
+                  </td>
+                  <td className="px-6 py-5">
+                    <div className="flex flex-col">
+                      <button 
+                        onClick={() => navigate(`/lead/${lead.id}`)}
+                        className="text-left font-bold text-slate-900 text-base group-hover:text-indigo-600 transition tracking-tight flex flex-col items-start group/brand"
                       >
-                        <td className="px-6 py-4 text-center border-r border-slate-50">
-                          <button onClick={(e) => toggleSelectRow(e, lead.id)} className="text-slate-300 hover:text-indigo-500 transition focus:outline-none">
-                            {selectedLeadIds.includes(lead.id) ? (
-                              <CheckSquare className="w-4 h-4 text-indigo-500" />
-                            ) : (
-                              <Square className="w-4 h-4" />
-                            )}
-                          </button>
-                        </td>
-                        <td className="px-8 py-4">
-                          <button 
-                            onClick={() => router.push(`/lead/${lead.id}`)}
-                            className="flex flex-col items-start group/brand"
-                          >
-                            <span className="font-bold text-slate-900 text-xs group-hover/brand:text-indigo-600 transition tracking-tight">
-                              {lead.brandName}
-                            </span>
-                            <a 
-                              href={`https://wa.me/${(lead.contact || '').replace(/^0/, '62').replace(/\D/g, '')}`}
-                              target="_blank"
-                              rel="noopener noreferrer"
-                              onClick={(e) => e.stopPropagation()}
-                              className="text-[9px] text-slate-400 font-medium group-hover/brand:text-emerald-500 hover:text-emerald-600 transition flex items-center gap-1 mt-0.5 hover:underline"
-                            >
-                              <Phone className="w-2.5 h-2.5" /> {(lead.contact || '').replace(/^0/, '62')}
-                            </a>
-                          </button>
-                        </td>
-                        <td className="px-8 py-4">
-                          <span className="px-2.5 py-1 bg-slate-100 text-slate-600 rounded-full text-[8px] font-black uppercase tracking-widest">
-                            {lead.category.split('/')[0]}
+                        <span className="flex items-center gap-1">
+                          {lead.brandName}
+                          <Bolt className="w-3 h-3 opacity-0 group-hover/brand:opacity-100 transition text-indigo-400" />
+                        </span>
+                        <span className="text-[10px] text-slate-400 font-normal group-hover/brand:text-indigo-400 transition">Klik untuk detail</span>
+                      </button>
+                      <div className="flex items-center gap-3 mt-1">
+                        <span className="text-[11px] text-slate-400 flex items-center gap-1 font-semibold">
+                          <Database className="w-3 h-3" /> {new Date(lead.dateInput || 0).toLocaleDateString('id-ID')}
+                        </span>
+                        <a 
+                          href={`https://wa.me/${(lead.contact || '').replace(/^0/, '62')}`} 
+                          target="_blank" 
+                          rel="noreferrer"
+                          className="text-[11px] text-emerald-600 hover:underline font-bold flex items-center gap-1"
+                        >
+                          <Phone className="w-3 h-3" /> {lead.contact || '-'}
+                        </a>
+                        {lead.leadSource && (
+                          <span className="text-[9px] font-black uppercase tracking-wider text-indigo-600 bg-indigo-50 border border-indigo-100 px-1.5 py-0.5 rounded">
+                            {lead.leadSource}
                           </span>
-                        </td>
-                        <td className="px-8 py-4 text-center">
-                          {lead.productOffered && lead.productOffered.length > 0 ? (
-                            <div className="flex justify-center gap-1">
-                              {lead.productOffered.map(p => (
-                                <span key={p} className={cn(
-                                  "px-2.5 py-1 rounded-md text-[9px] font-black uppercase tracking-widest border shadow-sm whitespace-nowrap",
-                                  p === 'TNT' ? 'bg-indigo-50 text-indigo-600 border-indigo-100' : 
-                                  p === 'Basemen' ? 'bg-slate-100 text-slate-700 border-slate-200' : 
-                                  'bg-amber-50 text-amber-600 border-amber-100'
-                                )}>
-                                  {p}
-                                </span>
-                              ))}
-                            </div>
-                          ) : (
-                            <span className="text-[10px] font-black text-slate-300">-</span>
+                        )}
+                        {lead.email && (
+                          <a 
+                            href={`mailto:${lead.email}`}
+                            className="text-[11px] text-blue-500 hover:underline font-bold flex items-center gap-1"
+                          >
+                            <Mail className="w-3 h-3" /> {lead.email}
+                          </a>
+                        )}
+                      </div>
+                      {lead.productOffered && lead.productOffered.length > 0 && (
+                        <div className="flex items-center gap-1.5 mt-2">
+                          <Package className="w-3 h-3 text-slate-400" />
+                          {lead.productOffered.map(p => (
+                            <span key={p} className={cn(
+                              "px-2 py-0.5 rounded-md text-[9px] font-black uppercase tracking-tight border",
+                              p === 'TNT' ? 'bg-indigo-50 text-indigo-600 border-indigo-100' : 
+                              p === 'Basemen' ? 'bg-slate-100 text-slate-700 border-slate-200' : 
+                              'bg-amber-50 text-amber-600 border-amber-100'
+                            )}>
+                              {p}
+                            </span>
+                          ))}
+                        </div>
+                      )}
+                      {lead.actionPlan && (
+                        <p className="text-[10px] text-indigo-600 bg-indigo-50 px-2 py-0.5 rounded-md mt-2 w-fit border border-indigo-100 font-bold">
+                          <Bolt className="w-3 h-3 inline mr-1" /> {lead.actionPlan}
+                        </p>
+                      )}
+                    </div>
+                  </td>
+                  <td className="px-6 py-5">
+                    <span className="px-3 py-1 bg-slate-100 text-slate-600 rounded-full text-[10px] font-black uppercase tracking-tight">
+                      {lead.category}
+                    </span>
+                  </td>
+                  <td className="px-6 py-5 text-center">
+                    {viewMode === 'active' ? (
+                      <div className="flex flex-col items-center gap-1.5">
+                        <button 
+                          onClick={() => { setActiveLead(lead); setIsStatusModalOpen(true); }}
+                          className={cn(
+                            "px-4 py-1.5 rounded-xl text-[10px] font-black uppercase tracking-widest shadow-sm transition-all hover:scale-105 active:scale-95 flex items-center justify-center gap-1",
+                            getStatusColor(lead.status)
                           )}
-                        </td>
-                        <td className="px-8 py-4 text-center">
-                          <div className="flex flex-col items-center gap-2">
-                            <button
-                              onClick={() => { setActiveLead(lead); setIsStatusModalOpen(true); }}
-                              className={cn(
-                                "px-3 py-1 rounded-full text-[10px] font-black uppercase tracking-widest border shadow-sm hover:scale-105 active:scale-95 transition-all",
-                                getStatusColor(displayStatus as LeadStatus)
-                              )}
-                            >
-                              {displayStatus}
-                            </button>
-                            {(filterAdmin === 'ALL' && globalLatest) && (
-                              <div className="text-[8px] font-bold text-indigo-400 whitespace-nowrap">
-                                by {globalLatest.by}
-                              </div>
-                            )}
-                          </div>
-                        </td>
-                        
-                        {filterAdmin !== 'ALL' && (
-                          <td className="px-8 py-4 text-center">
-                            {isOverriddenByOther ? (
-                              <div className="flex flex-col items-center gap-1.5" title={`Override oleh ${globalLatest.by}`}>
-                                <span className={cn(
-                                  "px-2.5 py-0.5 rounded-full text-[8px] font-black uppercase tracking-widest opacity-80 border-dashed border",
-                                  getStatusColor(globalLatest.stage as LeadStatus)
-                                )}>
-                                  {globalLatest.stage}
+                        >
+                          {lead.status}
+                        </button>
+                        {(() => {
+                          const sortedHistory = [...(lead.funnelHistory || [])].sort((a, b) => new Date(b.date).getTime() - new Date(a.date).getTime() || b.timestamp - a.timestamp);
+                          const latestAction = sortedHistory[0];
+                          if (!latestAction) return null;
+                          
+                          const recentAuthors = Array.from(new Set(sortedHistory.slice(0, 3).map(h => h.by)));
+                          const isMultiPIC = recentAuthors.length > 1;
+
+                          const isValidDate = !isNaN(new Date(latestAction.date).getTime());
+
+                          return (
+                            <div className="flex flex-col items-center">
+                              <span className="text-[9px] font-bold text-slate-400 whitespace-nowrap">
+                                {isValidDate ? new Date(latestAction.date).toLocaleDateString('id-ID', { day: 'numeric', month: 'short' }) : '-'} • <span className="text-slate-600">{latestAction.by}</span>
+                              </span>
+                              {isMultiPIC && (
+                                <span 
+                                  className="text-[8px] font-black text-rose-500 bg-rose-50 border border-rose-100 px-1.5 py-0.5 rounded mt-0.5 whitespace-nowrap cursor-help flex items-center" 
+                                  title={`Riwayat PIC: ${recentAuthors.join(', ')}`}
+                                >
+                                  <AlertTriangle className="w-2.5 h-2.5 mr-0.5" /> Multi PIC
                                 </span>
-                                <div className="text-[8px] font-bold text-rose-500 bg-rose-50 px-1.5 py-0.5 rounded border border-rose-100 flex items-center gap-1 shadow-sm">
-                                  <AlertTriangle className="w-2.5 h-2.5" /> {globalLatest.by}
-                                </div>
-                              </div>
-                            ) : (
-                              <span className="text-[8px] font-bold text-emerald-500 flex items-center justify-center gap-1 bg-emerald-50 px-2 py-1 rounded-md w-fit mx-auto border border-emerald-100 shadow-sm opacity-80">
-                                <Check className="w-2.5 h-2.5" /> Normal
+                              )}
+                            </div>
+                          );
+                        })()}
+                      </div>
+                    ) : (
+                      <div className="flex flex-col items-center gap-1">
+                        <div className="px-3 py-1 bg-rose-50 text-rose-600 border border-rose-100 rounded-lg text-[10px] font-black uppercase tracking-widest flex items-center gap-1.5 italic">
+                          <Clock className="w-3 h-3" />
+                          {(() => {
+                            if (!lead.autoDeleteAt) return 'Segera dihapus';
+                            const diff = new Date(lead.autoDeleteAt).getTime() - Date.now();
+                            const days = Math.ceil(diff / (1000 * 60 * 60 * 24));
+                            return days > 0 ? `${days} Hari Lagi Dihapus` : 'Hapus Hari Ini';
+                          })()}
+                        </div>
+                        <span className="text-[9px] font-bold text-slate-400">Status Terakhir: {lead.status}</span>
+                      </div>
+                    )}
+                  </td>
+                  <td className="px-6 py-5 text-center">
+                    <InterestBadge level={lead.interestLevel} />
+                  </td>
+                  <td className="px-6 py-5 text-right">
+                    <div className="flex items-center justify-end gap-2 opacity-0 group-hover:opacity-100 transition-all duration-200 translate-x-2 group-hover:translate-x-0">
+                      {viewMode === 'active' ? (
+                        <>
+                          <button 
+                            onClick={() => { setActiveLead(lead); setIsNotesModalOpen(true); }}
+                            className="p-2.5 text-slate-400 hover:text-amber-600 hover:bg-amber-50 rounded-xl transition shadow-sm bg-white border border-slate-100 relative"
+                            title="Notes & History"
+                          >
+                            <MessageSquare className="w-4 h-4" />
+                            {(lead.funnelHistory?.length || 0) > 1 && (
+                              <span className="absolute -top-1 -right-1 bg-red-500 text-white text-[8px] w-4 h-4 flex items-center justify-center rounded-full font-black border-2 border-white">
+                                {lead.funnelHistory.length - 1}
                               </span>
                             )}
-                          </td>
-                        )}
-
-                        <td className="px-8 py-4 text-right flex flex-col items-end justify-center">
-                          <span className="text-[10px] font-black text-slate-600 uppercase whitespace-nowrap mb-2">
-                            {isValidDate ? formattedDate : '-'}
-                          </span>
-                          <div className="flex gap-2 mt-auto">
-                            <button
-                              onClick={() => { setActiveLead(lead); setIsNotesModalOpen(true); }}
-                              className="p-1.5 text-slate-400 hover:text-amber-600 hover:bg-amber-50 rounded-lg transition shadow-sm bg-white border border-slate-100"
-                              title="Notes & History"
+                          </button>
+                          <button 
+                            onClick={() => { setEditingLead(lead); setIsLeadModalOpen(true); }}
+                            className="p-2.5 text-slate-400 hover:text-indigo-600 hover:bg-indigo-50 rounded-xl transition shadow-sm bg-white border border-slate-100"
+                            title="Edit Data"
+                          >
+                            <Pencil className="w-4 h-4" />
+                          </button>
+                          {isAdmin && (
+                            <button 
+                              onClick={() => handleDelete(lead.id)}
+                              className="p-2.5 text-slate-400 hover:text-red-600 hover:bg-red-50 rounded-xl transition shadow-sm bg-white border border-slate-100"
+                              title="Delete Lead"
                             >
-                              <MessageSquare className="w-3.5 h-3.5" />
+                              <Trash2 className="w-4 h-4" />
                             </button>
-                            <button
-                              onClick={() => { setEditingLead(lead); setIsLeadModalOpen(true); }}
-                              className="p-1.5 text-slate-400 hover:text-indigo-600 hover:bg-indigo-50 rounded-lg transition shadow-sm bg-white border border-slate-100"
-                              title="Edit Data"
-                            >
-                              <Pen className="w-3.5 h-3.5" />
-                            </button>
-                          </div>
-                        </td>
-                      </tr>
-                    );
-                  })}
-                  {tableLeads.length === 0 && (
-                    <tr>
-                      <td colSpan={filterAdmin === 'ALL' ? 6 : 7} className="px-8 py-20 text-center">
-                        <div className="flex flex-col items-center gap-2">
-                          <Database className="w-8 h-8 text-slate-200" />
-                          <p className="text-xs font-bold text-slate-400 uppercase tracking-widest">No matching leads found</p>
-                        </div>
-                      </td>
-                    </tr>
-                  )}
-                </tbody>
-              </table>
-            </div>
-            {tableLeads.length > 0 && (
-              <div className="px-6 py-3 border-t border-slate-100 bg-white flex items-center justify-between shrink-0">
-                <span className="text-[10px] font-bold text-slate-400">
-                  Page {currentPage} of {Math.ceil(tableLeads.length / itemsPerPage)} ({tableLeads.length} total)
-                </span>
-                <div className="flex items-center gap-2">
-                  <button 
-                    onClick={() => setCurrentPage(p => Math.max(1, p - 1))}
-                    disabled={currentPage === 1}
-                    className="px-3 py-1.5 rounded-lg border border-slate-200 text-[10px] font-bold disabled:opacity-50 hover:bg-slate-50 transition"
-                  >
-                    Prev
-                  </button>
-                  <button 
-                    onClick={() => setCurrentPage(p => Math.min(Math.ceil(tableLeads.length / itemsPerPage), p + 1))}
-                    disabled={currentPage === Math.ceil(tableLeads.length / itemsPerPage)}
-                    className="px-3 py-1.5 rounded-lg border border-slate-200 text-[10px] font-bold disabled:opacity-50 hover:bg-slate-50 transition"
-                  >
-                    Next
-                  </button>
+                          )}
+                        </>
+                      ) : (
+                        <>
+                          <button 
+                            onClick={() => handleRestore(lead.id)}
+                            className="p-2.5 text-emerald-500 hover:text-white hover:bg-emerald-500 rounded-xl transition shadow-sm bg-white border border-emerald-100 flex items-center gap-1 text-[10px] font-black uppercase tracking-widest px-4"
+                            title="Pulihkan Lead"
+                          >
+                            <Database className="w-3.5 h-3.5" /> Restore
+                          </button>
+                          <button 
+                            onClick={() => handlePermanentDelete(lead.id)}
+                            className="p-2.5 text-rose-500 hover:text-white hover:bg-rose-500 rounded-xl transition shadow-sm bg-white border border-rose-100 flex items-center gap-1 text-[10px] font-black uppercase tracking-widest px-4"
+                            title="Hapus Permanen"
+                          >
+                            <Trash2 className="w-3.5 h-3.5" /> Hapus Selamanya
+                          </button>
+                        </>
+                      )}
+                    </div>
+                  </td>
+                </tr>
+              ))}
+            </tbody>
+          </table>
+          {filteredLeads.length > 0 && (
+            <div className="px-6 py-4 border-t border-slate-200 bg-white flex items-center justify-between sticky left-0">
+              <span className="text-xs font-bold text-slate-500">
+                Menampilkan {(currentPage - 1) * itemsPerPage + 1} - {Math.min(currentPage * itemsPerPage, filteredLeads.length)} dari {filteredLeads.length} data
+              </span>
+              <div className="flex items-center gap-3">
+                <button 
+                  onClick={() => setCurrentPage(p => Math.max(1, p - 1))}
+                  disabled={currentPage === 1}
+                  className="px-4 py-2 rounded-lg border border-slate-200 text-xs font-bold disabled:opacity-50 hover:bg-slate-50 transition text-slate-700 shadow-sm"
+                >
+                  Prev
+                </button>
+                <div className="text-xs font-black text-indigo-600 bg-indigo-50 px-3 py-2 rounded-lg border border-indigo-100">
+                  Page {currentPage} / {Math.ceil(filteredLeads.length / itemsPerPage)}
                 </div>
+                <button 
+                  onClick={() => setCurrentPage(p => Math.min(Math.ceil(filteredLeads.length / itemsPerPage), p + 1))}
+                  disabled={currentPage === Math.ceil(filteredLeads.length / itemsPerPage)}
+                  className="px-4 py-2 rounded-lg border border-slate-200 text-xs font-bold disabled:opacity-50 hover:bg-slate-50 transition text-slate-700 shadow-sm"
+                >
+                  Next
+                </button>
               </div>
-            )}
-          </div>
-
-          <div className="bg-white rounded-3xl border border-rose-200 p-6 md:p-8 shadow-sm flex flex-col h-[400px] md:h-[500px] xl:col-span-1 relative overflow-hidden">
-            <div className="absolute -right-6 -top-6 text-rose-50 opacity-40 pointer-events-none">
-              <AlertTriangle className="w-48 h-48" />
             </div>
-            
-            <h4 className="text-sm font-black text-rose-700 uppercase tracking-widest mb-6 flex items-center gap-2 shrink-0 z-10">
-              <div className="w-1.5 h-4 bg-rose-600 rounded-full"></div>
-              Ghosted Lead Alert
-            </h4>
-
-            <div className="space-y-4 overflow-y-auto flex-1 pr-2 custom-scrollbar z-10">
-              {stagnantLeads.length === 0 ? (
-                <div className="flex flex-col items-center justify-center h-full text-center opacity-70">
-                  <div className="w-12 h-12 bg-emerald-50 text-emerald-500 rounded-full flex items-center justify-center mb-3">
-                    <Check className="w-6 h-6" />
-                  </div>
-                  <p className="text-xs font-bold text-slate-500 uppercase tracking-widest">Aman Terkendali!</p>
-                  <p className="text-[10px] text-slate-400 mt-1">Seluruh lead masih terpantau segar.</p>
-                </div>
-              ) : (
-                stagnantLeads.slice(0, 50).map((alert, idx) => (
-                  <div key={idx} className={cn("p-4 rounded-2xl border transition hover:shadow-md cursor-pointer", alert.days >= 30 ? "bg-rose-50 border-rose-200" : "bg-amber-50 border-amber-200")} onClick={() => router.push(`/lead/${alert.lead.id}`)}>
-                    <div className="flex justify-between items-start mb-2 border-b border-black/5 pb-2">
-                        <span className="text-xs font-black text-slate-900 line-clamp-1 flex-1 pr-2">{alert.lead.brandName}</span>
-                        <div className="flex items-center gap-2 shrink-0">
-                          {alert.days >= 30 && <span className="bg-rose-600 text-white text-[8px] font-black tracking-widest uppercase px-2 py-0.5 rounded-full shadow-sm animate-pulse">30+ Days!</span>}
-                          <span className="text-[9px] font-black text-slate-600 uppercase bg-black/5 px-2 py-0.5 rounded-md flex items-center gap-1">
-                            <Clock className="w-3 h-3" /> {alert.days}d
-                          </span>
-                        </div>
-                    </div>
-                    
-                    <p className="text-[10px] font-bold text-slate-700 leading-relaxed mb-3">
-                      "{alert.msg}"
-                    </p>
-                    
-                    <div className="flex items-center justify-between mt-auto">
-                      <span className={cn("text-[8px] font-black uppercase tracking-widest px-2 py-0.5 rounded-full inline-block", getStatusColor(alert.lead.status))}>
-                        {alert.lead.status}
-                      </span>
-                      <span className="text-[9px] font-black uppercase tracking-widest text-indigo-700 bg-indigo-50 px-2 py-1 rounded-full flex items-center gap-1">
-                        <Users className="w-3 h-3" /> {alert.adminName}
-                      </span>
-                    </div>
-                  </div>
-                ))
-              )}
+          )}
+          {filteredLeads.length === 0 && (
+            <div className="flex flex-col items-center justify-center py-20 bg-white">
+              <div className="w-20 h-20 bg-slate-50 rounded-full flex items-center justify-center mb-4">
+                <Database className="w-10 h-10 text-slate-200" />
+              </div>
+              <p className="text-slate-400 font-bold uppercase tracking-widest text-xs">No Data Found</p>
             </div>
-          </div>
+          )}
         </div>
       </div>
 
-      {selectedLeadIds.length > 0 && (
-        <motion.div
-           initial={{ y: 50, opacity: 0 }}
-           animate={{ y: 0, opacity: 1 }}
-           className="fixed bottom-8 left-1/2 -translate-x-1/2 bg-slate-900 border border-slate-800 text-white px-5 py-3 rounded-full shadow-2xl flex items-center gap-5 z-40 backdrop-blur-md"
-        >
-           <div className="flex items-center gap-3 pl-2">
-             <div className="w-7 h-7 rounded-full bg-indigo-500 flex items-center justify-center text-[11px] font-black shadow-inner shadow-white/20">
-               {selectedLeadIds.length}
-             </div>
-             <div className="flex flex-col">
-               <span className="text-sm font-black tracking-tight leading-tight">Brand Terpilih</span>
-               <span className="text-[9px] text-slate-400 font-bold uppercase tracking-widest">Siap Dieksekusi</span>
-             </div>
-           </div>
-           
-           <div className="w-px h-8 bg-slate-700 mx-1"></div>
-           
-           <div className="flex items-center gap-2 pr-1">
-             <button onClick={() => setSelectedLeadIds([])} className="px-4 py-2 bg-slate-800 hover:bg-rose-500/20 hover:text-rose-400 rounded-xl text-xs font-bold text-slate-300 transition-colors">
-               Batalkan
-             </button>
-             <button onClick={() => setIsBulkModalOpen(true)} className="px-5 py-2 bg-indigo-500 hover:bg-indigo-400 text-white text-[11px] font-black rounded-xl transition-all shadow-lg shadow-indigo-500/30 uppercase tracking-widest">
-               Update Massal
-             </button>
-           </div>
-        </motion.div>
+      <LeadModalClient 
+        isOpen={isLeadModalOpen} 
+        onClose={() => setIsLeadModalOpen(false)} 
+        lead={editingLead} 
+        user={user} 
+        leads={leads}
+      />
+      
+      {activeLead && (
+        <>
+          <StatusModalClient 
+            isOpen={isStatusModalOpen} 
+            onClose={() => setIsStatusModalOpen(false)} 
+            lead={activeLead} 
+            user={user} 
+            users={users}
+          />
+          <NotesModalClient 
+            isOpen={isNotesModalOpen} 
+            onClose={() => setIsNotesModalOpen(false)} 
+            lead={activeLead} 
+            user={user} 
+            approvals={approvals}
+          />
+        </>
       )}
 
-      <AnimatePresence>
-        {isBulkModalOpen && (
-          <BulkStatusModal
-            isOpen={isBulkModalOpen}
-            onClose={() => setIsBulkModalOpen(false)}
-            selectedLeads={leads.filter(l => selectedLeadIds.includes(l.id))}
-            user={user}
-            users={users}
-            onSuccess={() => setSelectedLeadIds([])}
-          />
-        )}
-        <ImportModalClient
-          isOpen={isImportModalOpen}
-          onClose={() => setIsImportModalOpen(false)}
-          users={users}
-        />
-        <LeadModalClient
-          isOpen={isLeadModalOpen}
-          onClose={() => setIsLeadModalOpen(false)}
-          lead={editingLead}
+      {isBulkModalOpen && (
+        <BulkStatusModal 
+          isOpen={isBulkModalOpen}
+          selectedLeads={leads.filter(l => selectedIds.has(l.id))} 
+          onClose={() => {
+            setIsBulkModalOpen(false);
+            setSelectedIds(new Set());
+          }}
           user={user}
-          leads={leads}
+          users={users}
+          onSuccess={() => {}} 
         />
-        {activeLead && (
-          <>
-            <StatusModalClient
-              isOpen={isStatusModalOpen}
-              onClose={() => setIsStatusModalOpen(false)}
-              lead={activeLead}
-              user={user}
-              users={users}
-            />
-            <NotesModalClient
-              isOpen={isNotesModalOpen}
-              onClose={() => setIsNotesModalOpen(false)}
-              lead={activeLead}
-              user={user}
-              approvals={[]}
-            />
-          </>
-        )}
-      </AnimatePresence>
+      )}
+
+      <ImportModalClient
+        isOpen={isImportModalOpen}
+        onClose={() => setIsImportModalOpen(false)}
+        users={users}
+      />
+
+      <ConfirmModal 
+        isOpen={confirmConfig.isOpen}
+        onClose={() => setConfirmConfig(prev => ({ ...prev, isOpen: false }))}
+        onConfirm={confirmConfig.onConfirm}
+        title={confirmConfig.title}
+        message={confirmConfig.message}
+      />
     </div>
   );
 }
@@ -1080,48 +913,11 @@ function getStatusColor(status: LeadStatus) {
   }
 }
 
-function StatCard({ label, value, icon, color }: { label: string, value: number, icon: React.ReactNode, color: string }) {
-  const colors: Record<string, string> = {
-    slate: "text-slate-600 bg-slate-100 border-slate-200",
-    indigo: "text-indigo-600 bg-indigo-50 border-indigo-100",
-    purple: "text-purple-600 bg-purple-50 border-purple-100",
-    amber: "text-amber-600 bg-amber-50 border-amber-100",
-  };
-
-  return (
-    <div className="bg-white rounded-3xl border border-slate-200 p-6 shadow-sm hover:shadow-md transition-all group">
-      <div className="flex justify-between items-start mb-4">
-        <div className={cn("p-3 rounded-2xl border transition-transform group-hover:scale-110", colors[color])}>
-          {icon}
-        </div>
-        <span className="text-[10px] font-black text-slate-300 uppercase tracking-[0.2em]">{label}</span>
-      </div>
-      <h3 className="text-4xl font-black text-slate-900 tracking-tighter">{value}</h3>
-    </div>
-  );
-}
-
-function RateCard({ label, value, color, icon }: { label: string, value: string, color: string, icon: React.ReactNode }) {
-  const colors: Record<string, string> = {
-    indigo: "text-indigo-600 bg-indigo-50",
-    purple: "text-purple-600 bg-purple-50",
-    emerald: "text-emerald-600 bg-emerald-50",
-  };
-
-  return (
-    <div className="bg-white rounded-2xl border border-slate-200 p-5 flex items-center justify-between shadow-sm hover:shadow-md transition-all">
-      <div className="flex items-center gap-4">
-        <div className={cn("p-2 rounded-xl", colors[color])}>
-          {icon}
-        </div>
-        <div className="flex flex-col">
-          <span className="text-[10px] font-black text-slate-400 uppercase tracking-widest">{label}</span>
-          <span className="text-xl font-black text-slate-900">{value}</span>
-        </div>
-      </div>
-      <div className="h-1 w-12 bg-slate-100 rounded-full overflow-hidden">
-        <div className={cn("h-full rounded-full", colors[color].split(' ')[0].replace('text', 'bg'))} style={{ width: value.replace('%', '') + '%' }}></div>
-      </div>
-    </div>
-  );
+function InterestBadge({ level }: { level: InterestLevel }) {
+  switch (level) {
+    case 'HOT': return <span className="text-red-600 font-bold flex items-center justify-center gap-1"><Bolt className="w-3 h-3" /> HOT</span>;
+    case 'WARM': return <span className="text-yellow-600 font-bold">WARM</span>;
+    case 'COLD': return <span className="text-blue-600 font-bold flex items-center justify-center gap-1">COLD</span>;
+    default: return <span className="text-gray-400">-</span>;
+  }
 }

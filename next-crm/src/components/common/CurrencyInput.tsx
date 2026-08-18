@@ -1,3 +1,4 @@
+"use client";
 import React, { useState, useEffect } from 'react';
 
 interface CurrencyInputProps {
@@ -78,3 +79,4 @@ export default function CurrencyInput({
     </div>
   );
 }
+
