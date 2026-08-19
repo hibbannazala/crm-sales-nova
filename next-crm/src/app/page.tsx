@@ -33,27 +33,36 @@ export default async function DashboardPage() {
     return <div>Akses Ditolak: Email Anda tidak terdaftar sebagai staf.</div>;
   }
 
-  const { data: leads } = await supabase.from('leads').select('*').limit(10000);
+  const { data: leads } = await supabase.from('leads').select('*, funnelHistory:funnel_history(*), notes:lead_notes(*)').limit(10000);
   const { data: users } = await supabase.from('users').select('*');
   const { data: globalTargets } = await supabase.from('global_targets').select('*');
-  const { data: individualTargets } = await supabase.from('oi_targets').select('*');
+  const { data: individualTargets } = await supabase.from('individual_targets').select('*');
 
   const mapLead = (l: any) => ({
     id: l.id,
     dateInput: l.date_input,
-    picName: l.pic_name,
+    picName: l.pic_name || l.owner,
     brandName: l.brand_name,
     contact: l.contact,
-    source: l.source,
+    source: l.source || l.lead_source,
     category: l.category,
     productOffered: l.product_offered || [],
-    notes: l.notes || '',
+    notes: l.notes || [],
     priority: l.priority || 'Low',
     interestLevel: l.interest_level || 'Low',
     status: l.status,
     dealValue: l.deal_value || 0,
     isDeleted: l.is_deleted || false,
-    funnelHistory: l.funnel_history || []
+    funnelHistory: (l.funnelHistory || []).map((h: any) => ({
+      stage: h.stage,
+      date: h.date_occurred,
+      dealValue: h.deal_value,
+      campaignNumber: h.campaign_number,
+      note: h.note,
+      assignedBy: h.assigned_by,
+      by: h.by_user_name,
+      timestamp: h.created_at ? new Date(h.created_at).getTime() : 0
+    }))
   });
 
   const mappedLeads = (leads || []).map(mapLead);
