@@ -12,6 +12,7 @@ export type InterestLevel = 'HOT' | 'WARM' | 'COLD' | '-';
 export type ProductOffered = 'Basemen' | 'TNT' | 'HYPE';
 
 export interface Note {
+  id?: string;
   text: string;
   author: string;
   timestamp: string;
@@ -20,6 +21,7 @@ export interface Note {
 }
 
 export interface FunnelHistory {
+  id?: string;
   stage: string;
   date: string;
   by: string;
