@@ -49,18 +49,18 @@ export default function OIMilestone({ forecasts, targets, activeTab, user, leads
 
     try {
       if (existingTarget) {
-        await await supabase.from('oi_targets').update({
-          targetValue: newVal,
-          updatedAt: new Date().toISOString()
+        await supabase.from('oi_targets').update({
+          target_value: newVal,
+          updated_at: new Date().toISOString()
         }).eq('id', existingTarget.id);
       } else {
         const id = `${activeTab}_${monthYear}`; // composite id
         await supabase.from('oi_targets').upsert({ 
           id: id,
-          monthYear,
+          month_year: monthYear,
           product: activeTab,
-          targetValue: newVal,
-          updatedAt: new Date().toISOString()
+          target_value: newVal,
+          updated_at: new Date().toISOString()
          });
       }
       toast.success(`Target untuk ${monthYear} berhasil disimpan.`);

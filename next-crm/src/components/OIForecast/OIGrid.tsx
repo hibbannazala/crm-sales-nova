@@ -99,8 +99,32 @@ export default function OIGrid({ forecasts, selectedMonthYear, activeTab, leads,
 
   const handleUpdate = async (id: string, field: keyof OIForecast, value: any) => {
     try {
+      const fieldMap: Record<string, string> = {
+        monthYear: 'month_year',
+        budgetAds: 'budget_ads',
+        budgetCreator: 'budget_creator',
+        grossMargin: 'gross_margin',
+        realMargin: 'real_margin',
+        realPayment: 'real_payment',
+        targetGMV: 'target_gmv',
+        targetCreator: 'target_creator',
+        targetVideoAffiliate: 'target_video_affiliate',
+        targetVideoInternal: 'target_video_internal',
+        targetViews: 'target_views',
+        successRate: 'success_rate',
+        lastFollowUp: 'last_follow_up',
+        noteSales: 'note_sales',
+        dateQuotation: 'date_quotation',
+        picQuotation: 'pic_quotation',
+        dateInvoice: 'date_invoice',
+        picInvoice: 'pic_invoice',
+        createdAt: 'created_at',
+        updatedAt: 'updated_at',
+        leadId: 'lead_id'
+      };
       
-      const updates: any = { [field]: value, updatedAt: new Date().toISOString() };
+      const dbField = fieldMap[field] || field;
+      const updates: any = { [dbField]: value, updated_at: new Date().toISOString() };
       
       // Auto calc gross margin if budgetAds or budgetCreator or value changes
       const current = forecasts.find(f => f.id === id);
@@ -108,7 +132,7 @@ export default function OIGrid({ forecasts, selectedMonthYear, activeTab, leads,
         const val = field === 'value' ? Number(value) : (current.value || 0);
         const ads = field === 'budgetAds' ? Number(value) : (current.budgetAds || 0);
         const creator = field === 'budgetCreator' ? Number(value) : (current.budgetCreator || 0);
-        updates.grossMargin = val - ads - creator;
+        updates.gross_margin = val - ads - creator;
       }
 
       await supabase.from('oi_forecasts').update(updates).eq('id', id);
