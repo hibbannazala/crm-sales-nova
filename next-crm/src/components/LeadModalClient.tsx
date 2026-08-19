@@ -452,7 +452,14 @@ export default function LeadModalClient({ isOpen, onClose, lead, user, leads = [
         timestamp: new Date().toISOString(),
         isLog: true
       });
-      await supabase.from('leads').update({ contact: formData.contact, notes }).eq('id', existingLead.id);
+      await supabase.from('lead_notes').insert({
+        lead_id: existingLead.id,
+        text: `[SYSTEM] Data kontak diperbarui oleh ${user.name} saat mencoba tambah lead baru. ${changes.join(', ')}`,
+        author_name: 'System',
+        is_log: true,
+        note_type: 'note'
+      });
+      await supabase.from('leads').update({ contact: formData.contact }).eq('id', existingLead.id);
       toast.success("Nomor kontak pada lead lama berhasil diupdate!");
       onClose();
     } catch (error: any) {
