@@ -7,6 +7,7 @@ import { format, startOfMonth, endOfDay, isWithinInterval } from 'date-fns';
 import { AnimatePresence, motion } from 'motion/react';
 import BulkStatusModal from './BulkStatusModal';
 import { useRouter } from 'next/navigation';
+import { createClient } from '@/utils/supabase/client';
 import { toast } from 'sonner';
 
 interface DashboardProps {
@@ -29,9 +30,130 @@ export default function DashboardClient({ leads, user, users, targets = [], indi
   const [selectedLeadIds, setSelectedLeadIds] = useState<string[]>([]);
   const [isBulkModalOpen, setIsBulkModalOpen] = useState(false);
   const [loading, setLoading] = useState(false);
-
   const [currentPage, setCurrentPage] = useState(1);
   const itemsPerPage = 30;
+  
+  const supabase = createClient();
+  
+  const [dashboardStats, setDashboardStats] = useState({
+    totalLeads: 0,
+    totalChated: 0,
+    totalResponsed: 0,
+    totalSetMeeting: 0,
+    dealsWon: 0,
+    lostDeals: 0,
+    failedDeals: 0,
+    totalRevenue: 0
+  });
+
+  const [individualStats, setIndividualStats] = useState<any[]>([]);
+  const [ghostedAlerts, setGhostedAlerts] = useState<any[]>([]);
+  const [paginatedTableLeads, setPaginatedTableLeads] = useState<Lead[]>([]);
+  const [totalFilteredLeads, setTotalFilteredLeads] = useState(0);
+
+  // Pagination states are already below (currentPage, itemsPerPage)
+
+  const fetchDashboardData = async () => {
+    setLoading(true);
+    try {
+      const p_admin = filterAdmin;
+      const p_category = filterCategory;
+      const p_products = filterProduct;
+      const p_start = (!filterStart || !filterEnd) ? '1970-01-01T00:00:00Z' : new Date(filterStart).toISOString();
+      const p_end = (!filterStart || !filterEnd) ? '2100-01-01T00:00:00Z' : endOfDay(new Date(filterEnd)).toISOString();
+
+      // Fetch Scorecard Stats
+      const { data: stats } = await supabase.rpc('get_dashboard_stats', {
+        p_admin, p_category, p_products, p_start_date: p_start, p_end_date: p_end
+      });
+
+      if (stats && stats[0]) {
+        setDashboardStats({
+          totalLeads: Number(stats[0].total_leads || 0),
+          totalChated: Number(stats[0].total_chated || 0),
+          totalResponsed: Number(stats[0].total_responsed || 0),
+          totalSetMeeting: Number(stats[0].total_set_meeting || 0),
+          dealsWon: Number(stats[0].deals_won || 0),
+          lostDeals: Number(stats[0].lost_deals || 0),
+          failedDeals: Number(stats[0].failed_deals || 0),
+          totalRevenue: Number(stats[0].total_revenue || 0)
+        });
+      }
+
+      // Fetch Individual Targets Contribution
+      const { data: indStats } = await supabase.rpc('get_individual_contributions', {
+        p_category, p_products, p_start_date: p_start, p_end_date: p_end
+      });
+      setIndividualStats(indStats || []);
+
+      // Fetch Ghosted Leads
+      const { data: ghosted } = await supabase.rpc('get_ghosted_leads', {
+        p_admin, p_category, p_products
+      });
+      setGhostedAlerts(ghosted || []);
+
+      // Fetch Paginated Table Leads
+      // Instead of an RPC, we just use PostgREST
+      let query = supabase.from('leads').select('*, funnelHistory:funnel_history(*), notes:lead_notes(*)', { count: 'exact' }).eq('is_deleted', false);
+      
+      if (filterCategory !== 'ALL') query = query.eq('category', filterCategory);
+      if (filterProduct.length > 0) query = query.contains('product_offered', filterProduct);
+      if (filterStatus !== 'ALL') query = query.eq('status', filterStatus);
+      if (search) {
+        query = query.or(`brand_name.ilike.%${search}%,pic_name.ilike.%${search}%,contact.ilike.%${search}%`);
+      }
+
+      // Pagination
+      const from = (currentPage - 1) * itemsPerPage;
+      const to = from + itemsPerPage - 1;
+      query = query.range(from, to).order('created_at', { ascending: false });
+
+      const { data: tableData, count } = await query;
+      
+      if (tableData) {
+        const mapped = tableData.map(l => ({
+          id: l.id,
+          dateInput: l.date_input,
+          picName: l.pic_name || l.owner,
+          brandName: l.brand_name,
+          contact: l.contact,
+          source: l.source || l.lead_source,
+          category: l.category,
+          productOffered: l.product_offered || [],
+          notes: l.notes || [],
+          priority: l.priority || 'Low',
+          interestLevel: l.interest_level || 'Low',
+          status: l.status,
+          dealValue: l.deal_value || 0,
+          isDeleted: l.is_deleted || false,
+          funnelHistory: (l.funnelHistory || []).map((h: any) => ({
+            stage: h.stage,
+            date: h.date_occurred,
+            dealValue: h.deal_value,
+            campaignNumber: h.campaign_number,
+            note: h.note,
+            assignedBy: h.assigned_by,
+            by: h.by_user_name,
+            timestamp: h.created_at ? new Date(h.created_at).getTime() : 0
+          }))
+        }));
+        
+        // If filterAdmin is set, we need to filter the table client side since postgREST doesn't support complex relation filtering easily
+        // Or we just rely on the RPC for table? 
+        // For now, postgREST is okay.
+        setPaginatedTableLeads(mapped as any);
+        setTotalFilteredLeads(count || 0);
+      }
+    } catch (err) {
+      console.error(err);
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  useEffect(() => {
+    fetchDashboardData();
+  }, [filterAdmin, filterCategory, filterProduct, filterStatus, filterStart, filterEnd, search, currentPage]);
 
   const toggleSelectAll = () => {
     const paginatedIds = paginatedTableLeads.map(l => l.id);
@@ -149,113 +271,9 @@ export default function DashboardClient({ leads, user, users, targets = [], indi
     return m;
   }, [leads, filterAdmin, filterCategory, filterProduct, filterStart, filterEnd]);
 
-  const tableLeads = useMemo(() => {
-    return leads.filter(l => {
-      if (l.isDeleted) return false;
-      let effectiveStatus = l.status;
-      let effectiveTime = parseDateString(l.dateInput);
-      
-      if (filterAdmin !== 'ALL') {
-        const userActivity = [...(l.funnelHistory || [])]
-          .filter(h => h.by === filterAdmin)
-          .sort((a,b) => {
-             const timeA = parseDateString(a.date);
-             const timeB = parseDateString(b.date);
-             if (timeA !== timeB) return timeB - timeA;
-             const tsA = (a as any).timestamp || 0;
-             const tsB = (b as any).timestamp || 0;
-             if (tsA !== tsB) return tsB - tsA;
-             return getStageRank(b.stage) - getStageRank(a.stage);
-          });
-          
-        if (userActivity.length === 0) return false;
+  // tableLeads removed, fetched directly
 
-        if (filterStatus !== 'ALL') {
-          // Find the specific stage entry for this admin, to sync with stats
-          const stageEntry = userActivity.find(h => h.stage === filterStatus);
-          if (!stageEntry) return false;
-          effectiveStatus = stageEntry.stage as LeadStatus;
-          effectiveTime = parseDateString(stageEntry.date);
-        } else {
-          effectiveStatus = userActivity[0].stage as LeadStatus;
-          effectiveTime = parseDateString(userActivity[0].date);
-        }
-      } else {
-        if (filterStatus !== 'ALL') {
-          // For "All Admins" + specific tab: find the matching stage entry in history
-          const stageEntry = [...(l.funnelHistory || [])].find(h => h.stage === filterStatus);
-          if (!stageEntry) return false;
-          effectiveStatus = stageEntry.stage as LeadStatus;
-          effectiveTime = parseDateString(stageEntry.date);
-        } else {
-          const allActivity = [...(l.funnelHistory || [])].sort((a,b) => {
-               const timeA = parseDateString(a.date);
-               const timeB = parseDateString(b.date);
-               if (timeA !== timeB) return timeB - timeA;
-               const tsA = (a as any).timestamp || 0;
-               const tsB = (b as any).timestamp || 0;
-               if (tsA !== tsB) return tsB - tsA;
-               return getStageRank(b.stage) - getStageRank(a.stage);
-          });
-          if (allActivity.length > 0) {
-              effectiveTime = parseDateString(allActivity[0].date);
-          }
-        }
-      }
-
-
-      if (filterCategory !== 'ALL' && l.category !== filterCategory) return false;
-      if (filterProduct.length > 0 && !(l.productOffered || []).some(p => filterProduct.includes(p))) return false;
-      if (filterStatus !== 'ALL' && effectiveStatus !== filterStatus) return false;
-
-      if (filterStart && filterEnd) {
-        const start = new Date(filterStart);
-        const end = endOfDay(new Date(filterEnd));
-        
-        let hasActivityInRange = false;
-        
-        if (filterStatus !== 'ALL') {
-          // Sync with Table Tab: If a specific tab is selected, the absolute LATEST status must have occurred in the date range.
-          // This perfectly synchronizes the table count with the KPI logic without allowing future statuses to leak into past reports.
-          hasActivityInRange = effectiveTime ? isWithinInterval(effectiveTime, { start, end }) : false;
-        } else {
-          // If viewing "Semua" Table Tab: we inclusively show all leads that the admin interacted with during the period.
-          if (filterAdmin !== 'ALL') {
-            hasActivityInRange = [...(l.funnelHistory || [])]
-              .filter(h => h.by === filterAdmin)
-              .some(h => {
-                const actionTime = parseDateString(h.date);
-                if (!actionTime) return false;
-                return isWithinInterval(actionTime, { start, end });
-              });
-          } else {
-            const inputDate = new Date(l.dateInput);
-            const inputInRange = !isNaN(inputDate.getTime()) && isWithinInterval(inputDate, { start, end });
-            const historyInRange = [...(l.funnelHistory || [])].some(h => {
-              const actionTime = parseDateString(h.date);
-              if (!actionTime) return false;
-              return isWithinInterval(actionTime, { start, end });
-            });
-            hasActivityInRange = inputInRange || historyInRange;
-          }
-        }
-
-        if (!hasActivityInRange) return false;
-      }
-
-      if (search.trim()) {
-        const s = search.toLowerCase();
-        if (!l.brandName.toLowerCase().includes(s) && !l.contact.toLowerCase().includes(s)) return false;
-      }
-
-      return true;
-    });
-  }, [leads, filterAdmin, filterCategory, filterProduct, filterStatus, filterStart, filterEnd, search]);
-
-  const paginatedTableLeads = useMemo(() => {
-    const startIndex = (currentPage - 1) * itemsPerPage;
-    return tableLeads.slice(startIndex, startIndex + itemsPerPage);
-  }, [tableLeads, currentPage]);
+  // paginatedTableLeads removed, handled by state
 
   const rates = useMemo(() => {
     return {
@@ -527,49 +545,17 @@ export default function DashboardClient({ leads, user, users, targets = [], indi
             </h4>
             <div className="space-y-6 overflow-y-auto flex-1 pr-2 custom-scrollbar">
               {(() => {
-                const adminPerformances = admins.map(admin => {
-                  let adminChat = 0;
-                  let adminMeet = 0;
-                  let adminRev = 0;
-
-                  const start = (filterStart && filterEnd) ? new Date(filterStart) : new Date(0);
-                  const end = (filterStart && filterEnd) ? endOfDay(new Date(filterEnd)) : new Date(8640000000000000);
-
-                  leads.forEach(l => {
-                    if (filterCategory !== 'ALL' && l.category !== filterCategory) return;
-                    if (filterProduct.length > 0 && !(l.productOffered || []).some(p => filterProduct.includes(p))) return;
-                    const stageLatest: Record<string, any> = {};
-                    l.funnelHistory.forEach(h => {
-                      if (h.by === admin) {
-                        const actionTime = parseDateString(h.date);
-                        if (actionTime !== 0) {
-                          const actionDate = new Date(actionTime);
-                          if (isWithinInterval(actionDate, { start, end })) {
-                            if (!stageLatest[h.stage] || actionTime > parseDateString(stageLatest[h.stage].date) || (actionTime === parseDateString(stageLatest[h.stage].date) && (h as any).timestamp > (stageLatest[h.stage].timestamp || 0))) {
-                              stageLatest[h.stage] = h;
-                            }
-                          }
-                        }
-                      }
-                    });
-
-                    Object.values(stageLatest).forEach(h => {
-                      if (h.stage === 'Chated') adminChat++;
-                      if (h.stage === 'Set Meeting') adminMeet++;
-                      if (h.stage === 'Close Win') adminRev += (h.dealValue !== undefined ? h.dealValue : (l.dealValue || 0));
-                    });
-                  });
-
-                  return { admin, adminChat, adminMeet, adminRev };
+                
+                const adminPerformances = individualStats.map(stat => {
+                  return {
+                    admin: stat.admin_name || stat.by_user_name,
+                    adminChat: Number(stat.total_chat),
+                    adminMeet: Number(stat.total_meet),
+                    adminRev: Number(stat.total_revenue)
+                  };
                 });
-
-                adminPerformances.sort((a, b) => {
-                  if (b.adminRev !== a.adminRev) return b.adminRev - a.adminRev;
-                  if (b.adminMeet !== a.adminMeet) return b.adminMeet - a.adminMeet;
-                  return b.adminChat - a.adminChat;
-                });
-
                 return adminPerformances.map(({ admin, adminChat, adminMeet, adminRev }, index) => {
+
                   let pChat = 0, pMeet = 0, pRev = 0;
                   const adminRef = users.find(u => u.name === admin);
                   const personalTarget = adminRef ? (individualTargets || []).find(it => it.userId === adminRef.uid && it.monthYear === currentTargetMonth) : null;
@@ -858,7 +844,7 @@ export default function DashboardClient({ leads, user, users, targets = [], indi
                       </tr>
                     );
                   })}
-                  {tableLeads.length === 0 && (
+                  {totalFilteredLeads === 0 && (
                     <tr>
                       <td colSpan={filterAdmin === 'ALL' ? 6 : 7} className="px-8 py-20 text-center">
                         <div className="flex flex-col items-center gap-2">
@@ -871,29 +857,32 @@ export default function DashboardClient({ leads, user, users, targets = [], indi
                 </tbody>
               </table>
             </div>
-            {tableLeads.length > 0 && (
-              <div className="px-6 py-3 border-t border-slate-100 bg-white flex items-center justify-between shrink-0">
-                <span className="text-[10px] font-bold text-slate-400">
-                  Page {currentPage} of {Math.ceil(tableLeads.length / itemsPerPage)} ({tableLeads.length} total)
-                </span>
-                <div className="flex items-center gap-2">
-                  <button 
-                    onClick={() => setCurrentPage(p => Math.max(1, p - 1))}
-                    disabled={currentPage === 1}
-                    className="px-3 py-1.5 rounded-lg border border-slate-200 text-[10px] font-bold disabled:opacity-50 hover:bg-slate-50 transition"
-                  >
-                    Prev
-                  </button>
-                  <button 
-                    onClick={() => setCurrentPage(p => Math.min(Math.ceil(tableLeads.length / itemsPerPage), p + 1))}
-                    disabled={currentPage === Math.ceil(tableLeads.length / itemsPerPage)}
-                    className="px-3 py-1.5 rounded-lg border border-slate-200 text-[10px] font-bold disabled:opacity-50 hover:bg-slate-50 transition"
-                  >
-                    Next
-                  </button>
+            {(() => {
+              const totalPages = Math.ceil(totalFilteredLeads / itemsPerPage);
+              return totalFilteredLeads > 0 && (
+                <div className="px-6 py-3 border-t border-slate-100 bg-white flex items-center justify-between shrink-0">
+                  <span className="text-[10px] font-bold text-slate-400">
+                    Page {currentPage} of {totalPages || 1} ({totalFilteredLeads} total)
+                  </span>
+                  <div className="flex items-center gap-2">
+                    <button 
+                      onClick={() => setCurrentPage(p => Math.max(1, p - 1))}
+                      disabled={currentPage === 1}
+                      className="px-3 py-1.5 rounded-lg border border-slate-200 text-[10px] font-bold disabled:opacity-50 hover:bg-slate-50 transition"
+                    >
+                      Prev
+                    </button>
+                    <button 
+                      onClick={() => setCurrentPage(p => Math.min(totalPages, p + 1))}
+                      disabled={currentPage === totalPages || totalPages === 0}
+                      className="px-3 py-1.5 rounded-lg border border-slate-200 text-[10px] font-bold disabled:opacity-50 hover:bg-slate-50 transition"
+                    >
+                      Next
+                    </button>
+                  </div>
                 </div>
-              </div>
-            )}
+              );
+            })()}
           </div>
 
           <div className="bg-white rounded-3xl border border-rose-200 p-6 md:p-8 shadow-sm flex flex-col h-[400px] md:h-[500px] xl:col-span-1 relative overflow-hidden">
