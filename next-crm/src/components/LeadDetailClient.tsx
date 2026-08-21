@@ -73,9 +73,21 @@ export default function LeadDetailClient({ lead: initialLead, user, users }: Omi
 
     // Fetch Sub-collection History
     const fetchHistory = async () => {
-      const { data } = await supabase.from('funnel_history').select('*').eq('lead_id', lead.id).order('timestamp', { ascending: false });
+      const { data, error } = await supabase.from('funnel_history').select('*').eq('lead_id', lead.id).order('created_at', { ascending: false });
+      if (error) console.error("Error fetching history:", error);
       if (data) {
-        setFullHistory(data.map(d => ({ ...d, dealValue: d.deal_value, campaignNumber: d.campaign_number })));
+        setFullHistory(data.map(d => ({ 
+          ...d, 
+          id: d.id,
+          stage: d.stage,
+          date: d.date_occurred ? d.date_occurred.split('T')[0] : '',
+          by: d.by_user_name,
+          assignedBy: d.assigned_by,
+          note: d.note,
+          timestamp: d.created_at ? new Date(d.created_at).getTime() : 0,
+          dealValue: d.deal_value, 
+          campaignNumber: d.campaign_number 
+        })));
       }
     };
     fetchHistory();
