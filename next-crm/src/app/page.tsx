@@ -33,7 +33,19 @@ export default async function DashboardPage() {
     return <div>Akses Ditolak: Email Anda tidak terdaftar sebagai staf.</div>;
   }
 
-  const { data: leads } = await supabase.from('leads').select('*, funnelHistory:funnel_history(*), notes:lead_notes(*)').limit(10000);
+  let allLeads: any[] = [];
+  let hasMore = true;
+  let page = 0;
+  while (hasMore) {
+    const { data } = await supabase.from('leads').select('*, funnelHistory:funnel_history(*), notes:lead_notes(*)').range(page * 1000, (page + 1) * 1000 - 1);
+    if (data && data.length > 0) {
+      allLeads = [...allLeads, ...data];
+      page++;
+      if (data.length < 1000) hasMore = false;
+    } else {
+      hasMore = false;
+    }
+  }
   const { data: users } = await supabase.from('users').select('*');
   const { data: globalTargets } = await supabase.from('global_targets').select('*');
   const { data: individualTargets } = await supabase.from('individual_targets').select('*');
@@ -65,7 +77,7 @@ export default async function DashboardPage() {
     }))
   });
 
-  const mappedLeads = (leads || []).map(mapLead);
+  const mappedLeads = allLeads.map(mapLead);
 
   return (
     <div className="min-h-screen bg-slate-50 flex flex-col">

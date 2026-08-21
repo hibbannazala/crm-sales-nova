@@ -38,7 +38,19 @@ export default async function LeadsPage() {
   // Fetch all leads for the client side. 
   // In production with 6000 leads, this might be around 2-3MB. 
   // We limit to 10000 to ensure we get all data for the client component.
-  const { data: leads } = await supabase.from('leads').select('*').limit(10000);
+  let allLeads: any[] = [];
+  let hasMore = true;
+  let page = 0;
+  while (hasMore) {
+    const { data } = await supabase.from('leads').select('*').range(page * 1000, (page + 1) * 1000 - 1);
+    if (data && data.length > 0) {
+      allLeads = [...allLeads, ...data];
+      page++;
+      if (data.length < 1000) hasMore = false;
+    } else {
+      hasMore = false;
+    }
+  }
   
   // Fetch all users for filters
   const { data: users } = await supabase.from('users').select('*');
@@ -68,7 +80,7 @@ export default async function LeadsPage() {
     funnelHistory: l.funnel_history || []
   });
 
-  const mappedLeads = (leads || []).map(mapLead);
+  const mappedLeads = allLeads.map(mapLead);
 
   return (
     <div className="min-h-screen bg-slate-50 flex flex-col">
