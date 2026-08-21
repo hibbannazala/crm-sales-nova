@@ -2,7 +2,8 @@ import { createClient } from '@/utils/supabase/server';
 import { redirect } from 'next/navigation';
 import LeadDetailClient from '@/components/LeadDetailClient';
 
-export default async function LeadDetailPage({ params }: { params: { id: string } }) {
+export default async function LeadDetailPage({ params }: { params: Promise<{ id: string }> }) {
+  const resolvedParams = await params;
   const supabase = await createClient();
   const { data: { user: authUser } } = await supabase.auth.getUser();
 
@@ -28,7 +29,7 @@ export default async function LeadDetailPage({ params }: { params: { id: string 
   const { data: lead, error } = await supabase
     .from('leads')
     .select('*')
-    .eq('id', params.id)
+    .eq('id', resolvedParams.id)
     .single();
 
   if (!lead) {
@@ -39,7 +40,7 @@ export default async function LeadDetailPage({ params }: { params: { id: string 
           <p className="text-slate-500 mb-8">Lead tidak ditemukan atau sudah dihapus.</p>
           <div className="bg-red-50 text-red-500 p-4 rounded-xl text-left font-mono text-sm mb-8 overflow-auto">
             <p><strong>Debug Info:</strong></p>
-            <p>ID: {params.id}</p>
+            <p>ID: {resolvedParams.id}</p>
             <p>Error: {JSON.stringify(error)}</p>
             <p>User Email: {authUser.email}</p>
           </div>
