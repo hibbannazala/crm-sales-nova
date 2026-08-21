@@ -42,7 +42,7 @@ export default async function LeadsPage() {
   let hasMore = true;
   let page = 0;
   while (hasMore) {
-    const { data } = await supabase.from('leads').select('*').range(page * 1000, (page + 1) * 1000 - 1);
+    const { data } = await supabase.from('leads').select('*, funnelHistory:funnel_history(*)').range(page * 1000, (page + 1) * 1000 - 1);
     if (data && data.length > 0) {
       allLeads = [...allLeads, ...data];
       page++;
@@ -77,7 +77,16 @@ export default async function LeadsPage() {
     status: l.status,
     dealValue: l.deal_value || 0,
     isDeleted: l.is_deleted || false,
-    funnelHistory: l.funnel_history || []
+    funnelHistory: (l.funnelHistory || []).map((h: any) => ({
+      stage: h.stage,
+      date: h.date_occurred,
+      dealValue: h.deal_value,
+      campaignNumber: h.campaign_number,
+      note: h.note,
+      assignedBy: h.assigned_by,
+      by: h.by_user_name,
+      timestamp: h.created_at ? new Date(h.created_at).getTime() : 0
+    }))
   });
 
   const mappedLeads = allLeads.map(mapLead);
