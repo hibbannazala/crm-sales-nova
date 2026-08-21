@@ -25,7 +25,19 @@ export default async function OIForecastPage() {
 
   const { data: currentUser } = await supabase.from('users').select('*').eq('auth_id', authData.user.id).single();
 
-  const { data: leads } = await supabase.from('leads').select('*').limit(10000);
+  let allLeads: any[] = [];
+  let hasMore = true;
+  let page = 0;
+  while (hasMore) {
+    const { data } = await supabase.from('leads').select('*').range(page * 1000, (page + 1) * 1000 - 1);
+    if (data && data.length > 0) {
+      allLeads = [...allLeads, ...data];
+      page++;
+      if (data.length < 1000) hasMore = false;
+    } else {
+      hasMore = false;
+    }
+  }
   const { data: users } = await supabase.from('users').select('*');
   const { data: forecasts } = await supabase.from('oi_forecasts').select('*');
   const { data: targets } = await supabase.from('oi_targets').select('*');
@@ -89,7 +101,7 @@ export default async function OIForecastPage() {
 
   return (
     <OIForecastClient 
-      leads={(leads || []).map(mapLead)}
+      leads={allLeads.map(mapLead)}
       user={currentUser as any}
       users={users as any}
       forecasts={(forecasts || []).map(mapForecast)}
