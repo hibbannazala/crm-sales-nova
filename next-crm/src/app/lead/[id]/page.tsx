@@ -25,7 +25,7 @@ export default async function LeadDetailPage({ params }: { params: { id: string 
   const { data: users } = await supabase.from('users').select('*');
 
   // Get Lead
-  const { data: lead } = await supabase
+  const { data: lead, error } = await supabase
     .from('leads')
     .select('*')
     .eq('id', params.id)
@@ -34,9 +34,15 @@ export default async function LeadDetailPage({ params }: { params: { id: string 
   if (!lead) {
     return (
       <div className="flex h-screen items-center justify-center bg-slate-50">
-        <div className="text-center">
+        <div className="text-center max-w-2xl">
           <h1 className="text-4xl font-black text-slate-800 mb-4">404</h1>
           <p className="text-slate-500 mb-8">Lead tidak ditemukan atau sudah dihapus.</p>
+          <div className="bg-red-50 text-red-500 p-4 rounded-xl text-left font-mono text-sm mb-8 overflow-auto">
+            <p><strong>Debug Info:</strong></p>
+            <p>ID: {params.id}</p>
+            <p>Error: {JSON.stringify(error)}</p>
+            <p>User Email: {authUser.email}</p>
+          </div>
           <a href="/leads" className="px-6 py-3 bg-indigo-600 text-white rounded-xl font-bold shadow-lg hover:bg-indigo-700 transition">Kembali ke Leads</a>
         </div>
       </div>
