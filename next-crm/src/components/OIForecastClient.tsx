@@ -43,11 +43,7 @@ export default function OIForecastPage({ leads, user, users = [], forecasts: ser
     return existing ? prev.map(t => t.id === target.id ? { ...t, ...target } : t) : [...prev, target];
   });
 
-  // Auto-sync Forecasts from Leads
-  useEffect(() => {
-    if (!leads.length || !localForecasts.length) return;
-
-  // Removed auto-sync useEffect. Status changes are already handled explicitly in LeadModalClient and LeadsClient.
+  // Auto-sync Forecasts from Leads was removed because it was dangerous.
 
   const getForecastPIC = (f: OIForecast) => {
     const lead = leads.find(l => l.id === f.leadId);
