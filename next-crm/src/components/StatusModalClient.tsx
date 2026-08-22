@@ -296,13 +296,28 @@ export default function StatusModalClient({ isOpen, onClose, lead, user, users =
         });
       }
 
-      await supabase.from('leads').update(updateData).eq('id', lead.id);
+      const { error: leadErr } = await supabase.from('leads').update(updateData).eq('id', lead.id);
+      if (leadErr) throw leadErr;
       
       if (fHistoryRecords.length > 0) {
-        await supabase.from('funnel_history').insert(fHistoryRecords);
+        const enrichedFHistory = fHistoryRecords.map(r => ({
+          ...r,
+          id: crypto.randomUUID(),
+          created_at: new Date().toISOString()
+        }));
+        const { error: fHistErr } = await supabase.from('funnel_history').insert(enrichedFHistory);
+        if (fHistErr) throw fHistErr;
       }
+      
       if (noteRecords.length > 0) {
-        await supabase.from('lead_notes').insert(noteRecords);
+        const enrichedNotes = noteRecords.map(r => ({
+          ...r,
+          id: crypto.randomUUID(),
+          note_type: 'note',
+          created_at: new Date().toISOString()
+        }));
+        const { error: noteErr } = await supabase.from('lead_notes').insert(enrichedNotes);
+        if (noteErr) throw noteErr;
       }
 
       // --- Sync with OI Forecast ---
