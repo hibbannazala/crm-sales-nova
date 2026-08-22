@@ -290,7 +290,7 @@ export default function LeadModalClient({ isOpen, onClose, lead, user, leads = [
 
           // --- Sync with OI Forecast ---
           try {
-            const { data: forecastSnap } = await supabase.from('oi_forecasts').select('*').eq('lead_id', newLeadDb.id);
+            const { data: forecastSnap } = await supabase.from('oi_forecasts').select('*').eq('lead_id', internalLead.id);
             if (forecastSnap && forecastSnap.length > 0) {
               const currentStatus = (payloadToSave as any).status || internalLead?.status || 'Leads';
               const forecastStatus = currentStatus === 'Close Win' ? 'WIN' : (currentStatus === 'Close Lost' || currentStatus === 'Failed' ? 'LOSE' : 'OPEN');
@@ -418,7 +418,7 @@ export default function LeadModalClient({ isOpen, onClose, lead, user, leads = [
 
         // --- Sync with OI Forecast ---
         try {
-          const { data: forecastSnap } = await supabase.from('oi_forecasts').select('*').eq('lead_id', internalLead.id);
+          const { data: forecastSnap } = await supabase.from('oi_forecasts').select('*').eq('lead_id', newLeadDb.id);
             if (forecastSnap && forecastSnap.length > 0) {
             const forecastStatus = finalStatus === 'Close Win' ? 'WIN' : (finalStatus === 'Close Lost' || finalStatus === 'Failed' ? 'LOSE' : 'OPEN');
             
