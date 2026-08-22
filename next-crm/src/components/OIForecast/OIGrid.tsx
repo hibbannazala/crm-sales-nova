@@ -78,11 +78,11 @@ export default function OIGrid({ forecasts, selectedMonthYear, activeTab, leads,
       status: 'OPEN',
       tier: '-',
       category: activeTab === 'TNT' ? 'TNT Campaign' : activeTab === 'HYPE' ? 'HYPE Campaign' : 'Custom Campaign',
-      lastFollowUp: '',
+      lastFollowUp: null,
       noteSales: '',
-      dateQuotation: '',
+      dateQuotation: null,
       picQuotation: '',
-      dateInvoice: '',
+      dateInvoice: null,
       picInvoice: '',
       createdAt: new Date().toISOString(),
       updatedAt: new Date().toISOString(),
@@ -161,7 +161,13 @@ export default function OIGrid({ forecasts, selectedMonthYear, activeTab, leads,
       };
       
       const dbField = fieldMap[field] || field;
-      const updates: any = { [dbField]: value, updated_at: new Date().toISOString() };
+      
+      let finalValue = value;
+      if ((field === 'dateQuotation' || field === 'dateInvoice' || field === 'lastFollowUp') && value === '') {
+        finalValue = null;
+      }
+      
+      const updates: any = { [dbField]: finalValue, updated_at: new Date().toISOString() };
       
       // Auto calc gross margin if budgetAds or budgetCreator or value changes
       const current = forecasts.find(f => f.id === id);
