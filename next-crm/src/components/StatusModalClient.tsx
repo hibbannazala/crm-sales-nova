@@ -209,51 +209,51 @@ export default function StatusModalClient({ isOpen, onClose, lead, user, users =
     try {
       const updateData: any = {
         status,
-        interestLevel: interest || '-',
-        productOffered: productOffered || []
+        interest_level: interest || '-',
+        product_offered: productOffered || []
       };
 
       if (status !== 'Leads') {
-        if (status === 'Chated') updateData.dateChated = date;
-        else if (status === 'Responsed') updateData.dateResponsed = date;
-        else if (status === 'Set Meeting') updateData.dateSetMeeting = date;
-        else if (status.includes('Close')) updateData.dateClosed = date;
-        else if (status === 'Failed') updateData.dateFailed = date;
+        if (status === 'Chated') updateData.date_chated = date;
+        else if (status === 'Responsed') updateData.date_responsed = date;
+        else if (status === 'Set Meeting') updateData.date_set_meeting = date;
+        else if (status.includes('Close')) updateData.date_closed = date;
+        else if (status === 'Failed') updateData.date_failed = date;
 
-        if (status === 'Close Win') updateData.dealValue = Number(dealValue || 0);
+        if (status === 'Close Win') updateData.deal_value = Number(dealValue || 0);
       }
 
+      const fHistoryRecords: any[] = [];
+      const noteRecords: any[] = [];
+
       if (!isOverride) {
-        const retroactiveEntries: any[] = [];
         let timeOffset = 3000;
         
         if (showMissingChated) {
-          updateData.dateChated = missingChatedDate;
-          retroactiveEntries.push({ stage: 'Chated', date: missingChatedDate, by: finalAuthor, timestamp: Date.now() - timeOffset });
+          updateData.date_chated = missingChatedDate;
+          fHistoryRecords.push({ lead_id: lead.id, stage: 'Chated', date_occurred: missingChatedDate, by_user_name: finalAuthor });
           timeOffset -= 1000;
         }
         if (showMissingResponsed) {
-          updateData.dateResponsed = missingResponsedDate;
-          retroactiveEntries.push({ stage: 'Responsed', date: missingResponsedDate, by: finalAuthor, timestamp: Date.now() - timeOffset });
+          updateData.date_responsed = missingResponsedDate;
+          fHistoryRecords.push({ lead_id: lead.id, stage: 'Responsed', date_occurred: missingResponsedDate, by_user_name: finalAuthor });
           timeOffset -= 1000;
         }
         if (showMissingSetMeeting) {
-          updateData.dateSetMeeting = missingSetMeetingDate;
-          retroactiveEntries.push({ stage: 'Set Meeting', date: missingSetMeetingDate, by: finalAuthor, timestamp: Date.now() - timeOffset });
+          updateData.date_set_meeting = missingSetMeetingDate;
+          fHistoryRecords.push({ lead_id: lead.id, stage: 'Set Meeting', date_occurred: missingSetMeetingDate, by_user_name: finalAuthor });
         }
         
-        updatedHistory.push(...retroactiveEntries);
-
         const funnelEntry: any = {
+          lead_id: lead.id,
           stage: status,
-          date: status === 'Leads' ? lead.dateInput : date,
-          by: finalAuthor,
-          timestamp: Date.now()
+          date_occurred: status === 'Leads' ? lead.dateInput : date,
+          by_user_name: finalAuthor
         };
 
         if (status === 'Close Win') {
-          funnelEntry.dealValue = Number(dealValue || 0);
-          funnelEntry.campaignNumber = Number(campaignNumber || 1);
+          funnelEntry.deal_value = Number(dealValue || 0);
+          funnelEntry.campaign_number = Number(campaignNumber || 1);
         }
 
         if (noteText.trim()) {
@@ -261,59 +261,58 @@ export default function StatusModalClient({ isOpen, onClose, lead, user, users =
         }
 
         if (wasAssigned) {
-          funnelEntry.assignedBy = user.name;
+          funnelEntry.assigned_by = user.name;
         }
 
-        updatedHistory.push(funnelEntry);
+        fHistoryRecords.push(funnelEntry);
+      } else if (isOverride && targetEntryToOverride) {
+        // Find existing funnel history record to update? We don't have its ID because mapping omitted it.
+        // We will just insert a log note about the override.
       }
-      
-      updateData.funnelHistory = updatedHistory;
-
-      // Build notes array
-      const notes = [...(lead.notes || [])];
       
       const assignLabel = wasAssigned ? ` (assigned by ${user.name})` : '';
       if (isOverride) {
-        notes.push({
+        noteRecords.push({
+          lead_id: lead.id,
           text: `[SYSTEM] ${finalAuthor} memperbarui status ${status} pada tanggal ${date}${assignLabel}`,
-          author: 'System',
-          timestamp: new Date().toISOString(),
-          isLog: true
+          author_name: 'System',
+          is_log: true
         });
       } else if (lead.status !== status) {
-        notes.push({
+        noteRecords.push({
+          lead_id: lead.id,
           text: `[SYSTEM] Status diubah ke ${status} oleh ${finalAuthor}${assignLabel}`,
-          author: 'System',
-          timestamp: new Date().toISOString(),
-          isLog: true
+          author_name: 'System',
+          is_log: true
         });
       }
 
-      // Add user note if provided
       if (noteText.trim() && !isOverride) {
-        notes.push({
+        noteRecords.push({
+          lead_id: lead.id,
           text: noteText.trim(),
-          author: user.name,
-          timestamp: new Date().toISOString(),
-          isLog: false
+          author_name: user.name,
+          is_log: false
         });
       }
-
-      updateData.notes = notes;
 
       await supabase.from('leads').update(updateData).eq('id', lead.id);
+      
+      if (fHistoryRecords.length > 0) {
+        await supabase.from('funnel_history').insert(fHistoryRecords);
+      }
+      if (noteRecords.length > 0) {
+        await supabase.from('lead_notes').insert(noteRecords);
+      }
 
       // --- Sync with OI Forecast ---
       try {
-        const { data: forecastSnap } = await supabase.from('oi_forecasts').select('*').eq('is_deleted', false);
+        const { data: forecastSnap } = await supabase.from('oi_forecasts').select('*').eq('lead_id', lead.id);
         
         if (forecastSnap && forecastSnap.length > 0) {
           const forecastStatus = status === 'Close Win' ? 'WIN' : (status === 'Close Lost' || status === 'Failed' ? 'LOSE' : 'OPEN');
-          const targetBrand = (lead.brandName || "").trim().toLowerCase();
           
           for (const fData of forecastSnap) {
-            const fBrand = (fData.brand_name || "").trim().toLowerCase();
-            if (fBrand !== targetBrand) continue;
 
             const fCategory = fData.category || ''; 
             
@@ -326,10 +325,17 @@ export default function StatusModalClient({ isOpen, onClose, lead, user, users =
               const lCampaign = Number(status === 'Close Win' ? campaignNumber : (lead.funnelHistory?.find(h => h.stage === 'Close Win')?.campaignNumber || 1));
               
               if (fCampaign === lCampaign || (forecastStatus === 'OPEN')) {
-                await supabase.from('oi_forecasts').update({
+                const updatePayload: any = {
                   status: forecastStatus,
                   updated_at: new Date().toISOString()
-                }).eq('id', fData.id);
+                };
+                if (forecastStatus === 'WIN' && status === 'Close Win') {
+                  const newDealValue = Number(dealValue) || 0;
+                  updatePayload.value = newDealValue;
+                  updatePayload.gross_margin = newDealValue - (fData.budget_ads || 0) - (fData.budget_creator || 0);
+                }
+                
+                await supabase.from('oi_forecasts').update(updatePayload).eq('id', fData.id);
               }
             }
           }

@@ -290,18 +290,12 @@ export default function LeadModalClient({ isOpen, onClose, lead, user, leads = [
 
           // --- Sync with OI Forecast ---
           try {
-            const { data: forecastSnap } = await supabase.from('oi_forecasts').select('*').eq('is_deleted', false);
+            const { data: forecastSnap } = await supabase.from('oi_forecasts').select('*').eq('lead_id', newLeadDb.id);
             if (forecastSnap && forecastSnap.length > 0) {
               const currentStatus = (payloadToSave as any).status || internalLead?.status || 'Leads';
               const forecastStatus = currentStatus === 'Close Win' ? 'WIN' : (currentStatus === 'Close Lost' || currentStatus === 'Failed' ? 'LOSE' : 'OPEN');
-              const targetBrand = (formData.brandName || "").trim().toLowerCase();
               
               for (const fData of forecastSnap) {
-                
-                const fBrand = (fData.brand_name || "").trim().toLowerCase();
-                
-                // Match Brand
-                if (fBrand !== targetBrand) continue;
 
                 const fCategory = fData.category || '';
                 
@@ -316,7 +310,13 @@ export default function LeadModalClient({ isOpen, onClose, lead, user, leads = [
                   const lCampaign = Number(internalLead?.funnelHistory?.filter(h => h.stage === 'Close Win').pop()?.campaignNumber || 1);
 
                   if (fCampaign === lCampaign || (forecastStatus === 'OPEN')) {
-                    await supabase.from('oi_forecasts').update({ status: forecastStatus, updated_at: new Date().toISOString() }).eq('id', fData.id);
+                  const updatePayload: any = { status: forecastStatus, updated_at: new Date().toISOString() };
+                  if (forecastStatus === 'WIN') {
+                    const newDealValue = Number(formData.dealValue) || 0;
+                    updatePayload.value = newDealValue;
+                    updatePayload.gross_margin = newDealValue - (fData.budget_ads || 0) - (fData.budget_creator || 0);
+                  }
+                  await supabase.from('oi_forecasts').update(updatePayload).eq('id', fData.id);
                   }
                 }
               }
@@ -418,17 +418,11 @@ export default function LeadModalClient({ isOpen, onClose, lead, user, leads = [
 
         // --- Sync with OI Forecast ---
         try {
-          const { data: forecastSnap } = await supabase.from('oi_forecasts').select('*').eq('is_deleted', false);
+          const { data: forecastSnap } = await supabase.from('oi_forecasts').select('*').eq('lead_id', internalLead.id);
             if (forecastSnap && forecastSnap.length > 0) {
             const forecastStatus = finalStatus === 'Close Win' ? 'WIN' : (finalStatus === 'Close Lost' || finalStatus === 'Failed' ? 'LOSE' : 'OPEN');
-            const targetBrand = (formData.brandName || "").trim().toLowerCase();
             
             for (const fData of forecastSnap) {
-              
-              const fBrand = (fData.brand_name || "").trim().toLowerCase();
-              
-              // Match Brand
-              if (fBrand !== targetBrand) continue;
 
               const fCategory = fData.category || '';
               
@@ -442,7 +436,13 @@ export default function LeadModalClient({ isOpen, onClose, lead, user, leads = [
                 const lCampaign = Number(formData.campaignNumber || 1);
 
                 if (fCampaign === lCampaign || (forecastStatus === 'OPEN')) {
-                  await supabase.from('oi_forecasts').update({ status: forecastStatus, updated_at: new Date().toISOString() }).eq('id', fData.id);
+                  const updatePayload: any = { status: forecastStatus, updated_at: new Date().toISOString() };
+                  if (forecastStatus === 'WIN') {
+                    const newDealValue = Number(formData.dealValue) || 0;
+                    updatePayload.value = newDealValue;
+                    updatePayload.gross_margin = newDealValue - (fData.budget_ads || 0) - (fData.budget_creator || 0);
+                  }
+                  await supabase.from('oi_forecasts').update(updatePayload).eq('id', fData.id);
                 }
               }
             }
