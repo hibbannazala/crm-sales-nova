@@ -845,7 +845,10 @@ export default function LeadsClient({ leads, user, users, approvals }: LeadsTabl
 
       <LeadModalClient 
         isOpen={isLeadModalOpen} 
-        onClose={() => setIsLeadModalOpen(false)} 
+        onClose={() => {
+          setIsLeadModalOpen(false);
+          router.refresh();
+        }}  
         lead={editingLead} 
         user={user} 
         leads={leads}
@@ -855,14 +858,20 @@ export default function LeadsClient({ leads, user, users, approvals }: LeadsTabl
         <>
           <StatusModalClient 
             isOpen={isStatusModalOpen} 
-            onClose={() => setIsStatusModalOpen(false)} 
+            onClose={() => {
+              setIsStatusModalOpen(false);
+              router.refresh();
+            }} 
             lead={activeLead} 
             user={user} 
             users={users}
           />
           <NotesModalClient 
             isOpen={isNotesModalOpen} 
-            onClose={() => setIsNotesModalOpen(false)} 
+            onClose={() => {
+              setIsNotesModalOpen(false);
+              router.refresh();
+            }} 
             lead={activeLead} 
             user={user} 
             approvals={approvals}
@@ -877,6 +886,7 @@ export default function LeadsClient({ leads, user, users, approvals }: LeadsTabl
           onClose={() => {
             setIsBulkModalOpen(false);
             setSelectedIds(new Set());
+            router.refresh();
           }}
           user={user}
           users={users}
