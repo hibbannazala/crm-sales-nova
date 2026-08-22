@@ -15,6 +15,9 @@ interface OIGridProps {
   leads: Lead[];
   user: UserProfile;
   users: UserProfile[];
+  onAddForecast: (forecast: OIForecast) => void;
+  onUpdateForecast: (id: string, updates: Partial<OIForecast>) => void;
+  onDeleteForecast: (id: string) => void;
 }
 
 const formatMoney = (amount: number) => {
@@ -34,7 +37,7 @@ const formatIDDate = (dateString: string) => {
   return `${d.getDate()} ${months[d.getMonth()]} ${d.getFullYear()}`;
 };
 
-export default function OIGrid({ forecasts, selectedMonthYear, activeTab, leads, user, users }: OIGridProps) {
+export default function OIGrid({ forecasts, selectedMonthYear, activeTab, leads, user, users, onAddForecast, onUpdateForecast, onDeleteForecast }: OIGridProps) {
   const supabase = createClient();
   const [isAdding, setIsAdding] = useState(false);
   const [selectedLeadId, setSelectedLeadId] = useState<string>('');
@@ -85,8 +88,41 @@ export default function OIGrid({ forecasts, selectedMonthYear, activeTab, leads,
       updatedAt: new Date().toISOString(),
     };
 
+    const newForecastDb = {
+      lead_id: newForecast.leadId,
+      month_year: newForecast.monthYear,
+      product: newForecast.product,
+      value: newForecast.value,
+      campaign_number: newForecast.campaignNumber,
+      budget_ads: newForecast.budgetAds,
+      budget_creator: newForecast.budgetCreator,
+      gross_margin: newForecast.grossMargin,
+      real_margin: newForecast.realMargin,
+      real_payment: newForecast.realPayment,
+      success_rate: newForecast.successRate,
+      status: newForecast.status,
+      tier: newForecast.tier,
+      category: newForecast.category,
+      last_follow_up: newForecast.lastFollowUp,
+      note_sales: newForecast.noteSales,
+      date_quotation: newForecast.dateQuotation,
+      pic_quotation: newForecast.picQuotation,
+      date_invoice: newForecast.dateInvoice,
+      pic_invoice: newForecast.picInvoice,
+      created_at: newForecast.createdAt,
+      updated_at: newForecast.updatedAt,
+    };
+
     try {
-      await await supabase.from('oi_forecasts').insert([newForecast]);
+      const { data, error } = await supabase.from('oi_forecasts').insert([newForecastDb]).select().single();
+      if (error) throw error;
+      
+      const mappedData = {
+        ...newForecast,
+        id: data.id
+      };
+      
+      onAddForecast(mappedData as OIForecast);
       toast.success("Berhasil ditambahkan ke Forecast");
       setIsAdding(false);
       setSelectedLeadId('');
@@ -128,18 +164,23 @@ export default function OIGrid({ forecasts, selectedMonthYear, activeTab, leads,
       
       // Auto calc gross margin if budgetAds or budgetCreator or value changes
       const current = forecasts.find(f => f.id === id);
+      const mappedUpdates: Partial<OIForecast> = { [field]: value };
+      
       if (current && (field === 'budgetAds' || field === 'budgetCreator' || field === 'value')) {
         const val = field === 'value' ? Number(value) : (current.value || 0);
         const ads = field === 'budgetAds' ? Number(value) : (current.budgetAds || 0);
         const creator = field === 'budgetCreator' ? Number(value) : (current.budgetCreator || 0);
         updates.gross_margin = val - ads - creator;
+        mappedUpdates.grossMargin = val - ads - creator;
       }
 
-      await supabase.from('oi_forecasts').update(updates).eq('id', id);
+      const { error } = await supabase.from('oi_forecasts').update(updates).eq('id', id);
+      if (error) throw error;
+      
+      onUpdateForecast(id, mappedUpdates);
 
       // Status cross-sync with Lead
       if (current && field === 'status' && value === 'WIN') {
-        
         await supabase.from('leads').update({
           status: 'Close Win',
           dateClosed: new Date().toISOString()
@@ -154,7 +195,9 @@ export default function OIGrid({ forecasts, selectedMonthYear, activeTab, leads,
   const handleDelete = async (id: string) => {
     if(!confirm("Keluarkan data ini dari Forecast?")) return;
     try {
-      await await supabase.from('oi_forecasts').delete().eq('id', id);
+      const { error } = await supabase.from('oi_forecasts').delete().eq('id', id);
+      if (error) throw error;
+      onDeleteForecast(id);
       toast.success("Data dihapus");
     } catch (error: any) {
       toast.error("Gagal hapus: " + error.message);

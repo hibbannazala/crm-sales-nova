@@ -27,20 +27,28 @@ export default function OIForecastPage({ leads, user, users = [], forecasts: ser
   const [selectedYear, setSelectedYear] = useState<number>(new Date().getFullYear());
   const [selectedPIC, setSelectedPIC] = useState<string>('All');
   
-  const forecasts = serverForecasts || [];
-  const targets = serverTargets || [];
+  const [localForecasts, setLocalForecasts] = useState<any[]>(serverForecasts || []);
+  const [localTargets, setLocalTargets] = useState<any[]>(serverTargets || []);
+
+  useEffect(() => { setLocalForecasts(serverForecasts || []) }, [serverForecasts]);
+  useEffect(() => { setLocalTargets(serverTargets || []) }, [serverTargets]);
+
   const loading = false;
 
-  // Fetch Forecasts and Targets based on active view to optimize reads
-  
+  const handleAddForecast = (newForecast: any) => setLocalForecasts(prev => [...prev, newForecast]);
+  const handleUpdateForecast = (id: string, updates: any) => setLocalForecasts(prev => prev.map(f => f.id === id ? { ...f, ...updates } : f));
+  const handleDeleteForecast = (id: string) => setLocalForecasts(prev => prev.filter(f => f.id !== id));
+  const handleUpdateTarget = (target: any) => setLocalTargets(prev => {
+    const existing = prev.find(t => t.id === target.id);
+    return existing ? prev.map(t => t.id === target.id ? { ...t, ...target } : t) : [...prev, target];
+  });
 
   // Auto-sync Forecasts from Leads
   useEffect(() => {
-    if (!leads.length || !forecasts.length) return;
+    if (!leads.length || !localForecasts.length) return;
 
-    // Use a small timeout to avoid syncing during intense renders
     const syncTimer = setTimeout(() => {
-      forecasts.forEach(f => {
+      localForecasts.forEach(f => {
         const lead = leads.find(l => l.id === f.leadId && !l.isDeleted);
         if (!lead) return;
 
@@ -51,7 +59,6 @@ export default function OIForecastPage({ leads, user, users = [], forecasts: ser
         const matchingWin = lead.funnelHistory?.find((h: any) => h.stage === 'Close Win' && (h.campaignNumber || 1) === fCamp);
 
         if (matchingWin) {
-          // Sync WIN precisely for this campaign
           if (f.status !== 'WIN') {
             updates.status = 'WIN';
             needsUpdate = true;
@@ -62,36 +69,31 @@ export default function OIForecastPage({ leads, user, users = [], forecasts: ser
             needsUpdate = true;
           }
         } else {
-          // If no matching win...
           if (f.status === 'WIN') {
-            // It was won, but the win history was deleted/changed! Revert to OPEN.
             updates.status = 'OPEN';
             needsUpdate = true;
           } else if ((lead.status === 'Close Lost' || lead.status === 'Failed') && f.status !== 'LOSE') {
             updates.status = 'LOSE';
             needsUpdate = true;
           } else if (lead.status !== 'Close Lost' && lead.status !== 'Failed' && f.status === 'LOSE') {
-            // Re-opened lead
             updates.status = 'OPEN';
             needsUpdate = true;
           }
-          
-          // Optionally sync global value if it's OPEN and has no match but global value exists?
-          // No, usually OPEN forecasts rely on manual value input for target projections.
         }
 
         if (needsUpdate) {
-          // Fire update to firestore implicitly
           supabase.from('oi_forecasts').update({
             ...updates,
-            updatedAt: new Date().toISOString()
+            updated_at: new Date().toISOString()
           }).eq('id', f.id);
+          
+          handleUpdateForecast(f.id, updates);
         }
       });
     }, 1000);
 
     return () => clearTimeout(syncTimer);
-  }, [forecasts, leads]);
+  }, [leads]); // Removed localForecasts from deps to prevent infinite loop during sync updates
 
   const getForecastPIC = (f: OIForecast) => {
     const lead = leads.find(l => l.id === f.leadId);
@@ -103,7 +105,7 @@ export default function OIForecastPage({ leads, user, users = [], forecasts: ser
     return lead.funnelHistory[lead.funnelHistory.length - 1].by || 'Unknown';
   };
 
-  const filteredForecasts = forecasts.filter(f => {
+  const filteredForecasts = localForecasts.filter(f => {
     if (f.monthYear !== selectedMonthYear || f.product !== activeTab) return false;
     if (selectedPIC !== 'All') {
       return getForecastPIC(f) === selectedPIC;
@@ -111,9 +113,9 @@ export default function OIForecastPage({ leads, user, users = [], forecasts: ser
     return true;
   });
 
-  const currentTarget = targets.find(t => t.monthYear === selectedMonthYear && t.product === activeTab);
+  const currentTarget = localTargets.find(t => t.monthYear === selectedMonthYear && t.product === activeTab);
   
-  const uniquePICs = Array.from(new Set(forecasts.map(getForecastPIC))).filter(Boolean).sort();
+  const uniquePICs = Array.from(new Set(localForecasts.map(getForecastPIC))).filter(Boolean).sort();
 
   if (loading) {
     return (
@@ -250,18 +252,22 @@ export default function OIForecastPage({ leads, user, users = [], forecasts: ser
                   leads={leads}
                   user={user}
                   users={users}
+                  onAddForecast={handleAddForecast}
+                  onUpdateForecast={handleUpdateForecast}
+                  onDeleteForecast={handleDeleteForecast}
                 />
               </div>
             ) : (
               <div className="flex-1 lg:overflow-hidden p-4 lg:p-6">
                 <OIMilestone 
-                  forecasts={forecasts} 
-                  targets={targets} 
+                  forecasts={localForecasts} 
+                  targets={localTargets} 
                   activeTab={activeTab} 
                   user={user}
                   leads={leads}
                   selectedYear={selectedYear}
                   setSelectedYear={setSelectedYear}
+                  onUpdateTarget={handleUpdateTarget}
                 />
               </div>
             )}

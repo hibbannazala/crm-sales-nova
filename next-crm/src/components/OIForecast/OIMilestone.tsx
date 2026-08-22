@@ -14,6 +14,7 @@ interface OIMilestoneProps {
   leads: Lead[];
   selectedYear: number;
   setSelectedYear: (year: number) => void;
+  onUpdateTarget: (target: OITarget) => void;
 }
 
 const formatMoney = (amount: number) => {
@@ -30,7 +31,7 @@ const MONTH_NAMES = [
   "Juli", "Agustus", "September", "Oktober", "November", "Desember"
 ];
 
-export default function OIMilestone({ forecasts, targets, activeTab, user, leads, selectedYear, setSelectedYear }: OIMilestoneProps) {
+export default function OIMilestone({ forecasts, targets, activeTab, user, leads, selectedYear, setSelectedYear, onUpdateTarget }: OIMilestoneProps) {
   const supabase = createClient();
   const [dirtyTargets, setDirtyTargets] = useState<{ [monthYear: string]: number }>({});
   const [isSaving, setIsSaving] = useState(false);
@@ -49,19 +50,36 @@ export default function OIMilestone({ forecasts, targets, activeTab, user, leads
 
     try {
       if (existingTarget) {
-        await supabase.from('oi_targets').update({
+        const { error } = await supabase.from('oi_targets').update({
           target_value: newVal,
           updated_at: new Date().toISOString()
         }).eq('id', existingTarget.id);
+        if (error) throw error;
+        
+        onUpdateTarget({
+          ...existingTarget,
+          targetValue: newVal,
+          updatedAt: new Date().toISOString()
+        });
       } else {
         const id = `${activeTab}_${monthYear}`; // composite id
-        await supabase.from('oi_targets').upsert({ 
+        const newTarget = { 
           id: id,
           month_year: monthYear,
           product: activeTab,
           target_value: newVal,
           updated_at: new Date().toISOString()
-         });
+        };
+        const { error } = await supabase.from('oi_targets').upsert(newTarget);
+        if (error) throw error;
+        
+        onUpdateTarget({
+          id: id,
+          monthYear: monthYear,
+          product: activeTab,
+          targetValue: newVal,
+          updatedAt: new Date().toISOString()
+        });
       }
       toast.success(`Target untuk ${monthYear} berhasil disimpan.`);
       const newDirty = {...dirtyTargets};
