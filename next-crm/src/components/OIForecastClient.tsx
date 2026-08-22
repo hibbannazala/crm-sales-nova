@@ -47,53 +47,7 @@ export default function OIForecastPage({ leads, user, users = [], forecasts: ser
   useEffect(() => {
     if (!leads.length || !localForecasts.length) return;
 
-    const syncTimer = setTimeout(() => {
-      localForecasts.forEach(f => {
-        const lead = leads.find(l => l.id === f.leadId && !l.isDeleted);
-        if (!lead) return;
-
-        let needsUpdate = false;
-        const updates: any = {};
-        
-        const fCamp = f.campaignNumber || 1;
-        const matchingWin = lead.funnelHistory?.find((h: any) => h.stage === 'Close Win' && (h.campaignNumber || 1) === fCamp);
-
-        if (matchingWin) {
-          if (f.status !== 'WIN') {
-            updates.status = 'WIN';
-            needsUpdate = true;
-          }
-          if (matchingWin.dealValue !== undefined && f.value !== matchingWin.dealValue) {
-            updates.value = matchingWin.dealValue;
-            updates.grossMargin = matchingWin.dealValue - (f.budgetAds || 0) - (f.budgetCreator || 0);
-            needsUpdate = true;
-          }
-        } else {
-          if (f.status === 'WIN') {
-            updates.status = 'OPEN';
-            needsUpdate = true;
-          } else if ((lead.status === 'Close Lost' || lead.status === 'Failed') && f.status !== 'LOSE') {
-            updates.status = 'LOSE';
-            needsUpdate = true;
-          } else if (lead.status !== 'Close Lost' && lead.status !== 'Failed' && f.status === 'LOSE') {
-            updates.status = 'OPEN';
-            needsUpdate = true;
-          }
-        }
-
-        if (needsUpdate) {
-          supabase.from('oi_forecasts').update({
-            ...updates,
-            updated_at: new Date().toISOString()
-          }).eq('id', f.id);
-          
-          handleUpdateForecast(f.id, updates);
-        }
-      });
-    }, 1000);
-
-    return () => clearTimeout(syncTimer);
-  }, [leads]); // Removed localForecasts from deps to prevent infinite loop during sync updates
+  // Removed auto-sync useEffect. Status changes are already handled explicitly in LeadModalClient and LeadsClient.
 
   const getForecastPIC = (f: OIForecast) => {
     const lead = leads.find(l => l.id === f.leadId);
