@@ -183,8 +183,29 @@ export default function OIGrid({ forecasts, selectedMonthYear, activeTab, leads,
       if (current && field === 'status' && value === 'WIN') {
         await supabase.from('leads').update({
           status: 'Close Win',
-          dateClosed: new Date().toISOString()
+          date_closed: new Date().toISOString()
         }).eq('id', current.leadId);
+      }
+
+      // Sync Value with funnel_history and leads table
+      if (current && field === 'value') {
+        const leadId = current.leadId;
+        const campaignNumber = current.campaignNumber || 1;
+        
+        await supabase.from('funnel_history').update({
+          deal_value: Number(value)
+        }).eq('lead_id', leadId).eq('campaign_number', campaignNumber).eq('stage', 'Close Win');
+
+        const lead = leads.find(l => l.id === leadId);
+        if (lead) {
+          const maxCampaign = lead.funnelHistory?.filter((h: any) => h.stage === 'Close Win').reduce((max: number, h: any) => Math.max(max, h.campaignNumber || 1), 1) || 1;
+          if (campaignNumber >= maxCampaign) {
+            await supabase.from('leads').update({
+              deal_value: Number(value),
+              updated_at: new Date().toISOString()
+            }).eq('id', leadId);
+          }
+        }
       }
 
     } catch (err: any) {
