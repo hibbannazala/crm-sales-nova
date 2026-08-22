@@ -42,7 +42,7 @@ export default async function LeadsPage() {
   let hasMore = true;
   let page = 0;
   while (hasMore) {
-    const { data } = await supabase.from('leads').select('*, funnelHistory:funnel_history(*)').range(page * 1000, (page + 1) * 1000 - 1);
+    const { data } = await supabase.from('leads').select('*, funnelHistory:funnel_history(*), notes:lead_notes(*)').range(page * 1000, (page + 1) * 1000 - 1);
     if (data && data.length > 0) {
       allLeads = [...allLeads, ...data];
       page++;
