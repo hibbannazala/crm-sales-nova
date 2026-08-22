@@ -114,6 +114,11 @@ export default function DashboardClient({ leads, user, users, targets = [], indi
         const mapped = tableData.map(l => ({
           id: l.id,
           dateInput: l.date_input,
+          dateChated: l.date_chated,
+          dateResponsed: l.date_responsed,
+          dateSetMeeting: l.date_set_meeting,
+          dateClosed: l.date_closed,
+          dateFailed: l.date_failed,
           picName: l.pic_name || l.owner,
           brandName: l.brand_name,
           contact: l.contact,
@@ -238,6 +243,7 @@ export default function DashboardClient({ leads, user, users, targets = [], indi
 
       const stageLatest: Record<string, any> = {};
 
+      // Calculate stats based on funnelHistory first
       l.funnelHistory.forEach(h => {
         const matchesAdmin = filterAdmin === 'ALL' || h.by === filterAdmin;
         if (!matchesAdmin) return;
@@ -254,18 +260,59 @@ export default function DashboardClient({ leads, user, users, targets = [], indi
         }
       });
 
+      let foundChated = false;
+      let foundResponsed = false;
+      let foundMeeting = false;
+      let foundWin = false;
+      let foundLost = false;
+
       Object.values(stageLatest).forEach(h => {
-        if (h.stage === 'Chated') m.chated++;
-        if (h.stage === 'Responsed') m.responsed++;
-        if (h.stage === 'Set Meeting') {
-          m.meeting++;
-        }
+        if (h.stage === 'Chated') { m.chated++; foundChated = true; }
+        if (h.stage === 'Responsed') { m.responsed++; foundResponsed = true; }
+        if (h.stage === 'Set Meeting') { m.meeting++; foundMeeting = true; }
         if (h.stage === 'Close Win') {
           m.win++;
           m.revenue += (h.dealValue !== undefined ? h.dealValue : (l.dealValue || 0));
+          foundWin = true;
         }
-        if (h.stage === 'Close Lost') m.lost++;
+        if (h.stage === 'Close Lost') { m.lost++; foundLost = true; }
       });
+
+      // Fallback to root properties for older leads without complete funnel history
+      const adminMatch = filterAdmin === 'ALL' || l.picName === filterAdmin || l.owner === filterAdmin;
+      if (adminMatch) {
+        if (!foundChated && l.dateChated) {
+          const t = parseDateString(l.dateChated);
+          if (isAllTime || isWithinInterval(new Date(t), { start, end })) {
+            m.chated++;
+          }
+        }
+        if (!foundResponsed && l.dateResponsed) {
+          const t = parseDateString(l.dateResponsed);
+          if (isAllTime || isWithinInterval(new Date(t), { start, end })) {
+            m.responsed++;
+          }
+        }
+        if (!foundMeeting && l.dateSetMeeting) {
+          const t = parseDateString(l.dateSetMeeting);
+          if (isAllTime || isWithinInterval(new Date(t), { start, end })) {
+            m.meeting++;
+          }
+        }
+        if (!foundWin && l.status === 'Close Win' && (l.dateClosed || l.dateResponsed || l.dateChated)) {
+          const t = parseDateString(l.dateClosed || l.dateResponsed || l.dateChated || '');
+          if (isAllTime || isWithinInterval(new Date(t), { start, end })) {
+            m.win++;
+            m.revenue += (l.dealValue || 0);
+          }
+        }
+        if (!foundLost && l.status === 'Close Lost' && (l.dateFailed || l.dateResponsed || l.dateChated)) {
+          const t = parseDateString(l.dateFailed || l.dateResponsed || l.dateChated || '');
+          if (isAllTime || isWithinInterval(new Date(t), { start, end })) {
+            m.lost++;
+          }
+        }
+      }
     });
 
     return m;
@@ -279,7 +326,7 @@ export default function DashboardClient({ leads, user, users, targets = [], indi
     return {
       response: stats.chated ? ((stats.responsed / stats.chated) * 100).toFixed(1) + '%' : '0%',
       interest: stats.responsed ? ((stats.meeting / stats.responsed) * 100).toFixed(1) + '%' : '0%',
-      conversion: stats.chated ? ((stats.win / stats.chated) * 100).toFixed(1) + '%' : '0%'
+      conversion: stats.responsed ? ((stats.win / stats.responsed) * 100).toFixed(1) + '%' : '0%'
     };
   }, [stats]);
 
@@ -329,9 +376,30 @@ export default function DashboardClient({ leads, user, users, targets = [], indi
 
   const fixSuperImportData = async () => { alert("Fix Super Import is disabled in Next.js version"); };
 
+  if (loading && leads.length === 0) {
+    return (
+      <div className="flex-1 flex flex-col p-4 space-y-4 animate-pulse">
+        <div className="h-20 bg-slate-200 rounded-lg w-full"></div>
+        <div className="h-10 bg-slate-200 rounded w-1/3"></div>
+        <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
+          <div className="h-32 bg-slate-200 rounded-xl"></div>
+          <div className="h-32 bg-slate-200 rounded-xl"></div>
+          <div className="h-32 bg-slate-200 rounded-xl"></div>
+          <div className="h-32 bg-slate-200 rounded-xl"></div>
+        </div>
+        <div className="h-64 bg-slate-200 rounded-xl w-full"></div>
+      </div>
+    );
+  }
+
   return (
     <div className="flex-1 flex flex-col overflow-hidden bg-slate-50">
-      <header className="py-4 md:h-20 bg-white border-b border-slate-200 flex flex-col md:flex-row md:items-center justify-between px-4 md:px-8 shrink-0 z-10 shadow-sm gap-4 overflow-y-auto custom-scrollbar md:overflow-visible">
+      <header className="py-4 md:h-20 bg-white border-b border-slate-200 flex flex-col md:flex-row md:items-center justify-between px-4 md:px-8 shrink-0 z-10 shadow-sm gap-4 overflow-y-auto custom-scrollbar md:overflow-visible relative">
+        {loading && (
+          <div className="absolute top-0 left-0 w-full h-1 bg-indigo-100 overflow-hidden">
+            <div className="h-full bg-indigo-500 animate-[pulse_1s_ease-in-out_infinite] w-1/3 rounded-full"></div>
+          </div>
+        )}
         <div className="flex flex-col shrink-0">
           <h1 className="text-lg md:text-xl font-black text-slate-900 tracking-tight flex items-center gap-2">
             <span className="w-2 h-5 md:h-6 bg-indigo-600 rounded-full"></span>
@@ -520,7 +588,7 @@ export default function DashboardClient({ leads, user, users, targets = [], indi
                   </div>
                   <span className="text-[9px] font-black text-slate-500 uppercase tracking-widest">Global Rate</span>
                   <div className="absolute invisible group-hover/rate:visible opacity-0 group-hover/rate:opacity-100 transition bottom-full left-0 mb-2 w-48 bg-slate-800 text-white text-[10px] p-2 rounded-lg z-50 shadow-xl font-medium">
-                    Conversion Rate = (Total Deals Won ÷ Total Chated Out) × 100%. Tidak menghitung leads yang belum terhubung.
+                    Efficiency Rate = (Total Deals Won ÷ Total Responses) × 100%. Mengukur efektivitas konversi dari leads yang sudah memberikan respon.
                   </div>
                 </div>
                 <div className="w-px h-8 bg-slate-800"></div>

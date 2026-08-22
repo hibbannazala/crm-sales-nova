@@ -60,7 +60,11 @@ export interface Lead {
   isDeleted?: boolean;
   deletedAt?: string;
   autoDeleteAt?: string;
+
+  picName?: string;
+  owner?: string;
 }
+
 
 export interface EditRequest {
   id: string;

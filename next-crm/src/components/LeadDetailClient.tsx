@@ -93,9 +93,16 @@ export default function LeadDetailClient({ lead: initialLead, user, users }: Omi
     fetchHistory();
 
     const fetchNotes = async () => {
-      const { data } = await supabase.from('lead_notes').select('*').eq('lead_id', lead.id).order('timestamp', { ascending: false });
+      const { data, error } = await supabase.from('lead_notes').select('*').eq('lead_id', lead.id).order('created_at', { ascending: false });
+      if (error) console.error("Error fetching notes:", error);
       if (data) {
-        setNotes(data);
+        setNotes(data.map(d => ({
+          ...d,
+          author: d.author_name,
+          timestamp: d.created_at,
+          type: d.note_type,
+          isLog: d.is_log
+        })));
       }
     };
     fetchNotes();
