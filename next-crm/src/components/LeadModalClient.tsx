@@ -244,6 +244,7 @@ export default function LeadModalClient({ isOpen, onClose, lead, user, leads = [
           const isMasterDataChanged = internalLead.brandName !== formData.brandName || internalLead.contact !== formData.contact;
           if (isMasterDataChanged) {
             await supabase.from("edit_requests").insert({
+              id: crypto.randomUUID(),
               lead_id: internalLead.id,
               old_brand: internalLead.brandName,
               new_brand: formData.brandName,

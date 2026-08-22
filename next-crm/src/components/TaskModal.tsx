@@ -120,6 +120,7 @@ export default function TaskModal({ isOpen, onClose, user, users, editingTask, i
       } else {
         taskData.created_by = (user as any).uid;  
         taskData.created_at = new Date().toISOString();
+        taskData.id = crypto.randomUUID();
         const { error } = await supabase.from('tasks').insert([taskData]);
         if (error) throw error;
         toast.success("Task created successfully");

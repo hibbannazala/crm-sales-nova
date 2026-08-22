@@ -342,11 +342,12 @@ export default function StatusModalClient({ isOpen, onClose, lead, user, users =
       // Removed: Supabase JSONB replaces this sub-collection need!
 
       // --- Global Audit Log ---
-      await supabase.from('audit_logs').insert({
+      await supabase.from('global_audit_logs').insert({
+        id: crypto.randomUUID(),
         action: isOverride ? "STATUS_OVERRIDE" : "STATUS_UPDATE",
         details: `${finalAuthor} mencatat status ${status} untuk brand ${lead.brandName} pada ${date}`,
-        user: user.name,
-        timestamp: new Date().toISOString()
+        user_name: user.name,
+        created_at: new Date().toISOString()
       });
 
       toast.success(isOverride ? "Data diperbarui (Override)" : "Jejak Funnel tercatat");

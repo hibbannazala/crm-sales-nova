@@ -77,10 +77,11 @@ export default function LeadsClient({ leads, user, users, approvals }: LeadsTabl
     try {
       
       await supabase.from('global_audit_logs').insert([{
+        id: crypto.randomUUID(),
         action,
         details,
-        user: user.name,
-        timestamp: new Date().toISOString()
+        user_name: user.name,
+        created_at: new Date().toISOString()
       }]);
 
     } catch (e) {

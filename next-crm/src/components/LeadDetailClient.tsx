@@ -157,11 +157,12 @@ export default function LeadDetailClient({ lead: initialLead, user, users }: Omi
     setIsSendingNote(true);
     try {
       const newNote = {
+        id: crypto.randomUUID(),
         lead_id: lead.id,
         text: newNoteText,
-        author: user.name,
-        timestamp: new Date(newNoteDate).toISOString(),
-        type: noteType
+        author_name: user.name,
+        created_at: new Date(newNoteDate).toISOString(),
+        note_type: noteType
       };
       const { data, error } = await supabase.from('lead_notes').insert([newNote]).select();
       if (error) throw error;

@@ -89,6 +89,7 @@ export default function OIGrid({ forecasts, selectedMonthYear, activeTab, leads,
     };
 
     const newForecastDb = {
+      id: crypto.randomUUID(),
       lead_id: newForecast.leadId,
       month_year: newForecast.monthYear,
       product: newForecast.product,

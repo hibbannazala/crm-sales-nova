@@ -243,10 +243,11 @@ export default function BulkStatusModal({ isOpen, onClose, selectedLeads, user, 
 
       // Audit Log with Limit check
       await supabase.from('global_audit_logs').insert([{
+        id: crypto.randomUUID(),
         action: "BULK_STATUS_UPDATE",
         details: `${user.name} mengupdate ${selectedLeads.length} leads ke status ${status}. Overrides: ${myOverrides}, Duplikat: ${othersDuplicates}`,
-        user: user.name,
-        timestamp: new Date().toISOString()
+        user_name: user.name,
+        created_at: new Date().toISOString()
       }]);
 
       // Audit log limit check removed for Supabase;
