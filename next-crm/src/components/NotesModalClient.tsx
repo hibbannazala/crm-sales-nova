@@ -131,7 +131,7 @@ export default function NotesModalClient({ isOpen, onClose, lead, user, approval
                                 <div className="flex justify-between">
                                   <span>{new Date(e.date).toLocaleDateString('id-ID', { day: 'numeric', month: 'short', year: 'numeric' })}</span>
                                   <span className="font-bold text-blue-700">by {e.by}
-                                    {e.assignedBy && <span className="text-purple-500"> (assigned by {e.assignedBy})</span>}
+                                    {(e.assignedBy && e.assignedBy !== 'System') && <span className="text-purple-500"> (assigned by {e.assignedBy})</span>}
                                   </span>
                                 </div>
                                 {e.note && (

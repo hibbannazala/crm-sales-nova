@@ -765,7 +765,7 @@ export default function LeadDetailClient({ lead: initialLead, user, users }: Omi
                           )}
 
                           <div className="flex items-center gap-4 text-xs font-bold text-slate-500">Diperbarui oleh <span className="text-indigo-600">{h.by}</span>
-                            {h.assignedBy && <span className="text-purple-500 text-xs"> (assigned by {h.assignedBy})</span>}
+                            {(h.assignedBy && h.assignedBy !== 'System') && <span className="text-purple-500 text-xs"> (assigned by {h.assignedBy})</span>}
                           </div>
                           {h.note && (
                             <div className="mt-2 p-3 bg-slate-50 border border-slate-100 rounded-xl">
