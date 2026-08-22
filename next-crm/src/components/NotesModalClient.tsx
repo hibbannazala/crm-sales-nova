@@ -185,9 +185,9 @@ export default function NotesModalClient({ isOpen, onClose, lead, user, approval
                         <div key={i} className="bg-white p-4 rounded-xl shadow-sm border border-gray-100 mb-3">
                           <div className="flex items-center gap-2 mb-2 border-b border-gray-50 pb-2">
                             <div className="w-5 h-5 rounded bg-gradient-to-tr from-slate-700 to-slate-900 text-white flex items-center justify-center text-[9px] font-bold shadow-sm">
-                              {n.author.charAt(0).toUpperCase()}
+                              {(n.author || 'S').charAt(0).toUpperCase()}
                             </div>
-                            <b className="text-xs text-gray-800">{n.author}</b>
+                            <b className="text-xs text-gray-800">{n.author || 'System'}</b>
                             <span className="text-[9px] font-bold text-gray-400 ml-auto uppercase tracking-wider">
                               {new Date(n.timestamp).toLocaleString('id-ID', { dateStyle: 'medium', timeStyle: 'short' })}
                             </span>

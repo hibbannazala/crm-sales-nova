@@ -71,7 +71,13 @@ export default async function LeadsPage() {
     source: l.source,
     category: l.category,
     productOffered: l.product_offered || [],
-    notes: l.notes || '',
+    notes: (l.notes || []).map((n: any) => ({
+      text: n.text,
+      author: n.author_name,
+      timestamp: n.created_at,
+      type: n.note_type,
+      isLog: n.is_log
+    })),
     priority: l.priority || 'Low',
     interestLevel: l.interest_level || 'Low',
     status: l.status,
