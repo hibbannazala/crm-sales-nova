@@ -57,8 +57,9 @@ export default function LeadModalClient({ isOpen, onClose, lead, user, leads = [
     if (mapped.leadSource !== undefined) { mapped.lead_source = mapped.leadSource; delete mapped.leadSource; }
     if (mapped.actionPlan !== undefined) { mapped.action_plan = mapped.actionPlan; delete mapped.actionPlan; }
     if (mapped.productOffered !== undefined) { mapped.product_offered = mapped.productOffered; delete mapped.productOffered; }
-    if (mapped.funnelHistory !== undefined) { mapped.funnel_history = mapped.funnelHistory; delete mapped.funnelHistory; }
-    if (mapped.ownerId !== undefined) { mapped.owner_id = mapped.ownerId; delete mapped.ownerId; }
+    if (mapped.funnelHistory !== undefined) { delete mapped.funnelHistory; }
+    if (mapped.ownerId !== undefined) { delete mapped.ownerId; }
+    if (mapped.owner !== undefined) { delete mapped.owner; }
     if (mapped.isDeleted !== undefined) { mapped.is_deleted = mapped.isDeleted; delete mapped.isDeleted; }
     if (mapped.createdAt !== undefined) { mapped.created_at = mapped.createdAt; delete mapped.createdAt; }
     if (mapped.updatedAt !== undefined) { mapped.updated_at = mapped.updatedAt; delete mapped.updatedAt; }
@@ -375,8 +376,6 @@ export default function LeadModalClient({ isOpen, onClose, lead, user, leads = [
         const { data: newLead, error: insertErr } = await supabase.from('leads').insert(mapLeadToSupabase({
           ...payloadToSave,
           productOffered,
-          owner: user.name,
-          ownerId: user.uid || '',
           isDeleted: false,
           status: finalStatus as any,
           createdAt: new Date().toISOString(),
