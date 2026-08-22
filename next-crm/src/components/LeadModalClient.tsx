@@ -272,6 +272,7 @@ export default function LeadModalClient({ isOpen, onClose, lead, user, leads = [
 
           if (changes.length > 0) {
             const { error: noteErr } = await supabase.from('lead_notes').insert({
+              id: crypto.randomUUID(),
               lead_id: internalLead.id,
               text: `[SYSTEM] Data diperbarui oleh ${user.name}. ${changes.join(', ')}`,
               author_name: 'System',
@@ -384,6 +385,7 @@ export default function LeadModalClient({ isOpen, onClose, lead, user, leads = [
         const docRef = { id: newLead.id };
 
         const { error: noteErr } = await supabase.from('lead_notes').insert({
+          id: crypto.randomUUID(),
           lead_id: newLead.id,
           text: `Lead dibuat oleh ${user.name}`,
           author_name: 'System',
@@ -394,6 +396,7 @@ export default function LeadModalClient({ isOpen, onClose, lead, user, leads = [
         if (noteErr) throw noteErr;
 
         const fHistory = history.map(h => ({
+          id: crypto.randomUUID(),
           lead_id: newLead.id,
           stage: h.stage,
           date_occurred: h.date,
@@ -467,6 +470,7 @@ export default function LeadModalClient({ isOpen, onClose, lead, user, leads = [
       
       const changes = [`WA: ${existingLead.contact} -> ${formData.contact}`];
       await supabase.from('lead_notes').insert({
+        id: crypto.randomUUID(),
         lead_id: existingLead.id,
         text: `[SYSTEM] Data kontak diperbarui oleh ${user.name} saat mencoba tambah lead baru. ${changes.join(', ')}`,
         author_name: 'System',
