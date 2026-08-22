@@ -270,17 +270,20 @@ export default function LeadModalClient({ isOpen, onClose, lead, user, leads = [
           if (internalLead.category !== finalCategory) changes.push(`Kategori: ${internalLead.category} -> ${finalCategory}`);
           if (internalLead.dateInput !== formData.dateInput) changes.push(`Tgl: ${internalLead.dateInput} -> ${formData.dateInput}`);
 
-          const notes = [...(internalLead.notes || [])];
           if (changes.length > 0) {
-            notes.push({
+            const { error: noteErr } = await supabase.from('lead_notes').insert({
+              lead_id: internalLead.id,
               text: `[SYSTEM] Data diperbarui oleh ${user.name}. ${changes.join(', ')}`,
-              author: 'System',
-              timestamp: new Date().toISOString(),
-              isLog: true
+              author_name: 'System',
+              is_log: true,
+              note_type: 'note',
+              created_at: new Date().toISOString()
             });
+            if (noteErr) throw noteErr;
           }
 
-          await supabase.from('leads').update(mapLeadToSupabase({ ...payloadToSave, productOffered, notes, updatedAt: new Date().toISOString() })).eq('id', internalLead.id);
+          const { error: updateErr } = await supabase.from('leads').update(mapLeadToSupabase({ ...payloadToSave, productOffered, updatedAt: new Date().toISOString() })).eq('id', internalLead.id);
+          if (updateErr) throw updateErr;
 
           // --- Sync with OI Forecast ---
           try {
@@ -367,24 +370,43 @@ export default function LeadModalClient({ isOpen, onClose, lead, user, leads = [
           history.push({ stage: 'Close Win', date: formData.dateClosed, by: user.name, timestamp: Date.now() + 40, dealValue: Number(formData.dealValue || 0), campaignNumber: Number(formData.campaignNumber || 1) });
         }
 
-        const { data: newLead } = await supabase.from('leads').insert(mapLeadToSupabase({
+        const { data: newLead, error: insertErr } = await supabase.from('leads').insert(mapLeadToSupabase({
           ...payloadToSave,
           productOffered,
           owner: user.name,
           ownerId: user.uid || '',
           isDeleted: false,
-          notes: [{
-            text: `Lead dibuat oleh ${user.name}`,
-            author: 'System',
-            timestamp: new Date().toISOString(),
-            isLog: true
-          }],
-          funnelHistory: history,
           status: finalStatus as any,
           createdAt: new Date().toISOString(),
           updatedAt: new Date().toISOString()
         })).select().single();
+        if (insertErr) throw insertErr;
         const docRef = { id: newLead.id };
+
+        const { error: noteErr } = await supabase.from('lead_notes').insert({
+          lead_id: newLead.id,
+          text: `Lead dibuat oleh ${user.name}`,
+          author_name: 'System',
+          is_log: true,
+          note_type: 'note',
+          created_at: new Date().toISOString()
+        });
+        if (noteErr) throw noteErr;
+
+        const fHistory = history.map(h => ({
+          lead_id: newLead.id,
+          stage: h.stage,
+          date_occurred: h.date,
+          by_user_name: h.by,
+          note: h.note || '',
+          assigned_by: user.name,
+          deal_value: h.dealValue || 0,
+          campaign_number: h.campaignNumber || 1,
+          created_at: new Date(h.timestamp).toISOString()
+        }));
+        
+        const { error: histErr } = await supabase.from('funnel_history').insert(fHistory);
+        if (histErr) throw histErr;
 
         // Register new category to global list if needed
         if (formData.category === 'Tambah Baru' && formData.customCategory.trim()) {
@@ -426,8 +448,7 @@ export default function LeadModalClient({ isOpen, onClose, lead, user, leads = [
           console.error("Forecast sync failed:", fErr);
         }
         
-        // History is already saved in funnelHistory array via Supabase JSONB column.
-        await supabase.from('leads').update({ funnel_history: history }).eq('id', docRef.id);
+        // History is already saved in funnel_history table
         
         toast.success("Lead baru ditambahkan");
       }
@@ -445,13 +466,6 @@ export default function LeadModalClient({ isOpen, onClose, lead, user, leads = [
     try {
       
       const changes = [`WA: ${existingLead.contact} -> ${formData.contact}`];
-      const notes = [...(existingLead.notes || [])];
-      notes.push({
-        text: `[SYSTEM] Data kontak diperbarui oleh ${user.name} saat mencoba tambah lead baru. ${changes.join(', ')}`,
-        author: 'System',
-        timestamp: new Date().toISOString(),
-        isLog: true
-      });
       await supabase.from('lead_notes').insert({
         lead_id: existingLead.id,
         text: `[SYSTEM] Data kontak diperbarui oleh ${user.name} saat mencoba tambah lead baru. ${changes.join(', ')}`,
