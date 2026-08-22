@@ -45,12 +45,12 @@ export default function LeadModalClient({ isOpen, onClose, lead, user, leads = [
   const mapLeadToSupabase = (leadData: any) => {
     const mapped: any = { ...leadData };
     if (mapped.brandName !== undefined) { mapped.brand_name = mapped.brandName; delete mapped.brandName; }
-    if (mapped.dateInput !== undefined) { mapped.date_input = mapped.dateInput; delete mapped.dateInput; }
-    if (mapped.dateChated !== undefined) { mapped.date_chated = mapped.dateChated; delete mapped.dateChated; }
-    if (mapped.dateResponsed !== undefined) { mapped.date_responsed = mapped.dateResponsed; delete mapped.dateResponsed; }
-    if (mapped.dateSetMeeting !== undefined) { mapped.date_set_meeting = mapped.dateSetMeeting; delete mapped.dateSetMeeting; }
-    if (mapped.dateClosed !== undefined) { mapped.date_closed = mapped.dateClosed; delete mapped.dateClosed; }
-    if (mapped.dateFailed !== undefined) { mapped.date_failed = mapped.dateFailed; delete mapped.dateFailed; }
+    if (mapped.dateInput !== undefined) { mapped.date_input = mapped.dateInput === '' ? null : mapped.dateInput; delete mapped.dateInput; }
+    if (mapped.dateChated !== undefined) { mapped.date_chated = mapped.dateChated === '' ? null : mapped.dateChated; delete mapped.dateChated; }
+    if (mapped.dateResponsed !== undefined) { mapped.date_responsed = mapped.dateResponsed === '' ? null : mapped.dateResponsed; delete mapped.dateResponsed; }
+    if (mapped.dateSetMeeting !== undefined) { mapped.date_set_meeting = mapped.dateSetMeeting === '' ? null : mapped.dateSetMeeting; delete mapped.dateSetMeeting; }
+    if (mapped.dateClosed !== undefined) { mapped.date_closed = mapped.dateClosed === '' ? null : mapped.dateClosed; delete mapped.dateClosed; }
+    if (mapped.dateFailed !== undefined) { mapped.date_failed = mapped.dateFailed === '' ? null : mapped.dateFailed; delete mapped.dateFailed; }
     if (mapped.interestLevel !== undefined) { mapped.interest_level = mapped.interestLevel; delete mapped.interestLevel; }
     if (mapped.dealValue !== undefined) { mapped.deal_value = mapped.dealValue; delete mapped.dealValue; }
     if (mapped.campaignNumber !== undefined) { delete mapped.campaignNumber; }
