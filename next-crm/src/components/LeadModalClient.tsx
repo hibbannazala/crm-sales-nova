@@ -53,7 +53,7 @@ export default function LeadModalClient({ isOpen, onClose, lead, user, leads = [
     if (mapped.dateFailed !== undefined) { mapped.date_failed = mapped.dateFailed; delete mapped.dateFailed; }
     if (mapped.interestLevel !== undefined) { mapped.interest_level = mapped.interestLevel; delete mapped.interestLevel; }
     if (mapped.dealValue !== undefined) { mapped.deal_value = mapped.dealValue; delete mapped.dealValue; }
-    if (mapped.campaignNumber !== undefined) { mapped.campaign_number = mapped.campaignNumber; delete mapped.campaignNumber; }
+    if (mapped.campaignNumber !== undefined) { delete mapped.campaignNumber; }
     if (mapped.leadSource !== undefined) { mapped.lead_source = mapped.leadSource; delete mapped.leadSource; }
     if (mapped.actionPlan !== undefined) { mapped.action_plan = mapped.actionPlan; delete mapped.actionPlan; }
     if (mapped.productOffered !== undefined) { mapped.product_offered = mapped.productOffered; delete mapped.productOffered; }
