@@ -163,12 +163,12 @@ export interface OIForecast {
   status: ForecastStatus;
   tier: 'A' | 'B' | 'C' | 'D' | '-';
   category: string;
-  lastFollowUp: string;
+  lastFollowUp: string | null;
   noteSales: string;
   
-  dateQuotation?: string;
+  dateQuotation?: string | null;
   picQuotation?: string;
-  dateInvoice?: string;
+  dateInvoice?: string | null;
   picInvoice?: string;
   
   createdAt: string;
