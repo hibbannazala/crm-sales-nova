@@ -93,12 +93,29 @@ export default function DashboardClient({ leads, user, users, targets = [], indi
       setGhostedAlerts(ghosted || []);
 
       // Fetch Paginated Table Leads
-      // Instead of an RPC, we just use PostgREST
-      let query = supabase.from('leads').select('*, funnelHistory:funnel_history(*), notes:lead_notes(*)', { count: 'exact' }).eq('is_deleted', false);
+      const needsInnerFilter = (filterStart && filterEnd) || p_admin !== 'ALL' || filterStatus !== 'ALL';
+      let selectString = '*, funnelHistory:funnel_history(*), notes:lead_notes(*)';
       
+      if (needsInnerFilter) {
+        selectString = '*, filtered:funnel_history!inner(*), funnelHistory:funnel_history(*), notes:lead_notes(*)';
+      }
+
+      let query = supabase.from('leads').select(selectString, { count: 'exact' }).eq('is_deleted', false);
+      
+      if (needsInnerFilter) {
+        if (filterStart && filterEnd) {
+          query = query.gte('funnel_history.date_occurred', p_start).lte('funnel_history.date_occurred', p_end);
+        }
+        if (p_admin !== 'ALL') {
+          query = query.eq('funnel_history.by_user_name', p_admin);
+        }
+        if (filterStatus !== 'ALL') {
+          query = query.eq('funnel_history.stage', filterStatus);
+        }
+      }
+
       if (filterCategory !== 'ALL') query = query.eq('category', filterCategory);
       if (filterProduct.length > 0) query = query.contains('product_offered', filterProduct);
-      if (filterStatus !== 'ALL') query = query.eq('status', filterStatus);
       if (search) {
         query = query.or(`brand_name.ilike.%${search}%,pic_name.ilike.%${search}%,contact.ilike.%${search}%`);
       }
@@ -131,6 +148,16 @@ export default function DashboardClient({ leads, user, users, targets = [], indi
           status: l.status,
           dealValue: l.deal_value || 0,
           isDeleted: l.is_deleted || false,
+          filteredHistory: (l.filtered || []).map((h: any) => ({
+            stage: h.stage,
+            date: h.date_occurred,
+            dealValue: h.deal_value,
+            campaignNumber: h.campaign_number,
+            note: h.note,
+            assignedBy: h.assigned_by,
+            by: h.by_user_name,
+            timestamp: h.created_at ? new Date(h.created_at).getTime() : 0
+          })),
           funnelHistory: (l.funnelHistory || []).map((h: any) => ({
             stage: h.stage,
             date: h.date_occurred,
@@ -763,7 +790,14 @@ export default function DashboardClient({ leads, user, users, targets = [], indi
                 </thead>
                 <tbody className="divide-y divide-slate-50">
                   {paginatedTableLeads.map((lead) => {
-                    const sortedHistory = [...(lead.funnelHistory || [])].sort((a, b) => {
+                    // Filter the history down to the date range to find the appropriate "latest"
+                    const dateFilteredHistory = [...(lead.funnelHistory || [])].filter(h => {
+                      if (!filterStart || !filterEnd) return true;
+                      const hTime = parseDateString(h.date);
+                      return hTime >= parseDateString(filterStart) && hTime <= parseDateString(filterEnd);
+                    });
+                    
+                    const sortedFilteredHistory = dateFilteredHistory.sort((a, b) => {
                       const timeA = parseDateString(a.date);
                       const timeB = parseDateString(b.date);
                       if (timeA !== timeB) return timeB - timeA;
@@ -772,35 +806,47 @@ export default function DashboardClient({ leads, user, users, targets = [], indi
                       if (tsA !== tsB) return tsB - tsA;
                       return getStageRank(b.stage) - getStageRank(a.stage);
                     });
-                    const globalLatest = sortedHistory[0];
+
+                    // Global Latest logic MUST use the full history regardless of date filter to show true global status
+                    const sortedFullHistory = [...(lead.funnelHistory || [])].sort((a, b) => {
+                      const timeA = parseDateString(a.date);
+                      const timeB = parseDateString(b.date);
+                      if (timeA !== timeB) return timeB - timeA;
+                      const tsA = a.timestamp || 0;
+                      const tsB = b.timestamp || 0;
+                      if (tsA !== tsB) return tsB - tsA;
+                      return getStageRank(b.stage) - getStageRank(a.stage);
+                    });
+
+                    const globalLatest = sortedFullHistory[0];
                     let picLatest = null;
                     
                     if (filterAdmin !== 'ALL') {
-                      picLatest = sortedHistory.find(h => h.by === filterAdmin);
+                      picLatest = sortedFilteredHistory.find(h => h.by === filterAdmin);
                     } else {
-                      picLatest = globalLatest;
+                      picLatest = sortedFilteredHistory[0];
                     }
 
                     const displayStatus = (() => {
-                      // If a specific status tab is selected, prefer showing that matching stage
                       if (filterStatus !== 'ALL') {
-                        const matchingEntry = sortedHistory.find(h => {
+                        const matchingEntry = sortedFilteredHistory.find(h => {
                           if (filterAdmin !== 'ALL') return h.stage === filterStatus && h.by === filterAdmin;
                           return h.stage === filterStatus;
                         });
                         if (matchingEntry) return matchingEntry.stage;
                       }
-                      return picLatest ? picLatest.stage : lead.status;
+                      return picLatest ? picLatest.stage : (sortedFilteredHistory[0]?.stage || lead.status);
                     })();
+                    
                     const displayDate = (() => {
                       if (filterStatus !== 'ALL') {
-                        const matchingEntry = sortedHistory.find(h => {
+                        const matchingEntry = sortedFilteredHistory.find(h => {
                           if (filterAdmin !== 'ALL') return h.stage === filterStatus && h.by === filterAdmin;
                           return h.stage === filterStatus;
                         });
                         if (matchingEntry) return matchingEntry.date;
                       }
-                      return picLatest ? picLatest.date : lead.dateInput;
+                      return picLatest ? picLatest.date : (sortedFilteredHistory[0]?.date || lead.dateInput);
                     })();
                     const isOverriddenByOther = filterAdmin !== 'ALL' && globalLatest && picLatest && globalLatest.by !== filterAdmin && (globalLatest.timestamp || parseDateString(globalLatest.date)) >= (picLatest.timestamp || parseDateString(picLatest.date));
 
