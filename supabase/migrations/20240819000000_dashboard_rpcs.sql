@@ -31,6 +31,7 @@ BEGIN
   -- We use a CTE or temp table, but for performance we can do conditional aggregation
   
   -- Total Leads: Filtered only by category, product, and admin existence
+  -- Total Leads: Filtered by category, product, admin existence, AND date of 'Leads' stage
   SELECT COUNT(DISTINCT l.id) INTO v_total_leads
   FROM leads l
   LEFT JOIN funnel_history fh ON fh.lead_id = l.id
@@ -38,7 +39,11 @@ BEGIN
     l.is_deleted = false
     AND (p_category = 'ALL' OR l.category = p_category)
     AND (array_length(p_products, 1) IS NULL OR l.product_offered && p_products)
-    AND (p_admin = 'ALL' OR EXISTS (SELECT 1 FROM funnel_history f2 WHERE f2.lead_id = l.id AND f2.by_user_name = p_admin));
+    AND (
+      p_start_date = '1970-01-01T00:00:00Z' OR 
+      (fh.stage = 'Leads' AND fh.date_occurred >= p_start_date AND fh.date_occurred <= p_end_date)
+    )
+    AND (p_admin = 'ALL' OR EXISTS (SELECT 1 FROM funnel_history f2 WHERE f2.lead_id = l.id AND f2.by_user_name = p_admin AND f2.date_occurred >= p_start_date AND f2.date_occurred <= p_end_date));
 
   -- Pipeline metrics: Requires matching date and admin on the specific stage
   WITH valid_leads AS (
@@ -94,6 +99,7 @@ $$ LANGUAGE plpgsql SECURITY DEFINER;
 
 -- 2. get_individual_contributions
 CREATE OR REPLACE FUNCTION get_individual_contributions(
+  p_admin TEXT DEFAULT 'ALL',
   p_category TEXT DEFAULT 'ALL',
   p_products TEXT[] DEFAULT '{}',
   p_start_date TIMESTAMPTZ DEFAULT '1970-01-01T00:00:00Z',
@@ -125,6 +131,7 @@ BEGIN
     FROM funnel_history fh
     JOIN valid_leads vl ON vl.id = fh.lead_id
     WHERE fh.date_occurred >= p_start_date AND fh.date_occurred <= p_end_date
+      AND (p_admin = 'ALL' OR fh.by_user_name = p_admin)
   )
   SELECT 
     a.by_user_name,

@@ -82,7 +82,7 @@ export default function DashboardClient({ leads, user, users, targets = [], indi
 
       // Fetch Individual Targets Contribution
       const { data: indStats } = await supabase.rpc('get_individual_contributions', {
-        p_category, p_products, p_start_date: p_start, p_end_date: p_end
+        p_admin, p_category, p_products, p_start_date: p_start, p_end_date: p_end
       });
       setIndividualStats(indStats || []);
 
