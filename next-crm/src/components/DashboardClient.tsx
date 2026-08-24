@@ -660,9 +660,13 @@ export default function DashboardClient({ leads, user, users, targets = [], indi
                     const tMeet = personalTarget?.targetMeeting || 0;
                     const tRev = personalTarget?.targetRevenue || 0;
 
-                    pChat = tChat ? Math.min(100, (adminChat / Math.round(tChat / 4)) * 100) : 0;
-                    pMeet = tMeet ? Math.min(100, (adminMeet / Math.round(tMeet / 4)) * 100) : 0;
-                    pRev = tRev ? Math.min(100, (adminRev / tRev) * 100) : 0;
+                    pChat = tChat ? Math.min(100, (adminChat / Math.round(tChat / 4)) * 100) : (adminChat > 0 ? 100 : 0);
+                    pMeet = tMeet ? Math.min(100, (adminMeet / Math.round(tMeet / 4)) * 100) : (adminMeet > 0 ? 100 : 0);
+                    pRev = tRev ? Math.min(100, (adminRev / tRev) * 100) : (adminRev > 0 ? 100 : 0);
+                  } else {
+                    pChat = adminChat > 0 ? 100 : 0;
+                    pMeet = adminMeet > 0 ? 100 : 0;
+                    pRev = adminRev > 0 ? 100 : 0;
                   }
 
                   return (
@@ -684,7 +688,7 @@ export default function DashboardClient({ leads, user, users, targets = [], indi
                         <div className="flex justify-between text-[9px] font-black uppercase tracking-widest text-slate-400 mb-1.5">
                           <span>Chat ({adminChat})</span>
                           {filterStart && filterEnd ? (
-                            <span>Target Mingguan: {personalTarget ? Math.round(personalTarget.targetChat / 4) : 0}</span>
+                            <span>Target Mingguan: {personalTarget?.targetChat ? Math.round(personalTarget.targetChat / 4) : 'Belum diset'}</span>
                           ) : null}
                         </div>
                         <div className="h-1.5 bg-slate-100 rounded-full overflow-hidden">
@@ -696,7 +700,7 @@ export default function DashboardClient({ leads, user, users, targets = [], indi
                         <div className="flex justify-between text-[9px] font-black uppercase tracking-widest text-slate-400 mb-1.5">
                           <span>Meet ({adminMeet})</span>
                           {filterStart && filterEnd ? (
-                            <span>Target Mingguan: {personalTarget ? Math.round(personalTarget.targetMeeting / 4) : 0}</span>
+                            <span>Target Mingguan: {personalTarget?.targetMeeting ? Math.round(personalTarget.targetMeeting / 4) : 'Belum diset'}</span>
                           ) : null}
                         </div>
                         <div className="h-1.5 bg-slate-100 rounded-full overflow-hidden">
@@ -708,7 +712,7 @@ export default function DashboardClient({ leads, user, users, targets = [], indi
                         <div className="flex justify-between text-[9px] font-black uppercase tracking-widest text-slate-400 mb-1.5">
                           <span>Revenue</span>
                           {filterStart && filterEnd ? (
-                            <span>Target: {new Intl.NumberFormat('id-ID', { notation: 'compact', style: 'currency', currency: 'IDR', maximumFractionDigits: 1 }).format(personalTarget?.targetRevenue || 0)}</span>
+                            <span>Target: {personalTarget?.targetRevenue ? new Intl.NumberFormat('id-ID', { notation: 'compact', style: 'currency', currency: 'IDR', maximumFractionDigits: 1 }).format(personalTarget.targetRevenue) : 'Belum diset'}</span>
                           ) : null}
                         </div>
                         <div className="h-1.5 bg-slate-100 rounded-full overflow-hidden">
