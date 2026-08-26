@@ -34,6 +34,7 @@ export default async function LeadsPage() {
     // If not found in users table, maybe the trigger hasn't fired yet, or they are not registered
     return <div>Akses Ditolak: Email Anda tidak terdaftar sebagai staf.</div>;
   }
+  currentUser.uid = currentUser.id;
 
   // Fetch all leads for the client side. 
   // In production with 6000 leads, this might be around 2-3MB. 
@@ -53,7 +54,13 @@ export default async function LeadsPage() {
   }
   
   // Fetch all users for filters
-  const { data: users } = await supabase.from('users').select('*');
+  const { data: rawUsers } = await supabase.from('users').select('*');
+  const users = (rawUsers || []).map((u: any) => ({
+    uid: u.id,
+    email: u.email,
+    name: u.name,
+    role: u.role
+  }));
 
   // Fetch targets
   const { data: globalTargets } = await supabase.from('global_targets').select('*');

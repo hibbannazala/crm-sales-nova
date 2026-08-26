@@ -10,11 +10,20 @@ export default async function TasksPage() {
   if (!session) redirect('/login');
 
   const { data: userData } = await supabase.from('users').select('*').eq('auth_id', session.user.id).single();
+  if (userData) {
+    userData.uid = userData.id;
+  }
   if (!userData) redirect('/login');
 
   // Fetch tasks
   const { data: tasksData } = await supabase.from('tasks').select('*, users!tasks_assigned_to_fkey(name), leads(brand_name)').order('created_at', { ascending: false });
-  const { data: allUsers } = await supabase.from('users').select('*');
+  const { data: rawUsers } = await supabase.from('users').select('*');
+  const allUsers = (rawUsers || []).map((u: any) => ({
+    uid: u.id,
+    email: u.email,
+    name: u.name,
+    role: u.role
+  }));
   let allLeads: any[] = [];
   let hasMore = true;
   let page = 0;

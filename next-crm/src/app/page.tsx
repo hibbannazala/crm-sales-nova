@@ -32,6 +32,7 @@ export default async function DashboardPage() {
   if (!currentUser) {
     return <div>Akses Ditolak: Email Anda tidak terdaftar sebagai staf.</div>;
   }
+  currentUser.uid = currentUser.id;
 
   let allLeads: any[] = [];
   let hasMore = true;
@@ -46,7 +47,13 @@ export default async function DashboardPage() {
       hasMore = false;
     }
   }
-  const { data: users } = await supabase.from('users').select('*');
+  const { data: rawUsers } = await supabase.from('users').select('*');
+  const users = (rawUsers || []).map((u: any) => ({
+    uid: u.id,
+    email: u.email,
+    name: u.name,
+    role: u.role
+  }));
   const { data: globalTargets } = await supabase.from('global_targets').select('*');
   const { data: individualTargets } = await supabase.from('individual_targets').select('*');
 

@@ -24,6 +24,9 @@ export default async function OIForecastPage() {
   }
 
   const { data: currentUser } = await supabase.from('users').select('*').eq('auth_id', authData.user.id).single();
+  if (currentUser) {
+    currentUser.uid = currentUser.id;
+  }
 
   let allLeads: any[] = [];
   let hasMore = true;
@@ -38,7 +41,28 @@ export default async function OIForecastPage() {
       hasMore = false;
     }
   }
-  const { data: users } = await supabase.from('users').select('*');
+
+  let allForecasts: any[] = [];
+  let forecastPage = 0;
+  let hasMoreForecasts = true;
+  while (hasMoreForecasts) {
+    const { data } = await supabase.from('oi_forecast').select('*').range(forecastPage * 1000, (forecastPage + 1) * 1000 - 1);
+    if (data && data.length > 0) {
+      allForecasts = [...allForecasts, ...data];
+      forecastPage++;
+      if (data.length < 1000) hasMoreForecasts = false;
+    } else {
+      hasMoreForecasts = false;
+    }
+  }
+
+  const { data: rawUsers } = await supabase.from('users').select('*');
+  const users = (rawUsers || []).map((u: any) => ({
+    uid: u.id,
+    email: u.email,
+    name: u.name,
+    role: u.role
+  }));
   const { data: forecasts } = await supabase.from('oi_forecasts').select('*');
   const { data: targets } = await supabase.from('oi_targets').select('*');
 

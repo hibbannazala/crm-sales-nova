@@ -23,7 +23,13 @@ export default async function LeadDetailPage({ params }: { params: Promise<{ id:
   }
 
   // Get all users for assignment drops
-  const { data: users } = await supabase.from('users').select('*');
+  const { data: rawUsers } = await supabase.from('users').select('*');
+  const users = (rawUsers || []).map((u: any) => ({
+    uid: u.id,
+    email: u.email,
+    name: u.name,
+    role: u.role
+  }));
 
   // Get Lead
   const { data: lead, error } = await supabase
