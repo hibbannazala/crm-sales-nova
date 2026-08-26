@@ -418,7 +418,7 @@ export default function LeadModalClient({ isOpen, onClose, lead, user, leads = [
 
         // --- Sync with OI Forecast ---
         try {
-          const { data: forecastSnap } = await supabase.from('oi_forecasts').select('*').eq('lead_id', newLeadDb.id);
+          const { data: forecastSnap } = await supabase.from('oi_forecasts').select('*').eq('lead_id', newLead.id);
             if (forecastSnap && forecastSnap.length > 0) {
             const forecastStatus = finalStatus === 'Close Win' ? 'WIN' : (finalStatus === 'Close Lost' || finalStatus === 'Failed' ? 'LOSE' : 'OPEN');
             
@@ -572,13 +572,19 @@ export default function LeadModalClient({ isOpen, onClose, lead, user, leads = [
                           <Info className="w-4 h-4 text-blue-600 shrink-0 mt-0.5" />
                           <div>
                             <p className="text-[11px] font-black text-blue-900 leading-snug">Brand ini sudah ada di database!</p>
-                            <p className="text-[10px] font-bold text-blue-700 mt-0.5">
+                            <p className="text-[10px] font-bold text-blue-700 mt-1">
+                              {(() => {
+                                const picName = smartMatch.picName || "PIC lain";
+                                return `Leads ini sudah milik ${picName}. Silakan ubah ke funnel yang lainnya dan sampaikan ke ${picName} untuk memberi tahu kalau leads ini sudah ada yang handle.`;
+                              })()}
+                            </p>
+                            <p className="text-[9px] font-medium text-blue-600 mt-1 opacity-80">
                               {(() => {
                                 const lastHistory = smartMatch.funnelHistory?.[smartMatch.funnelHistory.length - 1];
                                 if (lastHistory) {
-                                  return `Terakhir dikelola oleh ${lastHistory.by} (Status: ${lastHistory.stage} pada ${lastHistory.date})`;
+                                  return `(Status Terakhir: ${lastHistory.stage} oleh ${lastHistory.by} pada ${lastHistory.date})`;
                                 }
-                                return 'Telah diinput sebelumnya.';
+                                return '';
                               })()}
                             </p>
                           </div>
