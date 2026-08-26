@@ -575,7 +575,17 @@ export default function LeadModalClient({ isOpen, onClose, lead, user, leads = [
                             <p className="text-[10px] font-bold text-blue-700 mt-1">
                               {(() => {
                                 const picName = smartMatch.picName || "PIC lain";
-                                return `Leads ini sudah milik ${picName}. Silakan ubah ke funnel yang lainnya dan sampaikan ke ${picName} untuk memberi tahu kalau leads ini sudah ada yang handle.`;
+                                const isSystem = picName.toLowerCase().includes('sistem') || picName.toLowerCase().includes('system') || smartMatch.source?.toLowerCase().includes('sistem');
+                                
+                                if (smartMatch.status === 'Leads') {
+                                  if (!isSystem) {
+                                    return `Leads ini sudah milik ${picName}. Silakan ubah ke funnel yang lainnya dan sampaikan ke ${picName} untuk memberi tahu kalau leads ini sudah ada yang handle.`;
+                                  } else {
+                                    return `Leads ini diinput oleh Sistem dan masih berstatus "Leads". Anda dapat mengambil alih leads ini.`;
+                                  }
+                                } else {
+                                  return `Brand ini sudah ada di database dan sedang dikelola oleh ${picName} (Tahap: ${smartMatch.status}). Karena sudah bukan "Leads", Anda bisa menambahkan funnel baru jika diperlukan.`;
+                                }
                               })()}
                             </p>
                             <p className="text-[9px] font-medium text-blue-600 mt-1 opacity-80">
