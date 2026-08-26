@@ -707,7 +707,15 @@ export default function LeadsClient({ leads, user, users, approvals }: LeadsTabl
                         {(() => {
                           const sortedHistory = [...(lead.funnelHistory || [])].sort((a, b) => new Date(b.date).getTime() - new Date(a.date).getTime() || b.timestamp - a.timestamp);
                           const latestAction = sortedHistory[0];
-                          if (!latestAction) return null;
+                          if (!latestAction) {
+                            return (
+                              <div className="flex flex-col items-center mt-0.5">
+                                <span className="text-[9px] font-bold text-rose-500 bg-rose-50 border border-rose-100 px-1.5 py-0.5 rounded whitespace-nowrap">
+                                  Belum di-assign
+                                </span>
+                              </div>
+                            );
+                          }
                           
                           const recentAuthors = Array.from(new Set(sortedHistory.slice(0, 3).map(h => h.by)));
                           const isMultiPIC = recentAuthors.length > 1;
