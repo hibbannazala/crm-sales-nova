@@ -51,9 +51,9 @@ export default function Sidebar({
   };
 
   const handleLogout = async () => {
-     // TODO: Implement Supabase Logout
-     // await supabase.auth.signOut();
-     // router.push('/login');
+     await supabase.auth.signOut();
+     router.push('/login');
+     router.refresh();
   };
 
   return (
