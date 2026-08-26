@@ -855,11 +855,13 @@ export default function LeadsClient({ leads, user, users, approvals }: LeadsTabl
         isOpen={isLeadModalOpen} 
         onClose={() => {
           setIsLeadModalOpen(false);
+          setEditingLead(null);
           router.refresh();
-        }}  
+        }}
         lead={editingLead} 
         user={user} 
         leads={leads}
+        users={users}
       />
       
       {activeLead && (

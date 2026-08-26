@@ -16,11 +16,13 @@ interface LeadModalProps {
   lead: Lead | null;
   user: UserProfile;
   leads?: Lead[];
+  users?: UserProfile[];
 }
 
 
-export default function LeadModalClient({ isOpen, onClose, lead, user, leads = [] }: LeadModalProps) {
+export default function LeadModalClient({ isOpen, onClose, lead, user, leads = [], users = [] }: LeadModalProps) {
   const { categories: CATEGORIES, addCategory } = useCategories();
+  const [assignedPic, setAssignedPic] = useState<string>('');
   const [formData, setFormData] = useState({
     dateInput: new Date().toISOString().split('T')[0],
     category: '',
@@ -395,18 +397,22 @@ export default function LeadModalClient({ isOpen, onClose, lead, user, leads = [
         });
         if (noteErr) throw noteErr;
 
-        const fHistory = history.map(h => ({
-          id: crypto.randomUUID(),
-          lead_id: newLead.id,
-          stage: h.stage,
-          date_occurred: h.date,
-          by_user_name: h.by,
-          note: h.note || '',
-          assigned_by: user.name,
-          deal_value: h.dealValue || 0,
-          campaign_number: h.campaignNumber || 1,
-          created_at: new Date(h.timestamp).toISOString()
-        }));
+        const fHistory = history.map(h => {
+          const isInitialLeads = h.stage === 'Leads';
+          const finalBy = (isInitialLeads && assignedPic && (user.role === 'admin' || user.role === 'lord')) ? assignedPic : h.by;
+          return {
+            id: crypto.randomUUID(),
+            lead_id: newLead.id,
+            stage: h.stage,
+            date_occurred: h.date,
+            by_user_name: finalBy,
+            note: h.note || '',
+            assigned_by: finalBy !== h.by ? h.by : user.name,
+            deal_value: h.dealValue || 0,
+            campaign_number: h.campaignNumber || 1,
+            created_at: new Date(h.timestamp).toISOString()
+          };
+        });
         
         const { error: histErr } = await supabase.from('funnel_history').insert(fHistory);
         if (histErr) throw histErr;
@@ -609,6 +615,28 @@ export default function LeadModalClient({ isOpen, onClose, lead, user, leads = [
                       </div>
                     )}
                   </div>
+
+                  {!internalLead && (user.role === 'admin' || user.role === 'lord') && (
+                    <div className="mb-4 p-4 bg-purple-50 rounded-xl border border-purple-100">
+                      <label className="block text-[11px] font-bold text-purple-900 uppercase tracking-wider mb-2">
+                        Assign PIC (Opsional)
+                      </label>
+                      <select
+                        value={assignedPic}
+                        onChange={(e) => setAssignedPic(e.target.value)}
+                        className="w-full px-3 py-2 border border-purple-200 bg-white rounded-lg focus:ring-2 focus:ring-purple-500 font-bold text-purple-900"
+                      >
+                        <option value="">-- Assign ke Saya ({user.name}) --</option>
+                        {users.filter(u => u.status === 'active' && u.name !== user.name).map(u => (
+                          <option key={u.id} value={u.name}>{u.name} ({u.role})</option>
+                        ))}
+                      </select>
+                      <p className="text-[10px] text-purple-600 mt-1.5 font-medium leading-tight">
+                        Jika dipilih, funnel Leads pertama akan langsung tercatat atas nama PIC ini.
+                      </p>
+                    </div>
+                  )}
+
                   <div className="mb-4">
                     <label className="block text-[11px] font-bold text-gray-500 uppercase tracking-wider mb-1">Sumber Lead / Online Shop</label>
                     <select 
