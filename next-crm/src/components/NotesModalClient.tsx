@@ -34,13 +34,26 @@ export default function NotesModalClient({ isOpen, onClose, lead, user, approval
     if (!newNote.trim()) return;
     setLoading(true);
     try {
-      const notes = [...(lead.notes || []), {
+      const notePayload = {
+        id: crypto.randomUUID(),
+        lead_id: lead.id,
+        text: newNote,
+        author_name: user.name,
+        is_log: false,
+        note_type: 'note',
+        created_at: new Date().toISOString()
+      };
+      const { error } = await supabase.from('lead_notes').insert(notePayload);
+      if (error) throw error;
+      
+      // Update local state temporarily for UI feedback
+      if (!lead.notes) lead.notes = [];
+      lead.notes.push({
         text: newNote,
         author: user.name,
-        timestamp: new Date().toISOString()
-      }];
-      const { error } = await supabase.from('leads').update({ notes }).eq('id', lead.id);
-      if (error) throw error;
+        timestamp: notePayload.created_at
+      });
+      
       setNewNote('');
       toast.success("Catatan ditambahkan");
     } catch (error: any) {
