@@ -247,7 +247,7 @@ export default function StatusModalClient({ isOpen, onClose, lead, user, users =
         const funnelEntry: any = {
           lead_id: lead.id,
           stage: status,
-          date_occurred: status === 'Leads' ? lead.dateInput : date,
+          date_occurred: (status === 'Leads' && lead.dateInput) ? lead.dateInput : (date || new Date().toISOString().split('T')[0]),
           by_user_name: finalAuthor
         };
 
