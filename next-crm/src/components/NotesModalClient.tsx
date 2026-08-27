@@ -205,7 +205,7 @@ export default function NotesModalClient({ isOpen, onClose, lead, user, approval
                               {new Date(n.timestamp).toLocaleString('id-ID', { dateStyle: 'medium', timeStyle: 'short' })}
                             </span>
                           </div>
-                          <p className="text-sm text-gray-700 font-medium leading-relaxed">{n.text}</p>
+                          <p className="text-sm text-gray-700 font-medium leading-relaxed whitespace-pre-wrap">{n.text}</p>
                         </div>
                       )
                     ))

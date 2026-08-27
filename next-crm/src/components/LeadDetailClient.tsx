@@ -582,7 +582,7 @@ export default function LeadDetailClient({ lead: initialLead, user, users }: Omi
                                 </div>
                               </div>
                               <p className={cn(
-                                "text-sm leading-relaxed",
+                                "text-sm leading-relaxed whitespace-pre-wrap",
                                 note.isLog ? "text-slate-500 italic" : 
                                 isActionPlan ? "text-indigo-900 font-medium" : "text-slate-700 font-medium"
                               )}>
