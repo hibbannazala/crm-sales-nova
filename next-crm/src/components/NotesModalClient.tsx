@@ -5,6 +5,8 @@ import { toast } from 'sonner';
 import { motion, AnimatePresence } from 'motion/react';
 import { cn } from '@/lib/utils';
 import { createClient } from '@/utils/supabase/client';
+import MarkdownEditor from './MarkdownEditor';
+import MarkdownRenderer from './MarkdownRenderer';
 
 interface NotesModalProps {
   isOpen: boolean;
@@ -205,7 +207,7 @@ export default function NotesModalClient({ isOpen, onClose, lead, user, approval
                               {new Date(n.timestamp).toLocaleString('id-ID', { dateStyle: 'medium', timeStyle: 'short' })}
                             </span>
                           </div>
-                          <p className="text-sm text-gray-700 font-medium leading-relaxed whitespace-pre-wrap">{n.text}</p>
+                          <div className="text-sm text-gray-700 font-medium leading-relaxed mt-2"><MarkdownRenderer content={n.text} /></div>
                         </div>
                       )
                     ))
@@ -215,13 +217,14 @@ export default function NotesModalClient({ isOpen, onClose, lead, user, approval
                 {/* Note Input */}
                 <div className="p-4 bg-white border-t border-gray-200 shrink-0">
                   <div className="flex gap-3">
-                    <textarea 
-                      value={newNote}
-                      onChange={e => setNewNote(e.target.value)}
-                      rows={2} 
-                      className="flex-1 px-4 py-3 border border-gray-300 rounded-xl focus:ring-2 focus:ring-blue-500 focus:border-blue-500 resize-none text-sm font-medium" 
-                      placeholder="Tulis catatan diskusi, kendala, atau log manual di sini..."
-                    ></textarea>
+                    <div className="flex-1">
+                      <MarkdownEditor
+                        value={newNote}
+                        onChange={setNewNote}
+                        placeholder="Tulis catatan diskusi, kendala, atau log manual di sini..."
+                        disabled={loading}
+                      />
+                    </div>
                     <button 
                       onClick={handleSendNote}
                       disabled={loading || !newNote.trim()}

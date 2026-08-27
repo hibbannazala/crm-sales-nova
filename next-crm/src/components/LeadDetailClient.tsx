@@ -12,6 +12,8 @@ import { createClient } from '@/utils/supabase/client';
 import { useRouter } from 'next/navigation';
 import { cn } from '../lib/utils';
 import { toast } from 'sonner';
+import MarkdownRenderer from './MarkdownRenderer';
+import MarkdownEditor from './MarkdownEditor';
 import ConfirmModal from './ConfirmModal';
 import TaskModal from './TaskModal';
 import StatusModalClient from './StatusModalClient';
@@ -581,13 +583,13 @@ export default function LeadDetailClient({ lead: initialLead, user, users }: Omi
                                   )}
                                 </div>
                               </div>
-                              <p className={cn(
-                                "text-sm leading-relaxed whitespace-pre-wrap",
+                              <div className={cn(
+                                "text-sm leading-relaxed mt-2",
                                 note.isLog ? "text-slate-500 italic" : 
                                 isActionPlan ? "text-indigo-900 font-medium" : "text-slate-700 font-medium"
                               )}>
-                                {note.text}
-                              </p>
+                                <MarkdownRenderer content={note.text} />
+                              </div>
                             </div>
                           )
                         })
@@ -629,12 +631,14 @@ export default function LeadDetailClient({ lead: initialLead, user, users }: Omi
                         </button>
                       </div>
                       <div className="flex gap-3">
-                        <textarea
-                          value={newNoteText}
-                          onChange={e => setNewNoteText(e.target.value)}
-                          placeholder={noteType === 'action_plan' ? "Ketik langkah action plan selanjutnya..." : "Ketik catatan diskusi/informasi..."}
-                          className="flex-1 bg-slate-50 border border-slate-200 rounded-xl px-4 py-3 text-sm focus:ring-2 focus:ring-indigo-500 outline-none resize-none font-medium h-[60px]"
-                        />
+                        <div className="flex-1">
+                          <MarkdownEditor
+                            value={newNoteText}
+                            onChange={setNewNoteText}
+                            placeholder={noteType === 'action_plan' ? "Ketik langkah action plan selanjutnya..." : "Ketik catatan diskusi/informasi..."}
+                            disabled={isSendingNote}
+                          />
+                        </div>
                         <button
                           onClick={handleAddNote}
                           disabled={!newNoteText.trim() || isSendingNote}
