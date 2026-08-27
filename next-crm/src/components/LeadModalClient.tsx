@@ -376,6 +376,7 @@ export default function LeadModalClient({ isOpen, onClose, lead, user, leads = [
         }
 
         const { data: newLead, error: insertErr } = await supabase.from('leads').insert(mapLeadToSupabase({
+          id: crypto.randomUUID(),
           ...payloadToSave,
           productOffered,
           isDeleted: false,
