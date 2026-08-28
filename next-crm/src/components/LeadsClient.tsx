@@ -193,15 +193,19 @@ export default function LeadsClient({ leads, user, users, approvals }: LeadsTabl
           const autoDeleteAt = new Date();
           autoDeleteAt.setDate(deletedAt.getDate() + 30);
 
-          await supabase.from('leads').update({
-            isDeleted: true,
-            deletedAt: deletedAt.toISOString(),
-            autoDeleteAt: autoDeleteAt.toISOString()
+          const { error } = await supabase.from('leads').update({
+            is_deleted: true,
+            deleted_at: deletedAt.toISOString(),
+            auto_delete_at: autoDeleteAt.toISOString()
           }).eq('id', id);
           
+          if (error) throw error;
+
           addAuditLog("MOVE_TO_TRASH", `Lead ${lead?.brandName} dipindahkan ke sampah oleh ${user.name}`);
           toast.success("Lead dipindahkan ke sampah");
+          router.refresh();
         } catch (error: any) {
+          console.error("Gagal move to trash:", error);
           toast.error("Gagal: " + error.message);
         }
       },
@@ -213,14 +217,19 @@ export default function LeadsClient({ leads, user, users, approvals }: LeadsTabl
     const lead = leads.find(l => l.id === id);
     try {
       
-      await supabase.from('leads').update({
-        isDeleted: false,
-        deletedAt: null,
-        autoDeleteAt: null
+      const { error } = await supabase.from('leads').update({
+        is_deleted: false,
+        deleted_at: null,
+        auto_delete_at: null
       }).eq('id', id);
+      
+      if (error) throw error;
+      
       addAuditLog("RESTORE_LEAD", `Lead ${lead?.brandName} dipulihkan dari sampah oleh ${user.name}`);
       toast.success("Lead berhasil dipulihkan");
+      router.refresh();
     } catch (error: any) {
+      console.error("Gagal memulihkan:", error);
       toast.error("Gagal memulihkan: " + error.message);
     }
   };
@@ -233,14 +242,19 @@ export default function LeadsClient({ leads, user, users, approvals }: LeadsTabl
       async () => {
         try {
           
-          const forecastSnap = await supabase.from('oi_forecasts').select('id').eq('lead_id', id); const docs = forecastSnap.data || [];
+          const forecastSnap = await supabase.from('oi_forecasts').select('id').eq('lead_id', id);
           for (const fd of (forecastSnap.data || [])) {
-            await supabase.from('oi_forecasts').delete().eq('id', fd.id);
+            const { error: err1 } = await supabase.from('oi_forecasts').delete().eq('id', fd.id);
+            if (err1) throw err1;
           }
-          await supabase.from('leads').delete().eq('id', id);
+          const { error: err2 } = await supabase.from('leads').delete().eq('id', id);
+          if (err2) throw err2;
+          
           addAuditLog("PERMANENT_DELETE", `Lead ${lead?.brandName} dihapus permanen oleh ${user.name}`);
           toast.success("Lead dihapus secara permanen");
+          router.refresh();
         } catch (error: any) {
+          console.error("Gagal menghapus permanen:", error);
           toast.error("Gagal menghapus permanen: " + error.message);
         }
       },
@@ -379,20 +393,22 @@ export default function LeadsClient({ leads, user, users, approvals }: LeadsTabl
           let deletedCount = 0;
           const CHUNK = 20;
           for (let i = 0; i < trashLeads.length; i += CHUNK) {
-            const batchUpdates = [];
             const slice = trashLeads.slice(i, i + CHUNK);
             for (const lead of slice) {
               const fcSnap = await supabase.from('oi_forecasts').select('id').eq('lead_id', lead.id);
-              for (const fd of (fcSnap.data || [])) { batchUpdates.push({ _table: 'oi_forecasts', _delete: true, id: fd.id }); }
-              batchUpdates.push({ _table: 'leads', _delete: true, id: lead.id });
+              for (const fd of (fcSnap.data || [])) { 
+                await supabase.from('oi_forecasts').delete().eq('id', fd.id); 
+              }
+              await supabase.from('leads').delete().eq('id', lead.id);
               deletedCount++;
             }
-            for (const u of batchUpdates) await supabase.from('leads').update(u).eq('id', u.id);
           }
           addAuditLog("EMPTY_TRASH", `${deletedCount} leads dihapus permanen dari sampah oleh ${user.name}`);
           toast.dismiss(toastId);
           toast.success(`✅ ${deletedCount} data berhasil dihapus permanen dari server!`);
+          router.refresh();
         } catch (error: any) {
+          console.error("Gagal mengosongkan sampah:", error);
           toast.error("Gagal mengosongkan sampah: " + error.message);
         }
       },

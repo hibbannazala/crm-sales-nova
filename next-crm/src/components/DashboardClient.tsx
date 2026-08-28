@@ -104,13 +104,13 @@ export default function DashboardClient({ leads, user, users, targets = [], indi
       
       if (needsInnerFilter) {
         if (filterStart && filterEnd) {
-          query = query.gte('funnel_history.date_occurred', p_start).lte('funnel_history.date_occurred', p_end);
+          query = query.gte('filtered.date_occurred', p_start).lte('filtered.date_occurred', p_end);
         }
         if (p_admin !== 'ALL') {
-          query = query.eq('funnel_history.by_user_name', p_admin);
+          query = query.eq('filtered.by_user_name', p_admin);
         }
         if (filterStatus !== 'ALL') {
-          query = query.eq('funnel_history.stage', filterStatus);
+          query = query.eq('filtered.stage', filterStatus);
         }
       }
 

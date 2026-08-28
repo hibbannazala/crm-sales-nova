@@ -28,7 +28,13 @@ interface LeadDetailProps {
 
 export default function LeadDetailClient({ lead: initialLead, user, users }: Omit<LeadDetailProps, 'onClose'>) {
   const router = useRouter();
-  const onClose = () => router.push('/leads');
+  const onClose = () => {
+    router.refresh();
+    // Beri jeda kecil agar purge cache selesai sebelum navigasi kembali
+    setTimeout(() => {
+      router.back();
+    }, 50);
+  };
   const [lead, setLead] = useState(initialLead);
   const [notes, setNotes] = useState<Note[]>([]);
   const supabase = createClient();
