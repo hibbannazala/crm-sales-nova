@@ -30,11 +30,27 @@ export default async function LeadsPage() {
     .eq('auth_id', authData.user.id)
     .single();
 
+  let finalUser = currentUser;
   if (!currentUser) {
-    // If not found in users table, maybe the trigger hasn't fired yet, or they are not registered
-    return <div>Akses Ditolak: Email Anda tidak terdaftar sebagai staf.</div>;
+    const name = authData.user.user_metadata?.full_name || authData.user.user_metadata?.name || authData.user.email?.split('@')[0] || 'User Baru';
+    const { data: newUser } = await supabase.from('users').upsert({
+      id: authData.user.id,
+      auth_id: authData.user.id,
+      email: authData.user.email,
+      name: name,
+      role: 'pending',
+    }).select().single();
+    finalUser = newUser;
   }
-  currentUser.uid = currentUser.id;
+
+  if (!finalUser) {
+    return <div>Akses Ditolak: Gagal melakukan pendaftaran otomatis. Hubungi Admin.</div>;
+  }
+  
+  if (finalUser.role === 'pending') {
+    return null;
+  }
+  finalUser.uid = finalUser.id;
 
   // Fetch all leads for the client side. 
   // In production with 6000 leads, this might be around 2-3MB. 
@@ -108,7 +124,7 @@ export default async function LeadsPage() {
     <div className="min-h-screen bg-slate-50 flex flex-col">
       <LeadsClient 
         leads={mappedLeads}
-        user={currentUser as any}
+        user={finalUser as any}
         users={(users || []) as any}
         approvals={[]}
       />

@@ -29,10 +29,30 @@ export default async function DashboardPage() {
     .eq('auth_id', authData.user.id)
     .single();
 
+  let finalUser = currentUser;
   if (!currentUser) {
-    return <div>Akses Ditolak: Email Anda tidak terdaftar sebagai staf.</div>;
+    // Retry fetch or auto-register if concurrent
+    const name = authData.user.user_metadata?.full_name || authData.user.user_metadata?.name || authData.user.email?.split('@')[0] || 'User Baru';
+    const { data: newUser } = await supabase.from('users').upsert({
+      id: authData.user.id,
+      auth_id: authData.user.id,
+      email: authData.user.email,
+      name: name,
+      role: 'pending',
+    }).select().single();
+    finalUser = newUser;
   }
-  currentUser.uid = currentUser.id;
+
+  if (!finalUser) {
+    return <div>Akses Ditolak: Gagal melakukan pendaftaran otomatis. Hubungi Admin.</div>;
+  }
+  
+  if (finalUser.role === 'pending') {
+    // Let layout.tsx handle the pending screen
+    return null;
+  }
+  finalUser.uid = finalUser.id;
+
 
   let allLeads: any[] = [];
   let hasMore = true;
@@ -96,7 +116,7 @@ export default async function DashboardPage() {
     <div className="min-h-screen bg-slate-50 flex flex-col">
       <DashboardClient 
         leads={mappedLeads}
-        user={currentUser as any}
+        user={finalUser as any}
         users={(users || []) as any}
         targets={globalTargets as any}
         individualTargets={individualTargets as any}

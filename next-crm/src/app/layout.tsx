@@ -33,7 +33,31 @@ export default async function RootLayout({
   
   if (authData?.user) {
     const { data } = await supabase.from('users').select('*').eq('auth_id', authData.user.id).single();
-    currentUser = data;
+    if (data) {
+      currentUser = data;
+    } else {
+      // Auto-register new user
+      const name = authData.user.user_metadata?.full_name || authData.user.user_metadata?.name || authData.user.email?.split('@')[0] || 'User Baru';
+      const { data: newUser } = await supabase.from('users').insert({
+        id: authData.user.id,
+        auth_id: authData.user.id,
+        email: authData.user.email,
+        name: name,
+        role: 'pending',
+      }).select().single();
+      currentUser = newUser;
+    }
+  }
+
+  if (currentUser?.role === 'pending') {
+    const PendingScreen = (await import('@/components/PendingScreen')).default;
+    return (
+      <html lang="id">
+        <body>
+          <PendingScreen email={currentUser.email} name={currentUser.name} />
+        </body>
+      </html>
+    );
   }
 
   return (
