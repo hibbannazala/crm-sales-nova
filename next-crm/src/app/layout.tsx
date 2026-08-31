@@ -60,10 +60,16 @@ export default async function RootLayout({
     );
   }
 
+  let pendingUsersCount = 0;
+  if (currentUser && (currentUser.role === 'admin' || currentUser.role === 'lord')) {
+    const { count } = await supabase.from('users').select('*', { count: 'exact', head: true }).eq('role', 'pending');
+    pendingUsersCount = count || 0;
+  }
+
   return (
     <html lang="id">
       <body>
-        <AppLayout user={currentUser}>
+        <AppLayout user={currentUser} pendingUsersCount={pendingUsersCount}>
           {children}
         </AppLayout>
       </body>

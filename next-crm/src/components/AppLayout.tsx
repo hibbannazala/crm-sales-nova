@@ -4,7 +4,7 @@ import React, { useState } from 'react';
 import Sidebar from './Sidebar';
 import { Toaster } from 'sonner';
 
-export default function AppLayout({ children, user }: { children: React.ReactNode, user?: any }) {
+export default function AppLayout({ children, user, pendingUsersCount = 0 }: { children: React.ReactNode, user?: any, pendingUsersCount?: number }) {
   const [sidebarOpen, setSidebarOpen] = useState(true);
   
   return (
@@ -15,7 +15,7 @@ export default function AppLayout({ children, user }: { children: React.ReactNod
           sidebarOpen={sidebarOpen}
           setSidebarOpen={setSidebarOpen}
           permissions={{}}
-          pendingUsersCount={0}
+          pendingUsersCount={pendingUsersCount}
           pendingApprovalsCount={0}
         />
       )}
