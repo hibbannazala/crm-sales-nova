@@ -107,8 +107,9 @@ export default async function LeadsPage() {
     dealValue: l.deal_value || 0,
     isDeleted: l.is_deleted || false,
     funnelHistory: (l.funnelHistory || []).map((h: any) => ({
+      id: h.id,
       stage: h.stage,
-      date: h.date_occurred,
+      date: (h.date_occurred || '').split('T')[0],
       dealValue: h.deal_value,
       campaignNumber: h.campaign_number,
       note: h.note,

@@ -269,8 +269,27 @@ export default function StatusModalClient({ isOpen, onClose, lead, user, users =
 
         fHistoryRecords.push(funnelEntry);
       } else if (isOverride && targetEntryToOverride) {
-        // Find existing funnel history record to update? We don't have its ID because mapping omitted it.
-        // We will just insert a log note about the override.
+        // Direct update to existing funnel history record in Supabase
+        const fHistUpdates: any = {
+          date_occurred: date || new Date().toISOString().split('T')[0],
+          by_user_name: finalAuthor
+        };
+        if (status === 'Close Win') {
+          fHistUpdates.deal_value = Number(dealValue || 0);
+          fHistUpdates.campaign_number = Number(campaignNumber || 1);
+        }
+        if (noteText.trim()) {
+          fHistUpdates.note = noteText.trim();
+        }
+        if (wasAssigned) {
+          fHistUpdates.assigned_by = user.name;
+        }
+
+        if (targetEntryToOverride.id) {
+          await supabase.from('funnel_history').update(fHistUpdates).eq('id', targetEntryToOverride.id);
+        } else if (status === 'Close Win' && targetEntryToOverride.campaignNumber) {
+          await supabase.from('funnel_history').update(fHistUpdates).eq('lead_id', lead.id).eq('stage', 'Close Win').eq('campaign_number', targetEntryToOverride.campaignNumber);
+        }
       }
       
       const assignLabel = wasAssigned ? ` (assigned by ${user.name})` : '';

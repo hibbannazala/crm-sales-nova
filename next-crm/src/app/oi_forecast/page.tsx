@@ -68,12 +68,15 @@ export default async function OIForecastPage() {
     dealValue: l.deal_value || 0,
     isDeleted: l.is_deleted || false,
     funnelHistory: (l.funnelHistory || l.funnel_history || []).map((h: any) => ({
+      id: h.id,
       stage: h.stage,
-      date: h.date_occurred,
+      date: (h.date_occurred || '').split('T')[0],
       by: h.by_user_name,
       dealValue: h.deal_value,
       campaignNumber: h.campaign_number,
-      note: h.note
+      note: h.note,
+      assignedBy: h.assigned_by,
+      timestamp: h.created_at ? new Date(h.created_at).getTime() : 0
     }))
   });
 
