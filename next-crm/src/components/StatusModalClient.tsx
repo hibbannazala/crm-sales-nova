@@ -2,6 +2,7 @@ import { useState } from 'react';
 import { Lead, UserProfile, LeadStatus, InterestLevel, ProductOffered } from '@/types';
 import { X, Calendar, MessageSquare, AlertCircle, CheckCircle2 } from 'lucide-react';
 import { createClient } from '@/utils/supabase/client';
+import { useRouter } from 'next/navigation';
 import { toast } from 'sonner';
 import { motion, AnimatePresence } from 'motion/react';
 import { cn } from '@/lib/utils';
@@ -18,6 +19,7 @@ interface StatusModalProps {
 const STAGES: LeadStatus[] = ["Leads", "Chated", "Responsed", "Set Meeting", "Hold", "Close Win", "Close Lost", "Failed"];
 
 export default function StatusModalClient({ isOpen, onClose, lead, user, users = [] }: StatusModalProps) {
+  const router = useRouter();
   const supabase = createClient();
   const [status, setStatus] = useState<LeadStatus>(lead.status);
   const [interest, setInterest] = useState<InterestLevel>(lead.interestLevel);
@@ -372,6 +374,7 @@ export default function StatusModalClient({ isOpen, onClose, lead, user, users =
       });
 
       toast.success(isOverride ? "Data diperbarui (Override)" : "Jejak Funnel tercatat");
+      router.refresh();
       onClose();
     } catch (error: any) {
       toast.error("Gagal menyimpan: " + error.message);
