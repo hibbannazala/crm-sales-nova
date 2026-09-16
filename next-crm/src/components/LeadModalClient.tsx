@@ -821,15 +821,15 @@ export default function LeadModalClient({ isOpen, onClose, lead, user, leads = [
                     </button>
                     <button
                       type="button"
-                      onClick={() => setProductOffered(prev => prev.includes('Basemen') ? prev.filter(p => p !== 'Basemen') : [...prev, 'Basemen'])}
+                      onClick={() => setProductOffered(prev => (prev.includes('MCN') || prev.includes('Basemen' as any)) ? prev.filter(p => p !== 'MCN' && (p as any) !== 'Basemen') : [...prev, 'MCN'])}
                       className={cn(
                         "flex-1 px-4 py-2.5 rounded-xl font-bold text-sm border-2 transition-all active:scale-95",
-                        productOffered.includes('Basemen')
+                        productOffered.includes('MCN') || productOffered.includes('Basemen' as any)
                           ? "bg-slate-800 text-white border-slate-800 shadow-lg shadow-slate-200"
                           : "bg-white text-slate-500 border-slate-200 hover:border-slate-400"
                       )}
                     >
-                      Basemen
+                      MCN
                     </button>
                     <button
                       type="button"

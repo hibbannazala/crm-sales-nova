@@ -372,10 +372,10 @@ export default function LeadDetailClient({ lead: initialLead, user, users }: Omi
                     <span key={p} className={cn(
                       "px-3 py-1.5 rounded-xl text-xs font-black uppercase tracking-wider border",
                       p === 'TNT' ? 'bg-indigo-50 text-indigo-600 border-indigo-100' : 
-                      p === 'Basemen' ? 'bg-slate-100 text-slate-700 border-slate-200' : 
+                      (p === 'MCN' || (p as string) === 'Basemen') ? 'bg-slate-100 text-slate-700 border-slate-200' : 
                       'bg-amber-50 text-amber-600 border-amber-100'
                     )}>
-                      {p}
+                      {(p as string) === 'Basemen' ? 'MCN' : p}
                     </span>
                   ))}
                 </div>

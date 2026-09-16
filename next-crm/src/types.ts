@@ -9,7 +9,7 @@ export interface UserProfile {
 
 export type LeadStatus = 'Leads' | 'Chated' | 'Responsed' | 'Set Meeting' | 'Hold' | 'Close Win' | 'Close Lost' | 'Failed';
 export type InterestLevel = 'HOT' | 'WARM' | 'COLD' | '-';
-export type ProductOffered = 'Basemen' | 'TNT' | 'HYPE';
+export type ProductOffered = 'MCN' | 'TNT' | 'HYPE';
 
 export interface Note {
   id?: string;

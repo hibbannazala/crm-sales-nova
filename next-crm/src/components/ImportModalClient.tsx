@@ -287,7 +287,7 @@ export default function ImportModalClient({ isOpen, onClose, users = [] }: Impor
         if (iProduct > -1 && cols[iProduct]) {
           const pVal = cols[iProduct].toUpperCase();
           if (pVal.includes('TNT')) productOffered.push('TNT');
-          if (pVal.includes('BASEMEN')) productOffered.push('Basemen');
+          if (pVal.includes('BASEMEN') || pVal.includes('MCN')) productOffered.push('MCN');
           if (pVal.includes('HYPE')) productOffered.push('HYPE');
         }
 
@@ -995,7 +995,7 @@ export default function ImportModalClient({ isOpen, onClose, users = [] }: Impor
                         📦 Produk Yang Ditawarkan (Default jika tidak ada di CSV)
                       </label>
                       <div className="flex flex-wrap justify-center gap-3">
-                        {['TNT', 'Basemen', 'HYPE'].map((p) => (
+                        {['TNT', 'MCN', 'HYPE'].map((p) => (
                           <button
                             key={p}
                             type="button"

@@ -130,14 +130,14 @@ export default function OIForecastPage({ leads, user, users = [], forecasts: ser
               TNT Campaign
             </button>
             <button
-              onClick={() => setActiveTab('Basemen')}
+              onClick={() => setActiveTab('MCN')}
               className={`px-8 py-3 rounded-full font-black text-sm uppercase tracking-widest transition-all duration-300 shadow-sm ${
-                activeTab === 'Basemen' 
+                activeTab === 'MCN' 
                   ? 'bg-gradient-to-r from-blue-600 to-indigo-600 text-white shadow-blue-500/30' 
                   : 'bg-white text-slate-500 border border-slate-200 hover:bg-slate-50'
               }`}
             >
-              Basemen
+              MCN
             </button>
             <button
               onClick={() => setActiveTab('HYPE')}

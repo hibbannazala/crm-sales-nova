@@ -124,7 +124,7 @@ export default function LeadsClient({ leads, user, users, approvals }: LeadsTabl
       return (bName.toLowerCase().includes(search.toLowerCase()) || 
               cContact.includes(search)) &&
              (filterStatus === 'ALL' || l.status === filterStatus) &&
-             (filterProduct === 'ALL' || (l.productOffered || []).includes(filterProduct as any)) &&
+             (filterProduct === 'ALL' || (l.productOffered || []).includes(filterProduct as any) || (filterProduct === 'MCN' && (l.productOffered || []).includes('Basemen' as any))) &&
              matchesDate;
     });
 
@@ -561,7 +561,7 @@ export default function LeadsClient({ leads, user, users, approvals }: LeadsTabl
             >
               <option value="ALL">Semua Produk</option>
               <option value="TNT">TNT</option>
-              <option value="Basemen">Basemen</option>
+              <option value="MCN">MCN</option>
               <option value="HYPE">HYPE</option>
             </select>
             {(['ALL', 'Leads', 'Chated', 'Responsed', 'Set Meeting', 'Hold', 'Close Win', 'Close Lost', 'Failed'] as const).map(s => (
@@ -688,10 +688,10 @@ export default function LeadsClient({ leads, user, users, approvals }: LeadsTabl
                             <span key={p} className={cn(
                               "px-2 py-0.5 rounded-md text-[9px] font-black uppercase tracking-tight border",
                               p === 'TNT' ? 'bg-indigo-50 text-indigo-600 border-indigo-100' : 
-                              p === 'Basemen' ? 'bg-slate-100 text-slate-700 border-slate-200' : 
+                              (p === 'MCN' || (p as string) === 'Basemen') ? 'bg-slate-100 text-slate-700 border-slate-200' : 
                               'bg-amber-50 text-amber-600 border-amber-100'
                             )}>
-                              {p}
+                              {(p as string) === 'Basemen' ? 'MCN' : p}
                             </span>
                           ))}
                         </div>

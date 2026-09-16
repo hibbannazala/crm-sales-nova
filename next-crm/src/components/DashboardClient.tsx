@@ -544,7 +544,7 @@ export default function DashboardClient({ leads, user, users, targets = [], indi
         <span className="text-[10px] font-black text-slate-400 uppercase tracking-widest mr-1">Produk:</span>
         {[
           { key: 'TNT', label: 'TNT', active: 'bg-indigo-600 text-white shadow-lg shadow-indigo-200 border-indigo-600', inactive: 'bg-white text-indigo-600 border-indigo-200 hover:bg-indigo-50' },
-          { key: 'Basemen', label: 'Basemen', active: 'bg-slate-800 text-white shadow-lg shadow-slate-200 border-slate-800', inactive: 'bg-white text-slate-700 border-slate-200 hover:bg-slate-50' },
+          { key: 'MCN', label: 'MCN', active: 'bg-slate-800 text-white shadow-lg shadow-slate-200 border-slate-800', inactive: 'bg-white text-slate-700 border-slate-200 hover:bg-slate-50' },
           { key: 'HYPE', label: 'HYPE', active: 'bg-amber-400 text-white shadow-lg shadow-amber-200 border-amber-400', inactive: 'bg-white text-amber-600 border-amber-200 hover:bg-amber-50' },
         ].map(({ key, label, active, inactive }) => (
           <button
@@ -912,10 +912,10 @@ export default function DashboardClient({ leads, user, users, targets = [], indi
                                 <span key={p} className={cn(
                                   "px-2.5 py-1 rounded-md text-[9px] font-black uppercase tracking-widest border shadow-sm whitespace-nowrap",
                                   p === 'TNT' ? 'bg-indigo-50 text-indigo-600 border-indigo-100' : 
-                                  p === 'Basemen' ? 'bg-slate-100 text-slate-700 border-slate-200' : 
+                                  (p === 'MCN' || (p as string) === 'Basemen') ? 'bg-slate-100 text-slate-700 border-slate-200' : 
                                   'bg-amber-50 text-amber-600 border-amber-100'
                                 )}>
-                                  {p}
+                                  {(p as string) === 'Basemen' ? 'MCN' : p}
                                 </span>
                               ))}
                             </div>

@@ -478,15 +478,15 @@ export default function StatusModalClient({ isOpen, onClose, lead, user, users =
                   </button>
                   <button
                     type="button"
-                    onClick={() => toggleProduct('Basemen')}
+                    onClick={() => toggleProduct('MCN')}
                     className={cn(
                       "flex-1 px-4 py-3 rounded-xl font-bold text-sm border-2 transition-all active:scale-95",
-                      productOffered.includes('Basemen')
+                      productOffered.includes('MCN') || productOffered.includes('Basemen' as any)
                         ? "bg-slate-800 text-white border-slate-800 shadow-lg shadow-slate-200"
                         : "bg-white text-slate-500 border-slate-200 hover:border-slate-400"
                     )}
                   >
-                    Basemen
+                    MCN
                   </button>
                   <button
                     type="button"
