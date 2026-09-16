@@ -60,7 +60,7 @@ hr { border: none; border-top: 1px solid var(--border); margin: 40px 0; }
 <div class="container">
 
 <h1>crm-sales-tnt-v2 — Complete Call Flow &amp; Architecture Documentation</h1>
-<p class="subtitle">Generated from graphify knowledge graph: 1194 nodes, 1756 edges, 139 communities. Commit: 1adc0f7</p>
+<p class="subtitle">Generated from graphify knowledge graph: 1194 nodes, 1757 edges, 138 communities. Commit: 2ea9f9d</p>
 
 <div class="nav">
     <a href="#overview">Architecture Overview</a>
@@ -73,11 +73,11 @@ hr { border: none; border-top: 1px solid var(--border); margin: 40px 0; }
     <a href="#serve-api">Serving API</a>
     <a href="#tests-fixtures">Tests &amp; Fixtures</a>
     <a href="#src-types-ts">src/types.ts</a>
-    <a href="#proposed-changes">Proposed Changes</a>
-    <a href="#oiforecastclient-tsx">OIForecastClient.tsx</a>
-    <a href="#cn">cn</a>
-    <a href="#leadsclient-tsx">LeadsClient.tsx</a>
+    <a href="#next-crm-src-types-ts">next-crm/src/types.ts</a>
     <a href="#createclient">createClient</a>
+    <a href="#proposed-changes">Proposed Changes</a>
+    <a href="#cn">cn</a>
+    <a href="#oiforecastclient-tsx">OIForecastClient.tsx</a>
     <a href="#other">Other</a>
 </div>
 
@@ -106,30 +106,30 @@ flowchart LR
     class TESTS_FIXTURES_B84B1DCC module;
     SRC_TYPES_TS_7EA4E4D6("src/types.ts<br/><small>130 nodes</small>")
     class SRC_TYPES_TS_7EA4E4D6 module;
+    NEXT_CRM_SRC_TYPES_TS_CF3CCEF4("next-crm/src/types.ts<br/><small>27 nodes</small>")
+    class NEXT_CRM_SRC_TYPES_TS_CF3CCEF4 module;
+    CREATECLIENT_F94B24A3("createClient<br/><small>26 nodes</small>")
+    class CREATECLIENT_F94B24A3 module;
     PROPOSED_CHANGES_813235A4("Proposed Changes<br/><small>25 nodes</small>")
     class PROPOSED_CHANGES_813235A4 module;
-    OIFORECASTCLIENT_TSX_AE617D13("OIForecastClient.tsx<br/><small>22 nodes</small>")
-    class OIFORECASTCLIENT_TSX_AE617D13 module;
-    CN_B0BC9ABD("cn<br/><small>20 nodes</small>")
+    CN_B0BC9ABD("cn<br/><small>25 nodes</small>")
     class CN_B0BC9ABD module;
-    LEADSCLIENT_TSX_7A8DD831("LeadsClient.tsx<br/><small>20 nodes</small>")
-    class LEADSCLIENT_TSX_7A8DD831 module;
-    CREATECLIENT_F94B24A3("createClient<br/><small>20 nodes</small>")
-    class CREATECLIENT_F94B24A3 module;
-    OTHER_D0941E68("Other<br/><small>580 nodes</small>")
+    OIFORECASTCLIENT_TSX_AE617D13("OIForecastClient.tsx<br/><small>25 nodes</small>")
+    class OIFORECASTCLIENT_TSX_AE617D13 module;
+    OTHER_D0941E68("Other<br/><small>559 nodes</small>")
     class OTHER_D0941E68 module;
-    LEADSCLIENT_TSX_7A8DD831 -->|imports x34| OTHER_D0941E68
-    OIFORECASTCLIENT_TSX_AE617D13 -->|imports x23| OTHER_D0941E68
-    OTHER_D0941E68 -->|imports x20| LEADSCLIENT_TSX_7A8DD831
-    OTHER_D0941E68 -->|calls x19| CN_B0BC9ABD
-    CN_B0BC9ABD -->|imports x17| OTHER_D0941E68
-    LEADSCLIENT_TSX_7A8DD831 -->|imports x12| CN_B0BC9ABD
-    OTHER_D0941E68 -->|imports x12| OIFORECASTCLIENT_TSX_AE617D13
-    CN_B0BC9ABD -->|imports x7| LEADSCLIENT_TSX_7A8DD831
-    CREATECLIENT_F94B24A3 -->|imports x7| OTHER_D0941E68
-    LEADSCLIENT_TSX_7A8DD831 -->|imports x4| OIFORECASTCLIENT_TSX_AE617D13
-    CN_B0BC9ABD -->|imports x3| OIFORECASTCLIENT_TSX_AE617D13
-    BUILD_GRAPH_321CBB04 -->|imports x3| OTHER_D0941E68
+    NEXT_CRM_SRC_TYPES_TS_CF3CCEF4 -->|contains x20| OTHER_D0941E68
+    CN_B0BC9ABD -->|imports x18| CREATECLIENT_F94B24A3
+    NEXT_CRM_SRC_TYPES_TS_CF3CCEF4 -->|imports x17| CN_B0BC9ABD
+    CN_B0BC9ABD -->|imports x16| OTHER_D0941E68
+    OTHER_D0941E68 -->|imports x14| CN_B0BC9ABD
+    OTHER_D0941E68 -->|imports x13| CREATECLIENT_F94B24A3
+    OIFORECASTCLIENT_TSX_AE617D13 -->|imports x12| OTHER_D0941E68
+    CREATECLIENT_F94B24A3 -->|imports x12| OTHER_D0941E68
+    OIFORECASTCLIENT_TSX_AE617D13 -->|calls x11| CREATECLIENT_F94B24A3
+    CREATECLIENT_F94B24A3 -->|calls x9| CN_B0BC9ABD
+    NEXT_CRM_SRC_TYPES_TS_CF3CCEF4 -->|calls x9| CREATECLIENT_F94B24A3
+    OTHER_D0941E68 -->|imports x8| NEXT_CRM_SRC_TYPES_TS_CF3CCEF4
     classDef entry fill:#422006,stroke:#fbbf24,color:#fde68a,stroke-width:1px;
     classDef api fill:#450a0a,stroke:#f87171,color:#fee2e2,stroke-width:1px;
     classDef async fill:#2e1065,stroke:#a78bfa,color:#ede9fe,stroke-width:1px;
@@ -146,19 +146,19 @@ flowchart LR
     <h4>Architecture Layers</h4>
     <table style="width:100%;font-size:0.85rem;">
       <tr><th>Layer</th><th>Nodes</th><th>Communities</th></tr>
-      <tr><td>Extraction Pipeline</td><td>5</td><td><code>64</code></td></tr><tr><td>Graph Build</td><td>253</td><td><code>1, 2, 4, 5, 9, 10, 11, 14, 21, 27, 43, 57, 71, 81, 86, 127</code></td></tr><tr><td>Analysis &amp; Clustering</td><td>14</td><td><code>122, 103, 72</code></td></tr><tr><td>Outputs &amp; Docs</td><td>32</td><td><code>115, 117</code></td></tr><tr><td>CLI &amp; Skill Installers</td><td>30</td><td><code>12, 124, 137</code></td></tr><tr><td>Ingestion &amp; Updates</td><td>25</td><td><code>15, 123, 125, 128</code></td></tr><tr><td>Serving API</td><td>4</td><td><code>70</code></td></tr><tr><td>Tests &amp; Fixtures</td><td>14</td><td><code>101, 102, 104, 111</code></td></tr><tr><td>src/types.ts</td><td>130</td><td><code>0</code></td></tr><tr><td>Proposed Changes</td><td>25</td><td><code>114</code></td></tr><tr><td>OIForecastClient.tsx</td><td>22</td><td><code>6</code></td></tr><tr><td>cn</td><td>20</td><td><code>13</code></td></tr><tr><td>LeadsClient.tsx</td><td>20</td><td><code>3</code></td></tr><tr><td>createClient</td><td>20</td><td><code>8</code></td></tr><tr><td>Other</td><td>580</td><td><code>17, 22, 7, 116, 16, 18, 19, 20, 23, 24, 25, 118, 26, 28, 29, 30, 31, 32, 119, 120, 33, 34, 35, 36, 121, 37, 38, 39, 40, 41, 42, 44, 45, 46, 47, 48, 49, 50, 51, 52, 53, 54, 55, 56, 58, 59, 60, 61, 62, 63, 65, 66, 67, 68, 69, 100, 126, 73, 74, 75, 76, 77, 78, 79, 80, 82, 83, 84, 85, 87, 88, 89, 90, 91, 92, 93, 94, 95, 96, 97, 98, 99, 105, 106, 129, 130, 107, 108, 109, 110, 131, 132, 133, 134, 135, 136, 112, 113, 138</code></td></tr>
+      <tr><td>Extraction Pipeline</td><td>5</td><td><code>64</code></td></tr><tr><td>Graph Build</td><td>253</td><td><code>1, 2, 4, 5, 9, 10, 11, 14, 21, 27, 43, 57, 71, 81, 86, 127</code></td></tr><tr><td>Analysis &amp; Clustering</td><td>14</td><td><code>122, 103, 72</code></td></tr><tr><td>Outputs &amp; Docs</td><td>32</td><td><code>115, 117</code></td></tr><tr><td>CLI &amp; Skill Installers</td><td>30</td><td><code>12, 124, 137</code></td></tr><tr><td>Ingestion &amp; Updates</td><td>25</td><td><code>15, 123, 125, 128</code></td></tr><tr><td>Serving API</td><td>4</td><td><code>70</code></td></tr><tr><td>Tests &amp; Fixtures</td><td>14</td><td><code>101, 102, 104, 111</code></td></tr><tr><td>src/types.ts</td><td>130</td><td><code>0</code></td></tr><tr><td>next-crm/src/types.ts</td><td>27</td><td><code>7</code></td></tr><tr><td>createClient</td><td>26</td><td><code>17</code></td></tr><tr><td>Proposed Changes</td><td>25</td><td><code>114</code></td></tr><tr><td>cn</td><td>25</td><td><code>3</code></td></tr><tr><td>OIForecastClient.tsx</td><td>25</td><td><code>6</code></td></tr><tr><td>Other</td><td>559</td><td><code>22, 8, 116, 16, 18, 19, 23, 24, 25, 118, 26, 28, 29, 30, 31, 32, 119, 33, 34, 35, 36, 121, 20, 37, 38, 39, 40, 13, 41, 42, 44, 45, 46, 47, 48, 49, 50, 51, 52, 53, 54, 55, 56, 58, 59, 60, 61, 62, 63, 65, 66, 67, 68, 69, 100, 126, 73, 74, 75, 76, 77, 78, 79, 80, 82, 83, 84, 85, 87, 88, 89, 90, 91, 92, 93, 94, 95, 96, 97, 98, 99, 105, 106, 129, 130, 107, 108, 109, 110, 131, 132, 133, 134, 135, 136, 112, 113, 138</code></td></tr>
     </table>
   </div>
   <div class="card">
     <h4>Core Flow</h4>
-    <div class="arrow-chain">Extraction Pipeline -&gt; Graph Build -&gt; Other -&gt; LeadsClient.tsx -&gt; cn -&gt; OIForecastClient.tsx -&gt; Analysis &amp; Clustering</div>
+    <div class="arrow-chain">Extraction Pipeline -&gt; Graph Build -&gt; src/types.ts -&gt; Analysis &amp; Clustering -&gt; Outputs &amp; Docs -&gt; CLI &amp; Skill Installers -&gt; Ingestion &amp; Updates</div>
   </div>
 </div>
 <div class="grid">
   <div class="card">
     <h4>Graph Report Highlights</h4>
     <ul>
-      <li>1194 nodes · 1756 edges · 139 communities (85 shown, 54 thin omitted)</li>
+      <li>1194 nodes · 1757 edges · 138 communities (84 shown, 54 thin omitted)</li>
       <li>Extraction: 100% EXTRACTED · 0% INFERRED · 0% AMBIGUOUS</li>
       <li>Token cost: 0 input · 0 output</li>
       <li>1. `createClient()` - 41 edges</li>
@@ -2461,8 +2461,665 @@ flowchart LR
 </div>
 <hr>
 
-<!-- ====== 11. Proposed Changes ====== -->
-<h2 id="proposed-changes">11. Proposed Changes</h2>
+<!-- ====== 11. next-crm/src/types.ts ====== -->
+<h2 id="next-crm-src-types-ts">11. next-crm/src/types.ts</h2>
+<p>next-crm/src/types.ts groups implementation around next, crm, typests, components, mostly in next-crm/src/types.ts, src/components/LeadDetailClient.tsx, src/components/TasksClient.tsx. This section covers 27 nodes and 40 internal edges; the diagram shows only representative relationships to stay readable.</p>
+
+<div class="mermaid">
+%%{init: {"theme": "dark", "themeVariables": {"fontSize": "15.0px", "fontFamily": "Segoe UI, system-ui, sans-serif", "primaryColor": "#1e293b", "primaryTextColor": "#e2e8f0", "primaryBorderColor": "#38bdf8", "secondaryColor": "#0f172a", "tertiaryColor": "#334155", "lineColor": "#64748b", "textColor": "#e2e8f0"}, "flowchart": {"htmlLabels": true, "curve": "basis", "nodeSpacing": 48, "rankSpacing": 64, "padding": 14, "diagramPadding": 10, "useMaxWidth": true}}}%%
+flowchart LR
+    %% Section: next-crm/src/types.ts (27 nodes, 40 edges)
+    subgraph next_crm_src_types_ts_next_crm_src_types_ts_aba1122c["next-crm/src/types.ts"]
+        next_crm_src_types_funnelhistory_cf004971("FunnelHistory<br/><small>next-crm/src/types.ts</small>")
+        next_crm_src_types_note_436a854a("Note<br/><small>next-crm/src/types.ts</small>")
+        next_crm_src_types_task_0e384bd1("Task<br/><small>next-crm/src/types.ts</small>")
+        next_crm_src_types_8174f642("types.ts")
+        next_crm_src_types_taskpriority_8d4b6881("TaskPriority<br/><small>next-crm/src/types.ts</small>")
+        next_crm_src_types_taskstatus_6920140f("TaskStatus<br/><small>next-crm/src/types.ts</small>")
+        next_crm_src_types_default_permissions_a50d18b3("DEFAULT_PERMISSIONS<br/><small>next-crm/src/types.ts</small>")
+        next_crm_src_types_forecaststatus_f1d8ed49("ForecastStatus<br/><small>next-crm/src/types.ts</small>")
+        next_crm_src_types_lead_sources_134ed04c("LEAD_SOURCES<br/><small>next-crm/src/types.ts</small>")
+        next_crm_src_types_lord_permissions_5ef01118("LORD_PERMISSIONS<br/><small>next-crm/src/types.ts</small>")
+        next_crm_src_types_leadsource_d2a31802("LeadSource<br/><small>next-crm/src/types.ts</small>")
+        next_crm_src_types_permissionset_c8e373e4("PermissionSet<br/><small>next-crm/src/types.ts</small>")
+        next_crm_src_types_rolepermissions_7ca2157e("RolePermissions<br/><small>next-crm/src/types.ts</small>")
+        next_crm_src_types_userrole_8244c81c("UserRole<br/><small>next-crm/src/types.ts</small>")
+    end
+    subgraph next_crm_src_types_ts_src_components_TaskModal_t_1b6346c7["src/components/TaskModal.tsx"]
+        next_crm_src_components_taskmodal_83f64efc("TaskModal.tsx")
+        next_crm_src_components_taskmodal_taskmodal_b22ede40("TaskModal()<br/><small>src/components/TaskModal.tsx</small>")
+    end
+    next_crm_src_components_leaddetailclient_dd5f6894("LeadDetailClient.tsx")
+    next_crm_src_components_tasksclient_44dba6c5("TasksClient.tsx")
+    next_crm_src_components_leaddetailclient_dd5f6894 -->|imports| next_crm_src_components_taskmodal_taskmodal_b22ede40
+    next_crm_src_components_leaddetailclient_dd5f6894 -->|imports| next_crm_src_types_funnelhistory_cf004971
+    next_crm_src_components_leaddetailclient_dd5f6894 -->|imports| next_crm_src_types_note_436a854a
+    next_crm_src_components_leaddetailclient_dd5f6894 -->|imports| next_crm_src_types_task_0e384bd1
+    next_crm_src_components_leaddetailclient_dd5f6894 -->|imports| next_crm_src_components_taskmodal_83f64efc
+    next_crm_src_components_leaddetailclient_dd5f6894 -->|imports| next_crm_src_types_8174f642
+    next_crm_src_components_taskmodal_83f64efc -->|imports| next_crm_src_types_task_0e384bd1
+    next_crm_src_components_taskmodal_83f64efc -->|imports| next_crm_src_types_taskpriority_8d4b6881
+    next_crm_src_components_taskmodal_83f64efc -->|imports| next_crm_src_types_8174f642
+    next_crm_src_components_tasksclient_44dba6c5 -->|imports| next_crm_src_components_taskmodal_taskmodal_b22ede40
+    next_crm_src_components_tasksclient_44dba6c5 -->|imports| next_crm_src_types_task_0e384bd1
+    next_crm_src_components_tasksclient_44dba6c5 -->|imports| next_crm_src_types_taskpriority_8d4b6881
+    next_crm_src_components_tasksclient_44dba6c5 -->|imports| next_crm_src_types_taskstatus_6920140f
+    next_crm_src_components_tasksclient_44dba6c5 -->|imports| next_crm_src_components_taskmodal_83f64efc
+    next_crm_src_components_tasksclient_44dba6c5 -->|imports| next_crm_src_types_8174f642
+    %% Omitted for readability: 9 nodes, 0 edges
+    class next_crm_src_types_funnelhistory_cf004971 klass;
+    class next_crm_src_types_note_436a854a klass;
+    class next_crm_src_types_task_0e384bd1 klass;
+    class next_crm_src_types_8174f642 module;
+    class next_crm_src_types_taskpriority_8d4b6881 klass;
+    class next_crm_src_types_taskstatus_6920140f klass;
+    class next_crm_src_types_default_permissions_a50d18b3 klass;
+    class next_crm_src_types_forecaststatus_f1d8ed49 klass;
+    class next_crm_src_types_lead_sources_134ed04c klass;
+    class next_crm_src_types_lord_permissions_5ef01118 klass;
+    class next_crm_src_types_leadsource_d2a31802 klass;
+    class next_crm_src_types_permissionset_c8e373e4 klass;
+    class next_crm_src_types_rolepermissions_7ca2157e klass;
+    class next_crm_src_types_userrole_8244c81c klass;
+    class next_crm_src_components_taskmodal_83f64efc ui;
+    class next_crm_src_components_taskmodal_taskmodal_b22ede40 ui;
+    class next_crm_src_components_leaddetailclient_dd5f6894 entry;
+    class next_crm_src_components_tasksclient_44dba6c5 entry;
+    classDef entry fill:#422006,stroke:#fbbf24,color:#fde68a,stroke-width:1px;
+    classDef api fill:#450a0a,stroke:#f87171,color:#fee2e2,stroke-width:1px;
+    classDef async fill:#2e1065,stroke:#a78bfa,color:#ede9fe,stroke-width:1px;
+    classDef klass fill:#064e3b,stroke:#34d399,color:#d1fae5,stroke-width:1px;
+    classDef ui fill:#831843,stroke:#f472b6,color:#fce7f3,stroke-width:1px;
+    classDef module fill:#172554,stroke:#60a5fa,color:#dbeafe,stroke-width:1px;
+    classDef test fill:#3f3f46,stroke:#a1a1aa,color:#f4f4f5,stroke-width:1px;
+    classDef concept fill:#292524,stroke:#a8a29e,color:#fafaf9,stroke-dasharray:4 3;
+    classDef function fill:#0f172a,stroke:#38bdf8,color:#e0f2fe,stroke-width:1px;
+</div>
+
+<h3>Call Details</h3>
+<table class="call-table">
+<tr>
+  <th style="width:5%">#</th>
+  <th style="width:28%">Node</th>
+  <th style="width:10%">Type</th>
+  <th style="width:17%">Caller</th>
+  <th style="width:20%">Callees</th>
+  <th style="width:20%">Description</th>
+</tr>
+<tr>
+  <td>1</td>
+  <td><code>TaskModalProps</code><br><small style="color:var(--muted)">src/components/TaskModal.tsx</small></td>
+  <td><span class="tag tag-hook">UI</span></td>
+  <td>External entry / no inbound edge</td>
+  <td>No direct outbound edge</td>
+  <td>TaskModalProps node in src/components/TaskModal.tsx.</td>
+</tr>
+<tr>
+  <td>2</td>
+  <td><code>TaskCardProps</code><br><small style="color:var(--muted)">src/components/TasksClient.tsx</small></td>
+  <td><span class="tag tag-hook">UI</span></td>
+  <td>External entry / no inbound edge</td>
+  <td>No direct outbound edge</td>
+  <td>TaskCardProps node in src/components/TasksClient.tsx.</td>
+</tr>
+<tr>
+  <td>3</td>
+  <td><code>ForecastStatus</code><br><small style="color:var(--muted)">next-crm/src/types.ts</small></td>
+  <td><span class="tag tag-class">Class</span></td>
+  <td>External entry / no inbound edge</td>
+  <td>No direct outbound edge</td>
+  <td>ForecastStatus node in next-crm/src/types.ts.</td>
+</tr>
+<tr>
+  <td>4</td>
+  <td><code>FunnelHistory</code><br><small style="color:var(--muted)">next-crm/src/types.ts</small></td>
+  <td><span class="tag tag-class">Class</span></td>
+  <td><code>LeadDetailClient.tsx</code><br><small style="color:var(--muted)">src/components/LeadDetailClient.tsx</small></td>
+  <td>No direct outbound edge</td>
+  <td>FunnelHistory node in next-crm/src/types.ts.</td>
+</tr>
+<tr>
+  <td>5</td>
+  <td><code>LeadSource</code><br><small style="color:var(--muted)">next-crm/src/types.ts</small></td>
+  <td><span class="tag tag-class">Class</span></td>
+  <td>External entry / no inbound edge</td>
+  <td>No direct outbound edge</td>
+  <td>LeadSource node in next-crm/src/types.ts.</td>
+</tr>
+<tr>
+  <td>6</td>
+  <td><code>Note</code><br><small style="color:var(--muted)">next-crm/src/types.ts</small></td>
+  <td><span class="tag tag-class">Class</span></td>
+  <td><code>LeadDetailClient.tsx</code><br><small style="color:var(--muted)">src/components/LeadDetailClient.tsx</small></td>
+  <td>No direct outbound edge</td>
+  <td>Note node in next-crm/src/types.ts.</td>
+</tr>
+<tr>
+  <td>7</td>
+  <td><code>PermissionSet</code><br><small style="color:var(--muted)">next-crm/src/types.ts</small></td>
+  <td><span class="tag tag-class">Class</span></td>
+  <td>External entry / no inbound edge</td>
+  <td>No direct outbound edge</td>
+  <td>PermissionSet node in next-crm/src/types.ts.</td>
+</tr>
+<tr>
+  <td>8</td>
+  <td><code>RolePermissions</code><br><small style="color:var(--muted)">next-crm/src/types.ts</small></td>
+  <td><span class="tag tag-class">Class</span></td>
+  <td>External entry / no inbound edge</td>
+  <td>No direct outbound edge</td>
+  <td>RolePermissions node in next-crm/src/types.ts.</td>
+</tr>
+<tr>
+  <td>9</td>
+  <td><code>Task</code><br><small style="color:var(--muted)">next-crm/src/types.ts</small></td>
+  <td><span class="tag tag-class">Class</span></td>
+  <td><code>LeadDetailClient.tsx</code><br><small style="color:var(--muted)">src/components/LeadDetailClient.tsx</small><br><code>TaskModal.tsx</code><br><small style="color:var(--muted)">src/components/TaskModal.tsx</small><br><code>TasksClient.tsx</code><br><small style="color:var(--muted)">src/components/TasksClient.tsx</small></td>
+  <td>No direct outbound edge</td>
+  <td>Task node in next-crm/src/types.ts.</td>
+</tr>
+<tr>
+  <td>10</td>
+  <td><code>TaskPriority</code><br><small style="color:var(--muted)">next-crm/src/types.ts</small></td>
+  <td><span class="tag tag-class">Class</span></td>
+  <td><code>TaskModal.tsx</code><br><small style="color:var(--muted)">src/components/TaskModal.tsx</small><br><code>TasksClient.tsx</code><br><small style="color:var(--muted)">src/components/TasksClient.tsx</small></td>
+  <td>No direct outbound edge</td>
+  <td>TaskPriority node in next-crm/src/types.ts.</td>
+</tr>
+<tr>
+  <td>11</td>
+  <td><code>TaskStatus</code><br><small style="color:var(--muted)">next-crm/src/types.ts</small></td>
+  <td><span class="tag tag-class">Class</span></td>
+  <td><code>TasksClient.tsx</code><br><small style="color:var(--muted)">src/components/TasksClient.tsx</small></td>
+  <td>No direct outbound edge</td>
+  <td>TaskStatus node in next-crm/src/types.ts.</td>
+</tr>
+<tr>
+  <td>12</td>
+  <td><code>UserRole</code><br><small style="color:var(--muted)">next-crm/src/types.ts</small></td>
+  <td><span class="tag tag-class">Class</span></td>
+  <td>External entry / no inbound edge</td>
+  <td>No direct outbound edge</td>
+  <td>UserRole node in next-crm/src/types.ts.</td>
+</tr>
+<tr>
+  <td>13</td>
+  <td><code>InfoItem()</code><br><small style="color:var(--muted)">src/components/LeadDetailClient.tsx</small></td>
+  <td><span class="tag tag-hook">UI</span></td>
+  <td>External entry / no inbound edge</td>
+  <td>No direct outbound edge</td>
+  <td>InfoItem() node in src/components/LeadDetailClient.tsx.</td>
+</tr>
+<tr>
+  <td>14</td>
+  <td><code>LeadDetailClient()</code><br><small style="color:var(--muted)">src/components/LeadDetailClient.tsx</small></td>
+  <td><span class="tag tag-cmd">Entry</span></td>
+  <td><code>page.tsx</code><br><small style="color:var(--muted)">lead/[id]/page.tsx</small></td>
+  <td><code>cn()</code><br><small style="color:var(--muted)">src/lib/utils.ts</small><br><code>createClient()</code><br><small style="color:var(--muted)">utils/supabase/client.ts</small></td>
+  <td>LeadDetailClient() node in src/components/LeadDetailClient.tsx.</td>
+</tr>
+<tr>
+  <td>15</td>
+  <td><code>MilestoneItem()</code><br><small style="color:var(--muted)">src/components/LeadDetailClient.tsx</small></td>
+  <td><span class="tag tag-hook">UI</span></td>
+  <td>External entry / no inbound edge</td>
+  <td><code>cn()</code><br><small style="color:var(--muted)">src/lib/utils.ts</small></td>
+  <td>MilestoneItem() node in src/components/LeadDetailClient.tsx.</td>
+</tr>
+<tr>
+  <td>16</td>
+  <td><code>StatCard()</code><br><small style="color:var(--muted)">src/components/LeadDetailClient.tsx</small></td>
+  <td><span class="tag tag-hook">UI</span></td>
+  <td>External entry / no inbound edge</td>
+  <td>No direct outbound edge</td>
+  <td>StatCard() node in src/components/LeadDetailClient.tsx.</td>
+</tr>
+<tr>
+  <td>17</td>
+  <td><code>TabButton()</code><br><small style="color:var(--muted)">src/components/LeadDetailClient.tsx</small></td>
+  <td><span class="tag tag-hook">UI</span></td>
+  <td>External entry / no inbound edge</td>
+  <td><code>cn()</code><br><small style="color:var(--muted)">src/lib/utils.ts</small></td>
+  <td>TabButton() node in src/components/LeadDetailClient.tsx.</td>
+</tr>
+<tr>
+  <td>18</td>
+  <td><code>TaskModal()</code><br><small style="color:var(--muted)">src/components/TaskModal.tsx</small></td>
+  <td><span class="tag tag-hook">UI</span></td>
+  <td><code>LeadDetailClient.tsx</code><br><small style="color:var(--muted)">src/components/LeadDetailClient.tsx</small><br><code>TasksClient.tsx</code><br><small style="color:var(--muted)">src/components/TasksClient.tsx</small></td>
+  <td><code>cn()</code><br><small style="color:var(--muted)">src/lib/utils.ts</small><br><code>createClient()</code><br><small style="color:var(--muted)">utils/supabase/client.ts</small></td>
+  <td>TaskModal() node in src/components/TaskModal.tsx.</td>
+</tr>
+<tr>
+  <td>19</td>
+  <td><code>TaskCard()</code><br><small style="color:var(--muted)">src/components/TasksClient.tsx</small></td>
+  <td><span class="tag tag-hook">UI</span></td>
+  <td>External entry / no inbound edge</td>
+  <td><code>cn()</code><br><small style="color:var(--muted)">src/lib/utils.ts</small></td>
+  <td>TaskCard() node in src/components/TasksClient.tsx.</td>
+</tr>
+<tr>
+  <td>20</td>
+  <td><code>TasksClient()</code><br><small style="color:var(--muted)">src/components/TasksClient.tsx</small></td>
+  <td><span class="tag tag-cmd">Entry</span></td>
+  <td><code>page.tsx</code><br><small style="color:var(--muted)">app/tasks/page.tsx</small></td>
+  <td><code>createClient()</code><br><small style="color:var(--muted)">utils/supabase/client.ts</small></td>
+  <td>TasksClient() node in src/components/TasksClient.tsx.</td>
+</tr>
+<tr>
+  <td>21</td>
+  <td><code>LeadDetailClient.tsx</code><br><small style="color:var(--muted)">src/components/LeadDetailClient.tsx</small></td>
+  <td><span class="tag tag-cmd">Entry</span></td>
+  <td><code>page.tsx</code><br><small style="color:var(--muted)">lead/[id]/page.tsx</small></td>
+  <td><code>client.ts</code><br><small style="color:var(--muted)">utils/supabase/client.ts</small><br><code>cn()</code><br><small style="color:var(--muted)">src/lib/utils.ts</small><br><code>ConfirmModal()</code><br><small style="color:var(--muted)">src/components/ConfirmModal.tsx</small><br>+19 more</td>
+  <td>Module file in src/components/LeadDetailClient.tsx.</td>
+</tr>
+<tr>
+  <td>22</td>
+  <td><code>next-crm/src/components/TaskModal.tsx</code><br><small style="color:var(--muted)">src/components/TaskModal.tsx</small></td>
+  <td><span class="tag tag-hook">UI</span></td>
+  <td><code>LeadDetailClient.tsx</code><br><small style="color:var(--muted)">src/components/LeadDetailClient.tsx</small><br><code>TasksClient.tsx</code><br><small style="color:var(--muted)">src/components/TasksClient.tsx</small></td>
+  <td><code>client.ts</code><br><small style="color:var(--muted)">utils/supabase/client.ts</small><br><code>cn()</code><br><small style="color:var(--muted)">src/lib/utils.ts</small><br><code>createClient()</code><br><small style="color:var(--muted)">utils/supabase/client.ts</small><br>+6 more</td>
+  <td>Module file in src/components/TaskModal.tsx.</td>
+</tr>
+<tr>
+  <td>23</td>
+  <td><code>TasksClient.tsx</code><br><small style="color:var(--muted)">src/components/TasksClient.tsx</small></td>
+  <td><span class="tag tag-cmd">Entry</span></td>
+  <td><code>page.tsx</code><br><small style="color:var(--muted)">app/tasks/page.tsx</small></td>
+  <td><code>client.ts</code><br><small style="color:var(--muted)">utils/supabase/client.ts</small><br><code>cn()</code><br><small style="color:var(--muted)">src/lib/utils.ts</small><br><code>ConfirmModal()</code><br><small style="color:var(--muted)">src/components/ConfirmModal.tsx</small><br>+11 more</td>
+  <td>Module file in src/components/TasksClient.tsx.</td>
+</tr>
+<tr>
+  <td>24</td>
+  <td><code>next-crm/src/types.ts</code><br><small style="color:var(--muted)">next-crm/src/types.ts</small></td>
+  <td><span class="tag tag-class">Module</span></td>
+  <td><code>AdminApprovalsClient.tsx</code><br><small style="color:var(--muted)">src/components/AdminApprovalsClient.tsx</small><br><code>AdminTargetsClient.tsx</code><br><small style="color:var(--muted)">src/components/AdminTargetsClient.tsx</small><br><code>AdminUsersClient.tsx</code><br><small style="color:var(--muted)">src/components/AdminUsersClient.tsx</small><br>+14 more</td>
+  <td>No direct outbound edge</td>
+  <td>Module file in next-crm/src/types.ts.</td>
+</tr>
+<tr>
+  <td>25</td>
+  <td><code>DEFAULT_PERMISSIONS</code><br><small style="color:var(--muted)">next-crm/src/types.ts</small></td>
+  <td><span class="tag tag-class">Class</span></td>
+  <td>External entry / no inbound edge</td>
+  <td>No direct outbound edge</td>
+  <td>DEFAULT_PERMISSIONS node in next-crm/src/types.ts.</td>
+</tr>
+<tr>
+  <td>26</td>
+  <td><code>LEAD_SOURCES</code><br><small style="color:var(--muted)">next-crm/src/types.ts</small></td>
+  <td><span class="tag tag-class">Class</span></td>
+  <td><code>LeadModalClient.tsx</code><br><small style="color:var(--muted)">src/components/LeadModalClient.tsx</small></td>
+  <td>No direct outbound edge</td>
+  <td>LEAD_SOURCES node in next-crm/src/types.ts.</td>
+</tr>
+<tr>
+  <td>27</td>
+  <td><code>LORD_PERMISSIONS</code><br><small style="color:var(--muted)">next-crm/src/types.ts</small></td>
+  <td><span class="tag tag-class">Class</span></td>
+  <td>External entry / no inbound edge</td>
+  <td>No direct outbound edge</td>
+  <td>LORD_PERMISSIONS node in next-crm/src/types.ts.</td>
+</tr>
+</table>
+
+<div class="grid">
+  <div class="card">
+    <h4>Key Files</h4>
+    <table style="width:100%;font-size:0.85rem;">
+      <tr><th>File</th><th>Coverage</th></tr>
+      <tr><td><code>next-crm/src/types.ts</code></td><td>14 nodes</td></tr>
+<tr><td><code>src/components/LeadDetailClient.tsx</code></td><td>6 nodes</td></tr>
+<tr><td><code>src/components/TasksClient.tsx</code></td><td>4 nodes</td></tr>
+<tr><td><code>src/components/TaskModal.tsx</code></td><td>3 nodes</td></tr>
+    </table>
+  </div>
+  <div class="card">
+    <h4>Design Notes</h4>
+    <p>This section comes from graphify community clustering. Relationship summary: contains x23, imports x10, imports x5, references x2. The diagram prioritizes high-confidence calls or usage relationships; the table keeps the broader node inventory.</p>
+  </div>
+</div>
+<hr>
+
+<!-- ====== 12. createClient ====== -->
+<h2 id="createclient">12. createClient</h2>
+<p>createClient groups implementation around next, crm, components, app, mostly in src/components/DashboardClient.tsx, src/components/Sidebar.tsx, src/app/layout.tsx. This section covers 26 nodes and 45 internal edges; the diagram shows only representative relationships to stay readable.</p>
+
+<div class="mermaid">
+%%{init: {"theme": "dark", "themeVariables": {"fontSize": "15.0px", "fontFamily": "Segoe UI, system-ui, sans-serif", "primaryColor": "#1e293b", "primaryTextColor": "#e2e8f0", "primaryBorderColor": "#38bdf8", "secondaryColor": "#0f172a", "tertiaryColor": "#334155", "lineColor": "#64748b", "textColor": "#e2e8f0"}, "flowchart": {"htmlLabels": true, "curve": "basis", "nodeSpacing": 48, "rankSpacing": 64, "padding": 14, "diagramPadding": 10, "useMaxWidth": true}}}%%
+flowchart LR
+    %% Section: createClient (26 nodes, 45 edges)
+    subgraph createclient_src_components_DashboardClient_tsx_f3a0d521["src/components/DashboardClient.tsx"]
+        next_crm_src_components_dashboardclient_375d202e("DashboardClient.tsx")
+        next_crm_src_components_dashboardclient_dashboar_c6a3a26e("DashboardClient()<br/><small>src/components/DashboardClient.tsx</small>")
+        next_crm_src_components_dashboardclient_getstatu_1b504e9d("getStatusColor()<br/><small>src/components/DashboardClient.tsx</small>")
+    end
+    subgraph createclient_app_login_page_tsx_b5a401ce["app/login/page.tsx"]
+        next_crm_src_app_login_page_1cba4456("page.tsx")
+        next_crm_src_app_login_page_loginpage_62a48972("LoginPage()<br/><small>app/login/page.tsx</small>")
+    end
+    subgraph createclient_src_app_layout_tsx_f1ae4e1a["src/app/layout.tsx"]
+        next_crm_src_app_layout_3c2320ac("layout.tsx")
+        next_crm_src_app_layout_rootlayout_897eaf1f("RootLayout()<br/><small>src/app/layout.tsx</small>")
+    end
+    subgraph createclient_src_components_AppLayout_tsx_a3ae3c9c["src/components/AppLayout.tsx"]
+        next_crm_src_components_applayout_89b91a7d("AppLayout.tsx")
+        next_crm_src_components_applayout_applayout_430c35e0("AppLayout()<br/><small>src/components/AppLayout.tsx</small>")
+    end
+    subgraph createclient_src_components_BulkStatusModal_tsx_616146cf["src/components/BulkStatusModal.tsx"]
+        next_crm_src_components_bulkstatusmodal_4dbdbd34("BulkStatusModal.tsx")
+        next_crm_src_components_bulkstatusmodal_bulkstat_ca70824b("BulkStatusModal()<br/><small>src/components/BulkStatusModal.tsx</small>")
+    end
+    subgraph createclient_src_components_PendingScreen_tsx_758cbd52["src/components/PendingScreen.tsx"]
+        next_crm_src_components_pendingscreen_pendingscr_1795750c("PendingScreen()<br/><small>src/components/PendingScreen.tsx</small>")
+        next_crm_src_components_pendingscreen_e0995441("PendingScreen.tsx")
+    end
+    subgraph createclient_utils_supabase_client_ts_85772ee7["utils/supabase/client.ts"]
+        next_crm_src_utils_supabase_client_createclient_e47fcc62("createClient()<br/><small>utils/supabase/client.ts</small>")
+        next_crm_src_utils_supabase_client_1a442e8a("client.ts")
+    end
+    ref_supabase_ssr_e0f309c1("@supabase/ssr<br/><small>next-crm/package.json</small>")
+    next_crm_src_app_page_e3fa75a6("page.tsx")
+    next_crm_src_components_sidebar_sidebar_6bce1a96("Sidebar()<br/><small>src/components/Sidebar.tsx</small>")
+    next_crm_src_app_login_page_loginpage_62a48972 -->|calls| next_crm_src_utils_supabase_client_createclient_e47fcc62
+    next_crm_src_components_bulkstatusmodal_bulkstat_ca70824b -->|calls| next_crm_src_utils_supabase_client_createclient_e47fcc62
+    next_crm_src_components_dashboardclient_dashboar_c6a3a26e -->|calls| next_crm_src_utils_supabase_client_createclient_e47fcc62
+    next_crm_src_components_dashboardclient_dashboar_c6a3a26e -->|calls| next_crm_src_components_dashboardclient_getstatu_1b504e9d
+    next_crm_src_components_pendingscreen_pendingscr_1795750c -->|calls| next_crm_src_utils_supabase_client_createclient_e47fcc62
+    next_crm_src_components_sidebar_sidebar_6bce1a96 -->|calls| next_crm_src_utils_supabase_client_createclient_e47fcc62
+    next_crm_src_app_layout_rootlayout_897eaf1f -->|imports| next_crm_src_components_pendingscreen_e0995441
+    next_crm_src_app_layout_3c2320ac -->|imports| next_crm_src_components_applayout_applayout_430c35e0
+    next_crm_src_app_layout_3c2320ac -->|imports| next_crm_src_components_applayout_89b91a7d
+    next_crm_src_app_layout_3c2320ac -->|imports| ref_supabase_ssr_e0f309c1
+    next_crm_src_app_login_page_1cba4456 -->|imports| next_crm_src_utils_supabase_client_createclient_e47fcc62
+    next_crm_src_app_login_page_1cba4456 -->|imports| next_crm_src_utils_supabase_client_1a442e8a
+    next_crm_src_app_page_e3fa75a6 -->|imports| next_crm_src_components_dashboardclient_dashboar_c6a3a26e
+    next_crm_src_app_page_e3fa75a6 -->|imports| ref_supabase_ssr_e0f309c1
+    next_crm_src_app_page_e3fa75a6 -->|imports| next_crm_src_components_dashboardclient_375d202e
+    next_crm_src_components_applayout_89b91a7d -->|imports| next_crm_src_components_sidebar_sidebar_6bce1a96
+    next_crm_src_components_bulkstatusmodal_4dbdbd34 -->|imports| next_crm_src_utils_supabase_client_createclient_e47fcc62
+    next_crm_src_components_bulkstatusmodal_4dbdbd34 -->|imports| next_crm_src_utils_supabase_client_1a442e8a
+    next_crm_src_components_dashboardclient_375d202e -->|imports| next_crm_src_utils_supabase_client_createclient_e47fcc62
+    next_crm_src_components_dashboardclient_375d202e -->|imports| next_crm_src_components_bulkstatusmodal_bulkstat_ca70824b
+    next_crm_src_components_dashboardclient_375d202e -->|imports| next_crm_src_utils_supabase_client_1a442e8a
+    next_crm_src_components_dashboardclient_375d202e -->|imports| next_crm_src_components_bulkstatusmodal_4dbdbd34
+    next_crm_src_components_pendingscreen_e0995441 -->|imports| next_crm_src_utils_supabase_client_createclient_e47fcc62
+    next_crm_src_components_pendingscreen_e0995441 -->|imports| next_crm_src_utils_supabase_client_1a442e8a
+    %% Omitted for readability: 8 nodes, 1 edges
+    class next_crm_src_components_dashboardclient_375d202e entry;
+    class next_crm_src_components_dashboardclient_dashboar_c6a3a26e entry;
+    class next_crm_src_components_dashboardclient_getstatu_1b504e9d ui;
+    class next_crm_src_app_login_page_1cba4456 ui;
+    class next_crm_src_app_login_page_loginpage_62a48972 ui;
+    class next_crm_src_app_layout_3c2320ac ui;
+    class next_crm_src_app_layout_rootlayout_897eaf1f ui;
+    class next_crm_src_components_applayout_89b91a7d ui;
+    class next_crm_src_components_applayout_applayout_430c35e0 ui;
+    class next_crm_src_components_bulkstatusmodal_4dbdbd34 ui;
+    class next_crm_src_components_bulkstatusmodal_bulkstat_ca70824b ui;
+    class next_crm_src_components_pendingscreen_pendingscr_1795750c ui;
+    class next_crm_src_components_pendingscreen_e0995441 ui;
+    class next_crm_src_utils_supabase_client_createclient_e47fcc62 entry;
+    class next_crm_src_utils_supabase_client_1a442e8a entry;
+    class ref_supabase_ssr_e0f309c1 function;
+    class next_crm_src_app_page_e3fa75a6 ui;
+    class next_crm_src_components_sidebar_sidebar_6bce1a96 ui;
+    classDef entry fill:#422006,stroke:#fbbf24,color:#fde68a,stroke-width:1px;
+    classDef api fill:#450a0a,stroke:#f87171,color:#fee2e2,stroke-width:1px;
+    classDef async fill:#2e1065,stroke:#a78bfa,color:#ede9fe,stroke-width:1px;
+    classDef klass fill:#064e3b,stroke:#34d399,color:#d1fae5,stroke-width:1px;
+    classDef ui fill:#831843,stroke:#f472b6,color:#fce7f3,stroke-width:1px;
+    classDef module fill:#172554,stroke:#60a5fa,color:#dbeafe,stroke-width:1px;
+    classDef test fill:#3f3f46,stroke:#a1a1aa,color:#f4f4f5,stroke-width:1px;
+    classDef concept fill:#292524,stroke:#a8a29e,color:#fafaf9,stroke-dasharray:4 3;
+    classDef function fill:#0f172a,stroke:#38bdf8,color:#e0f2fe,stroke-width:1px;
+</div>
+
+<h3>Call Details</h3>
+<table class="call-table">
+<tr>
+  <th style="width:5%">#</th>
+  <th style="width:28%">Node</th>
+  <th style="width:10%">Type</th>
+  <th style="width:17%">Caller</th>
+  <th style="width:20%">Callees</th>
+  <th style="width:20%">Description</th>
+</tr>
+<tr>
+  <td>1</td>
+  <td><code>SidebarProps</code><br><small style="color:var(--muted)">src/components/Sidebar.tsx</small></td>
+  <td><span class="tag tag-hook">UI</span></td>
+  <td>External entry / no inbound edge</td>
+  <td>No direct outbound edge</td>
+  <td>Organizes documentation pages, navigation, or content lookup.</td>
+</tr>
+<tr>
+  <td>2</td>
+  <td><code>RootLayout()</code><br><small style="color:var(--muted)">src/app/layout.tsx</small></td>
+  <td><span class="tag tag-hook">UI</span></td>
+  <td>External entry / no inbound edge</td>
+  <td><code>PendingScreen.tsx</code><br><small style="color:var(--muted)">src/components/PendingScreen.tsx</small></td>
+  <td>RootLayout() node in src/app/layout.tsx.</td>
+</tr>
+<tr>
+  <td>3</td>
+  <td><code>LoginPage()</code><br><small style="color:var(--muted)">app/login/page.tsx</small></td>
+  <td><span class="tag tag-hook">UI</span></td>
+  <td>External entry / no inbound edge</td>
+  <td><code>createClient()</code><br><small style="color:var(--muted)">utils/supabase/client.ts</small></td>
+  <td>Organizes documentation pages, navigation, or content lookup.</td>
+</tr>
+<tr>
+  <td>4</td>
+  <td><code>DashboardPage()</code><br><small style="color:var(--muted)">src/app/page.tsx</small></td>
+  <td><span class="tag tag-hook">UI</span></td>
+  <td>External entry / no inbound edge</td>
+  <td>No direct outbound edge</td>
+  <td>Organizes documentation pages, navigation, or content lookup.</td>
+</tr>
+<tr>
+  <td>5</td>
+  <td><code>AppLayout()</code><br><small style="color:var(--muted)">src/components/AppLayout.tsx</small></td>
+  <td><span class="tag tag-hook">UI</span></td>
+  <td><code>layout.tsx</code><br><small style="color:var(--muted)">src/app/layout.tsx</small></td>
+  <td>No direct outbound edge</td>
+  <td>AppLayout() node in src/components/AppLayout.tsx.</td>
+</tr>
+<tr>
+  <td>6</td>
+  <td><code>BulkStatusModal()</code><br><small style="color:var(--muted)">src/components/BulkStatusModal.tsx</small></td>
+  <td><span class="tag tag-hook">UI</span></td>
+  <td><code>DashboardClient.tsx</code><br><small style="color:var(--muted)">src/components/DashboardClient.tsx</small><br><code>LeadsClient.tsx</code><br><small style="color:var(--muted)">src/components/LeadsClient.tsx</small></td>
+  <td><code>createClient()</code><br><small style="color:var(--muted)">utils/supabase/client.ts</small></td>
+  <td>BulkStatusModal() node in src/components/BulkStatusModal.tsx.</td>
+</tr>
+<tr>
+  <td>7</td>
+  <td><code>DashboardClient()</code><br><small style="color:var(--muted)">src/components/DashboardClient.tsx</small></td>
+  <td><span class="tag tag-cmd">Entry</span></td>
+  <td><code>page.tsx</code><br><small style="color:var(--muted)">src/app/page.tsx</small></td>
+  <td><code>cn()</code><br><small style="color:var(--muted)">src/lib/utils.ts</small><br><code>createClient()</code><br><small style="color:var(--muted)">utils/supabase/client.ts</small><br><code>getStatusColor()</code><br><small style="color:var(--muted)">src/components/DashboardClient.tsx</small></td>
+  <td>DashboardClient() node in src/components/DashboardClient.tsx.</td>
+</tr>
+<tr>
+  <td>8</td>
+  <td><code>getStatusColor()</code><br><small style="color:var(--muted)">src/components/DashboardClient.tsx</small></td>
+  <td><span class="tag tag-hook">UI</span></td>
+  <td><code>DashboardClient()</code><br><small style="color:var(--muted)">src/components/DashboardClient.tsx</small></td>
+  <td>No direct outbound edge</td>
+  <td>getStatusColor() node in src/components/DashboardClient.tsx.</td>
+</tr>
+<tr>
+  <td>9</td>
+  <td><code>RateCard()</code><br><small style="color:var(--muted)">src/components/DashboardClient.tsx</small></td>
+  <td><span class="tag tag-hook">UI</span></td>
+  <td>External entry / no inbound edge</td>
+  <td><code>cn()</code><br><small style="color:var(--muted)">src/lib/utils.ts</small></td>
+  <td>RateCard() node in src/components/DashboardClient.tsx.</td>
+</tr>
+<tr>
+  <td>10</td>
+  <td><code>StatCard()</code><br><small style="color:var(--muted)">src/components/DashboardClient.tsx</small></td>
+  <td><span class="tag tag-hook">UI</span></td>
+  <td>External entry / no inbound edge</td>
+  <td><code>cn()</code><br><small style="color:var(--muted)">src/lib/utils.ts</small></td>
+  <td>StatCard() node in src/components/DashboardClient.tsx.</td>
+</tr>
+<tr>
+  <td>11</td>
+  <td><code>PendingScreen()</code><br><small style="color:var(--muted)">src/components/PendingScreen.tsx</small></td>
+  <td><span class="tag tag-hook">UI</span></td>
+  <td>External entry / no inbound edge</td>
+  <td><code>createClient()</code><br><small style="color:var(--muted)">utils/supabase/client.ts</small></td>
+  <td>PendingScreen() node in src/components/PendingScreen.tsx.</td>
+</tr>
+<tr>
+  <td>12</td>
+  <td><code>NavItem()</code><br><small style="color:var(--muted)">src/components/Sidebar.tsx</small></td>
+  <td><span class="tag tag-hook">UI</span></td>
+  <td>External entry / no inbound edge</td>
+  <td><code>cn()</code><br><small style="color:var(--muted)">src/lib/utils.ts</small></td>
+  <td>NavItem() node in src/components/Sidebar.tsx.</td>
+</tr>
+<tr>
+  <td>13</td>
+  <td><code>Sidebar()</code><br><small style="color:var(--muted)">src/components/Sidebar.tsx</small></td>
+  <td><span class="tag tag-hook">UI</span></td>
+  <td><code>AppLayout.tsx</code><br><small style="color:var(--muted)">src/components/AppLayout.tsx</small></td>
+  <td><code>cn()</code><br><small style="color:var(--muted)">src/lib/utils.ts</small><br><code>createClient()</code><br><small style="color:var(--muted)">utils/supabase/client.ts</small></td>
+  <td>Organizes documentation pages, navigation, or content lookup.</td>
+</tr>
+<tr>
+  <td>14</td>
+  <td><code>createClient()</code><br><small style="color:var(--muted)">utils/supabase/client.ts</small></td>
+  <td><span class="tag tag-cmd">Entry</span></td>
+  <td><code>AdminApprovalsClient()</code><br><small style="color:var(--muted)">src/components/AdminApprovalsClient.tsx</small><br><code>AdminApprovalsClient.tsx</code><br><small style="color:var(--muted)">src/components/AdminApprovalsClient.tsx</small><br><code>AdminTargetsClient()</code><br><small style="color:var(--muted)">src/components/AdminTargetsClient.tsx</small><br>+37 more</td>
+  <td>No direct outbound edge</td>
+  <td>createClient() node in utils/supabase/client.ts.</td>
+</tr>
+<tr>
+  <td>15</td>
+  <td><code>layout.tsx</code><br><small style="color:var(--muted)">src/app/layout.tsx</small></td>
+  <td><span class="tag tag-hook">UI</span></td>
+  <td>External entry / no inbound edge</td>
+  <td><code>@supabase/ssr</code><br><small style="color:var(--muted)">next-crm/package.json</small><br><code>AppLayout()</code><br><small style="color:var(--muted)">src/components/AppLayout.tsx</small><br><code>AppLayout.tsx</code><br><small style="color:var(--muted)">src/components/AppLayout.tsx</small><br>+1 more</td>
+  <td>Module file in src/app/layout.tsx.</td>
+</tr>
+<tr>
+  <td>16</td>
+  <td><code>metadata</code><br><small style="color:var(--muted)">src/app/layout.tsx</small></td>
+  <td><span class="tag tag-hook">UI</span></td>
+  <td>External entry / no inbound edge</td>
+  <td>No direct outbound edge</td>
+  <td>metadata node in src/app/layout.tsx.</td>
+</tr>
+<tr>
+  <td>17</td>
+  <td><code>login/page.tsx</code><br><small style="color:var(--muted)">app/login/page.tsx</small></td>
+  <td><span class="tag tag-hook">UI</span></td>
+  <td>External entry / no inbound edge</td>
+  <td><code>client.ts</code><br><small style="color:var(--muted)">utils/supabase/client.ts</small><br><code>createClient()</code><br><small style="color:var(--muted)">utils/supabase/client.ts</small></td>
+  <td>Module file in app/login/page.tsx.</td>
+</tr>
+<tr>
+  <td>18</td>
+  <td><code>app/page.tsx</code><br><small style="color:var(--muted)">src/app/page.tsx</small></td>
+  <td><span class="tag tag-hook">UI</span></td>
+  <td>External entry / no inbound edge</td>
+  <td><code>@supabase/ssr</code><br><small style="color:var(--muted)">next-crm/package.json</small><br><code>DashboardClient()</code><br><small style="color:var(--muted)">src/components/DashboardClient.tsx</small><br><code>DashboardClient.tsx</code><br><small style="color:var(--muted)">src/components/DashboardClient.tsx</small></td>
+  <td>Module file in src/app/page.tsx.</td>
+</tr>
+<tr>
+  <td>19</td>
+  <td><code>AppLayout.tsx</code><br><small style="color:var(--muted)">src/components/AppLayout.tsx</small></td>
+  <td><span class="tag tag-hook">UI</span></td>
+  <td><code>layout.tsx</code><br><small style="color:var(--muted)">src/app/layout.tsx</small></td>
+  <td><code>Sidebar()</code><br><small style="color:var(--muted)">src/components/Sidebar.tsx</small><br><code>Sidebar.tsx</code><br><small style="color:var(--muted)">src/components/Sidebar.tsx</small></td>
+  <td>Module file in src/components/AppLayout.tsx.</td>
+</tr>
+<tr>
+  <td>20</td>
+  <td><code>next-crm/src/components/BulkStatusModal.tsx</code><br><small style="color:var(--muted)">src/components/BulkStatusModal.tsx</small></td>
+  <td><span class="tag tag-hook">UI</span></td>
+  <td><code>DashboardClient.tsx</code><br><small style="color:var(--muted)">src/components/DashboardClient.tsx</small><br><code>LeadsClient.tsx</code><br><small style="color:var(--muted)">src/components/LeadsClient.tsx</small></td>
+  <td><code>client.ts</code><br><small style="color:var(--muted)">utils/supabase/client.ts</small><br><code>createClient()</code><br><small style="color:var(--muted)">utils/supabase/client.ts</small><br><code>CurrencyInput()</code><br><small style="color:var(--muted)">components/common/CurrencyInput.tsx</small><br>+6 more</td>
+  <td>Module file in src/components/BulkStatusModal.tsx.</td>
+</tr>
+<tr>
+  <td>21</td>
+  <td><code>STAGES</code><br><small style="color:var(--muted)">src/components/BulkStatusModal.tsx</small></td>
+  <td><span class="tag tag-hook">UI</span></td>
+  <td>External entry / no inbound edge</td>
+  <td>No direct outbound edge</td>
+  <td>STAGES node in src/components/BulkStatusModal.tsx.</td>
+</tr>
+<tr>
+  <td>22</td>
+  <td><code>DashboardClient.tsx</code><br><small style="color:var(--muted)">src/components/DashboardClient.tsx</small></td>
+  <td><span class="tag tag-cmd">Entry</span></td>
+  <td><code>page.tsx</code><br><small style="color:var(--muted)">src/app/page.tsx</small></td>
+  <td><code>BulkStatusModal()</code><br><small style="color:var(--muted)">src/components/BulkStatusModal.tsx</small><br><code>BulkStatusModal.tsx</code><br><small style="color:var(--muted)">src/components/BulkStatusModal.tsx</small><br><code>client.ts</code><br><small style="color:var(--muted)">utils/supabase/client.ts</small><br>+9 more</td>
+  <td>Module file in src/components/DashboardClient.tsx.</td>
+</tr>
+<tr>
+  <td>23</td>
+  <td><code>PendingScreen.tsx</code><br><small style="color:var(--muted)">src/components/PendingScreen.tsx</small></td>
+  <td><span class="tag tag-hook">UI</span></td>
+  <td><code>RootLayout()</code><br><small style="color:var(--muted)">src/app/layout.tsx</small></td>
+  <td><code>client.ts</code><br><small style="color:var(--muted)">utils/supabase/client.ts</small><br><code>createClient()</code><br><small style="color:var(--muted)">utils/supabase/client.ts</small></td>
+  <td>Module file in src/components/PendingScreen.tsx.</td>
+</tr>
+<tr>
+  <td>24</td>
+  <td><code>next-crm/src/components/Sidebar.tsx</code><br><small style="color:var(--muted)">src/components/Sidebar.tsx</small></td>
+  <td><span class="tag tag-hook">UI</span></td>
+  <td><code>AppLayout.tsx</code><br><small style="color:var(--muted)">src/components/AppLayout.tsx</small></td>
+  <td><code>client.ts</code><br><small style="color:var(--muted)">utils/supabase/client.ts</small><br><code>cn()</code><br><small style="color:var(--muted)">src/lib/utils.ts</small><br><code>createClient()</code><br><small style="color:var(--muted)">utils/supabase/client.ts</small><br>+1 more</td>
+  <td>Module file in src/components/Sidebar.tsx.</td>
+</tr>
+<tr>
+  <td>25</td>
+  <td><code>client.ts</code><br><small style="color:var(--muted)">utils/supabase/client.ts</small></td>
+  <td><span class="tag tag-cmd">Entry</span></td>
+  <td><code>AdminApprovalsClient.tsx</code><br><small style="color:var(--muted)">src/components/AdminApprovalsClient.tsx</small><br><code>AdminTargetsClient.tsx</code><br><small style="color:var(--muted)">src/components/AdminTargetsClient.tsx</small><br><code>AdminUsersClient.tsx</code><br><small style="color:var(--muted)">src/components/AdminUsersClient.tsx</small><br>+17 more</td>
+  <td><code>@supabase/ssr</code><br><small style="color:var(--muted)">next-crm/package.json</small></td>
+  <td>Module file in utils/supabase/client.ts.</td>
+</tr>
+<tr>
+  <td>26</td>
+  <td><code>@supabase/ssr</code><br><small style="color:var(--muted)">next-crm/package.json</small></td>
+  <td><span class="tag tag-func">Function</span></td>
+  <td><code>client.ts</code><br><small style="color:var(--muted)">utils/supabase/client.ts</small><br><code>layout.tsx</code><br><small style="color:var(--muted)">src/app/layout.tsx</small><br><code>middleware.ts</code><br><small style="color:var(--muted)">utils/supabase/middleware.ts</small><br>+5 more</td>
+  <td>No direct outbound edge</td>
+  <td>@supabase/ssr node in next-crm/package.json.</td>
+</tr>
+</table>
+
+<div class="grid">
+  <div class="card">
+    <h4>Key Files</h4>
+    <table style="width:100%;font-size:0.85rem;">
+      <tr><th>File</th><th>Coverage</th></tr>
+      <tr><td><code>src/components/DashboardClient.tsx</code></td><td>5 nodes</td></tr>
+<tr><td><code>src/components/Sidebar.tsx</code></td><td>4 nodes</td></tr>
+<tr><td><code>src/app/layout.tsx</code></td><td>3 nodes</td></tr>
+<tr><td><code>src/components/BulkStatusModal.tsx</code></td><td>3 nodes</td></tr>
+<tr><td><code>app/login/page.tsx</code></td><td>2 nodes</td></tr>
+<tr><td><code>src/app/page.tsx</code></td><td>2 nodes</td></tr>
+<tr><td><code>src/components/AppLayout.tsx</code></td><td>2 nodes</td></tr>
+<tr><td><code>src/components/PendingScreen.tsx</code></td><td>2 nodes</td></tr>
+    </table>
+  </div>
+  <div class="card">
+    <h4>Design Notes</h4>
+    <p>This section comes from graphify community clustering. Relationship summary: contains x16, imports x13, imports x9, calls x6. The diagram prioritizes high-confidence calls or usage relationships; the table keeps the broader node inventory.</p>
+  </div>
+</div>
+<hr>
+
+<!-- ====== 13. Proposed Changes ====== -->
+<h2 id="proposed-changes">13. Proposed Changes</h2>
 <p>Proposed Changes groups implementation around plan, implementation, checkmd, permission, mostly in implementation_plan_check.md. This section covers 25 nodes and 24 internal edges; the diagram shows only representative relationships to stay readable.</p>
 
 <div class="mermaid">
@@ -2761,20 +3418,349 @@ flowchart LR
 </div>
 <hr>
 
-<!-- ====== 12. OIForecastClient.tsx ====== -->
-<h2 id="oiforecastclient-tsx">12. OIForecastClient.tsx</h2>
-<p>OIForecastClient.tsx groups implementation around next, crm, components, oiforecast, mostly in components/OIForecast/OIGrid.tsx, components/OIForecast/OIMilestone.tsx, components/OIForecast/OISummaryCards.tsx. This section covers 22 nodes and 45 internal edges; the diagram shows only representative relationships to stay readable.</p>
+<!-- ====== 14. cn ====== -->
+<h2 id="cn">14. cn</h2>
+<p>cn groups implementation around next, crm, components, importmodalclienttsx, mostly in src/components/ImportModalClient.tsx, src/components/LeadsClient.tsx, src/components/ConfirmModal.tsx. This section covers 25 nodes and 55 internal edges; the diagram shows only representative relationships to stay readable.</p>
 
 <div class="mermaid">
 %%{init: {"theme": "dark", "themeVariables": {"fontSize": "15.0px", "fontFamily": "Segoe UI, system-ui, sans-serif", "primaryColor": "#1e293b", "primaryTextColor": "#e2e8f0", "primaryBorderColor": "#38bdf8", "secondaryColor": "#0f172a", "tertiaryColor": "#334155", "lineColor": "#64748b", "textColor": "#e2e8f0"}, "flowchart": {"htmlLabels": true, "curve": "basis", "nodeSpacing": 48, "rankSpacing": 64, "padding": 14, "diagramPadding": 10, "useMaxWidth": true}}}%%
 flowchart LR
-    %% Section: OIForecastClient.tsx (22 nodes, 45 edges)
+    %% Section: cn (25 nodes, 55 edges)
+    subgraph cn_src_components_LeadsClient_tsx_680616ec["src/components/LeadsClient.tsx"]
+        next_crm_src_components_leadsclient_b03e414f("LeadsClient.tsx")
+        next_crm_src_components_leadsclient_leadsclient_b8be44a6("LeadsClient()<br/><small>src/components/LeadsClient.tsx</small>")
+        next_crm_src_components_leadsclient_getstatuscol_2118c4d0("getStatusColor()<br/><small>src/components/LeadsClient.tsx</small>")
+    end
+    subgraph cn_src_components_AdminUsersClient_tsx_970fa2e7["src/components/AdminUsersClient.tsx"]
+        next_crm_src_components_adminusersclient_83f00627("AdminUsersClient.tsx")
+        next_crm_src_components_adminusersclient_adminus_b0236760("AdminUsersClient()<br/><small>src/components/AdminUsersClient.tsx</small>")
+    end
+    subgraph cn_src_components_ConfirmModal_tsx_14fb1edc["src/components/ConfirmModal.tsx"]
+        next_crm_src_components_confirmmodal_confirmmoda_0145d3fd("ConfirmModal()<br/><small>src/components/ConfirmModal.tsx</small>")
+        next_crm_src_components_confirmmodal_0bb8e44f("ConfirmModal.tsx")
+    end
+    subgraph cn_src_components_ImportModalClient_tsx_afad6391["src/components/ImportModalClient.tsx"]
+        next_crm_src_components_importmodalclient_940eb8ae("ImportModalClient.tsx")
+        next_crm_src_components_importmodalclient_import_bec04a42("ImportModalClient()<br/><small>src/components/ImportModalClient.tsx</small>")
+    end
+    subgraph cn_src_components_LeadModalClient_tsx_695cac20["src/components/LeadModalClient.tsx"]
+        next_crm_src_components_leadmodalclient_300d6329("LeadModalClient.tsx")
+        next_crm_src_components_leadmodalclient_leadmoda_828fee2a("LeadModalClient()<br/><small>src/components/LeadModalClient.tsx</small>")
+    end
+    subgraph cn_src_components_MarkdownRenderer_tsx_bc0e40a4["src/components/MarkdownRenderer.tsx"]
+        next_crm_src_components_markdownrenderer_e5de969a("MarkdownRenderer.tsx")
+        next_crm_src_components_markdownrenderer_markdow_3fd0896a("MarkdownRenderer()<br/><small>src/components/MarkdownRenderer.tsx</small>")
+    end
+    subgraph cn_src_hooks_useCategories_ts_c369e14a["src/hooks/useCategories.ts"]
+        next_crm_src_hooks_usecategories_usecategories_ea4365ce("useCategories()<br/><small>src/hooks/useCategories.ts</small>")
+        next_crm_src_hooks_usecategories_9057833b("useCategories.ts")
+    end
+    subgraph cn_src_lib_utils_ts_61eb8560["src/lib/utils.ts"]
+        next_crm_src_lib_utils_cn_19dad112("cn()<br/><small>src/lib/utils.ts</small>")
+        next_crm_src_lib_utils_07ed79fa("utils.ts")
+    end
+    next_crm_src_app_leads_page_fc162a39("page.tsx")
+    next_crm_src_components_adminusersclient_adminus_b0236760 -->|calls| next_crm_src_lib_utils_cn_19dad112
+    next_crm_src_components_confirmmodal_confirmmoda_0145d3fd -->|calls| next_crm_src_lib_utils_cn_19dad112
+    next_crm_src_components_importmodalclient_import_bec04a42 -->|calls| next_crm_src_hooks_usecategories_usecategories_ea4365ce
+    next_crm_src_components_importmodalclient_import_bec04a42 -->|calls| next_crm_src_lib_utils_cn_19dad112
+    next_crm_src_components_leadmodalclient_leadmoda_828fee2a -->|calls| next_crm_src_hooks_usecategories_usecategories_ea4365ce
+    next_crm_src_components_leadmodalclient_leadmoda_828fee2a -->|calls| next_crm_src_lib_utils_cn_19dad112
+    next_crm_src_components_leadsclient_leadsclient_b8be44a6 -->|calls| next_crm_src_lib_utils_cn_19dad112
+    next_crm_src_components_leadsclient_leadsclient_b8be44a6 -->|calls| next_crm_src_components_leadsclient_getstatuscol_2118c4d0
+    next_crm_src_components_markdownrenderer_markdow_3fd0896a -->|calls| next_crm_src_lib_utils_cn_19dad112
+    next_crm_src_app_leads_page_fc162a39 -->|imports| next_crm_src_components_leadsclient_leadsclient_b8be44a6
+    next_crm_src_app_leads_page_fc162a39 -->|imports| next_crm_src_components_leadsclient_b03e414f
+    next_crm_src_components_adminusersclient_83f00627 -->|imports| next_crm_src_lib_utils_cn_19dad112
+    next_crm_src_components_adminusersclient_83f00627 -->|imports| next_crm_src_components_confirmmodal_confirmmoda_0145d3fd
+    next_crm_src_components_adminusersclient_83f00627 -->|imports| next_crm_src_lib_utils_07ed79fa
+    next_crm_src_components_adminusersclient_83f00627 -->|imports| next_crm_src_components_confirmmodal_0bb8e44f
+    next_crm_src_components_confirmmodal_0bb8e44f -->|imports| next_crm_src_lib_utils_cn_19dad112
+    next_crm_src_components_confirmmodal_0bb8e44f -->|imports| next_crm_src_lib_utils_07ed79fa
+    next_crm_src_components_importmodalclient_940eb8ae -->|imports| next_crm_src_components_confirmmodal_confirmmoda_0145d3fd
+    next_crm_src_components_importmodalclient_940eb8ae -->|imports| next_crm_src_hooks_usecategories_usecategories_ea4365ce
+    next_crm_src_components_importmodalclient_940eb8ae -->|imports| next_crm_src_lib_utils_cn_19dad112
+    next_crm_src_components_importmodalclient_940eb8ae -->|imports| next_crm_src_components_confirmmodal_0bb8e44f
+    next_crm_src_components_importmodalclient_940eb8ae -->|imports| next_crm_src_hooks_usecategories_9057833b
+    next_crm_src_components_importmodalclient_940eb8ae -->|imports| next_crm_src_lib_utils_07ed79fa
+    next_crm_src_components_leadmodalclient_300d6329 -->|imports| next_crm_src_hooks_usecategories_usecategories_ea4365ce
+    %% Omitted for readability: 7 nodes, 15 edges
+    class next_crm_src_components_leadsclient_b03e414f entry;
+    class next_crm_src_components_leadsclient_leadsclient_b8be44a6 entry;
+    class next_crm_src_components_leadsclient_getstatuscol_2118c4d0 ui;
+    class next_crm_src_components_adminusersclient_83f00627 entry;
+    class next_crm_src_components_adminusersclient_adminus_b0236760 entry;
+    class next_crm_src_components_confirmmodal_confirmmoda_0145d3fd ui;
+    class next_crm_src_components_confirmmodal_0bb8e44f ui;
+    class next_crm_src_components_importmodalclient_940eb8ae entry;
+    class next_crm_src_components_importmodalclient_import_bec04a42 entry;
+    class next_crm_src_components_leadmodalclient_300d6329 entry;
+    class next_crm_src_components_leadmodalclient_leadmoda_828fee2a entry;
+    class next_crm_src_components_markdownrenderer_e5de969a ui;
+    class next_crm_src_components_markdownrenderer_markdow_3fd0896a ui;
+    class next_crm_src_hooks_usecategories_usecategories_ea4365ce ui;
+    class next_crm_src_hooks_usecategories_9057833b ui;
+    class next_crm_src_lib_utils_cn_19dad112 function;
+    class next_crm_src_lib_utils_07ed79fa module;
+    class next_crm_src_app_leads_page_fc162a39 ui;
+    classDef entry fill:#422006,stroke:#fbbf24,color:#fde68a,stroke-width:1px;
+    classDef api fill:#450a0a,stroke:#f87171,color:#fee2e2,stroke-width:1px;
+    classDef async fill:#2e1065,stroke:#a78bfa,color:#ede9fe,stroke-width:1px;
+    classDef klass fill:#064e3b,stroke:#34d399,color:#d1fae5,stroke-width:1px;
+    classDef ui fill:#831843,stroke:#f472b6,color:#fce7f3,stroke-width:1px;
+    classDef module fill:#172554,stroke:#60a5fa,color:#dbeafe,stroke-width:1px;
+    classDef test fill:#3f3f46,stroke:#a1a1aa,color:#f4f4f5,stroke-width:1px;
+    classDef concept fill:#292524,stroke:#a8a29e,color:#fafaf9,stroke-dasharray:4 3;
+    classDef function fill:#0f172a,stroke:#38bdf8,color:#e0f2fe,stroke-width:1px;
+</div>
+
+<h3>Call Details</h3>
+<table class="call-table">
+<tr>
+  <th style="width:5%">#</th>
+  <th style="width:28%">Node</th>
+  <th style="width:10%">Type</th>
+  <th style="width:17%">Caller</th>
+  <th style="width:20%">Callees</th>
+  <th style="width:20%">Description</th>
+</tr>
+<tr>
+  <td>1</td>
+  <td><code>ConfirmModalProps</code><br><small style="color:var(--muted)">src/components/ConfirmModal.tsx</small></td>
+  <td><span class="tag tag-hook">UI</span></td>
+  <td>External entry / no inbound edge</td>
+  <td>No direct outbound edge</td>
+  <td>ConfirmModalProps node in src/components/ConfirmModal.tsx.</td>
+</tr>
+<tr>
+  <td>2</td>
+  <td><code>LeadsPage()</code><br><small style="color:var(--muted)">app/leads/page.tsx</small></td>
+  <td><span class="tag tag-hook">UI</span></td>
+  <td>External entry / no inbound edge</td>
+  <td>No direct outbound edge</td>
+  <td>Organizes documentation pages, navigation, or content lookup.</td>
+</tr>
+<tr>
+  <td>3</td>
+  <td><code>AdminUsersClient()</code><br><small style="color:var(--muted)">src/components/AdminUsersClient.tsx</small></td>
+  <td><span class="tag tag-cmd">Entry</span></td>
+  <td><code>page.tsx</code><br><small style="color:var(--muted)">admin/users/page.tsx</small></td>
+  <td><code>cn()</code><br><small style="color:var(--muted)">src/lib/utils.ts</small><br><code>createClient()</code><br><small style="color:var(--muted)">utils/supabase/client.ts</small></td>
+  <td>AdminUsersClient() node in src/components/AdminUsersClient.tsx.</td>
+</tr>
+<tr>
+  <td>4</td>
+  <td><code>ConfirmModal()</code><br><small style="color:var(--muted)">src/components/ConfirmModal.tsx</small></td>
+  <td><span class="tag tag-hook">UI</span></td>
+  <td><code>AdminUsersClient.tsx</code><br><small style="color:var(--muted)">src/components/AdminUsersClient.tsx</small><br><code>ImportModalClient.tsx</code><br><small style="color:var(--muted)">src/components/ImportModalClient.tsx</small><br><code>LeadDetailClient.tsx</code><br><small style="color:var(--muted)">src/components/LeadDetailClient.tsx</small><br>+3 more</td>
+  <td><code>cn()</code><br><small style="color:var(--muted)">src/lib/utils.ts</small></td>
+  <td>ConfirmModal() node in src/components/ConfirmModal.tsx.</td>
+</tr>
+<tr>
+  <td>5</td>
+  <td><code>ImportModalClient()</code><br><small style="color:var(--muted)">src/components/ImportModalClient.tsx</small></td>
+  <td><span class="tag tag-cmd">Entry</span></td>
+  <td><code>LeadsClient.tsx</code><br><small style="color:var(--muted)">src/components/LeadsClient.tsx</small></td>
+  <td><code>cn()</code><br><small style="color:var(--muted)">src/lib/utils.ts</small><br><code>createClient()</code><br><small style="color:var(--muted)">utils/supabase/client.ts</small><br><code>useCategories()</code><br><small style="color:var(--muted)">src/hooks/useCategories.ts</small></td>
+  <td>ImportModalClient() node in src/components/ImportModalClient.tsx.</td>
+</tr>
+<tr>
+  <td>6</td>
+  <td><code>parseDate()</code><br><small style="color:var(--muted)">src/components/ImportModalClient.tsx</small></td>
+  <td><span class="tag tag-hook">UI</span></td>
+  <td>External entry / no inbound edge</td>
+  <td>No direct outbound edge</td>
+  <td>parseDate() node in src/components/ImportModalClient.tsx.</td>
+</tr>
+<tr>
+  <td>7</td>
+  <td><code>LeadModalClient()</code><br><small style="color:var(--muted)">src/components/LeadModalClient.tsx</small></td>
+  <td><span class="tag tag-cmd">Entry</span></td>
+  <td><code>LeadsClient.tsx</code><br><small style="color:var(--muted)">src/components/LeadsClient.tsx</small></td>
+  <td><code>cn()</code><br><small style="color:var(--muted)">src/lib/utils.ts</small><br><code>createClient()</code><br><small style="color:var(--muted)">utils/supabase/client.ts</small><br><code>useCategories()</code><br><small style="color:var(--muted)">src/hooks/useCategories.ts</small></td>
+  <td>LeadModalClient() node in src/components/LeadModalClient.tsx.</td>
+</tr>
+<tr>
+  <td>8</td>
+  <td><code>getStatusColor()</code><br><small style="color:var(--muted)">src/components/LeadsClient.tsx</small></td>
+  <td><span class="tag tag-hook">UI</span></td>
+  <td><code>LeadsClient()</code><br><small style="color:var(--muted)">src/components/LeadsClient.tsx</small></td>
+  <td>No direct outbound edge</td>
+  <td>getStatusColor() node in src/components/LeadsClient.tsx.</td>
+</tr>
+<tr>
+  <td>9</td>
+  <td><code>InterestBadge()</code><br><small style="color:var(--muted)">src/components/LeadsClient.tsx</small></td>
+  <td><span class="tag tag-hook">UI</span></td>
+  <td>External entry / no inbound edge</td>
+  <td>No direct outbound edge</td>
+  <td>InterestBadge() node in src/components/LeadsClient.tsx.</td>
+</tr>
+<tr>
+  <td>10</td>
+  <td><code>LeadsClient()</code><br><small style="color:var(--muted)">src/components/LeadsClient.tsx</small></td>
+  <td><span class="tag tag-cmd">Entry</span></td>
+  <td><code>page.tsx</code><br><small style="color:var(--muted)">app/leads/page.tsx</small></td>
+  <td><code>cn()</code><br><small style="color:var(--muted)">src/lib/utils.ts</small><br><code>createClient()</code><br><small style="color:var(--muted)">utils/supabase/client.ts</small><br><code>getStatusColor()</code><br><small style="color:var(--muted)">src/components/LeadsClient.tsx</small></td>
+  <td>LeadsClient() node in src/components/LeadsClient.tsx.</td>
+</tr>
+<tr>
+  <td>11</td>
+  <td><code>MarkdownRenderer()</code><br><small style="color:var(--muted)">src/components/MarkdownRenderer.tsx</small></td>
+  <td><span class="tag tag-hook">UI</span></td>
+  <td><code>LeadDetailClient.tsx</code><br><small style="color:var(--muted)">src/components/LeadDetailClient.tsx</small><br><code>NotesModalClient.tsx</code><br><small style="color:var(--muted)">src/components/NotesModalClient.tsx</small></td>
+  <td><code>cn()</code><br><small style="color:var(--muted)">src/lib/utils.ts</small></td>
+  <td>Exports documentation data to a target format.</td>
+</tr>
+<tr>
+  <td>12</td>
+  <td><code>useCategories()</code><br><small style="color:var(--muted)">src/hooks/useCategories.ts</small></td>
+  <td><span class="tag tag-hook">UI</span></td>
+  <td><code>ImportModalClient()</code><br><small style="color:var(--muted)">src/components/ImportModalClient.tsx</small><br><code>ImportModalClient.tsx</code><br><small style="color:var(--muted)">src/components/ImportModalClient.tsx</small><br><code>LeadModalClient()</code><br><small style="color:var(--muted)">src/components/LeadModalClient.tsx</small><br>+1 more</td>
+  <td><code>createClient()</code><br><small style="color:var(--muted)">utils/supabase/client.ts</small></td>
+  <td>useCategories() node in src/hooks/useCategories.ts.</td>
+</tr>
+<tr>
+  <td>13</td>
+  <td><code>cn()</code><br><small style="color:var(--muted)">src/lib/utils.ts</small></td>
+  <td><span class="tag tag-func">Function</span></td>
+  <td><code>AdminTargetsClient()</code><br><small style="color:var(--muted)">src/components/AdminTargetsClient.tsx</small><br><code>AdminTargetsClient.tsx</code><br><small style="color:var(--muted)">src/components/AdminTargetsClient.tsx</small><br><code>AdminUsersClient()</code><br><small style="color:var(--muted)">src/components/AdminUsersClient.tsx</small><br>+31 more</td>
+  <td>No direct outbound edge</td>
+  <td>cn() node in src/lib/utils.ts.</td>
+</tr>
+<tr>
+  <td>14</td>
+  <td><code>leads/page.tsx</code><br><small style="color:var(--muted)">app/leads/page.tsx</small></td>
+  <td><span class="tag tag-hook">UI</span></td>
+  <td>External entry / no inbound edge</td>
+  <td><code>@supabase/ssr</code><br><small style="color:var(--muted)">next-crm/package.json</small><br><code>LeadsClient()</code><br><small style="color:var(--muted)">src/components/LeadsClient.tsx</small><br><code>LeadsClient.tsx</code><br><small style="color:var(--muted)">src/components/LeadsClient.tsx</small></td>
+  <td>Module file in app/leads/page.tsx.</td>
+</tr>
+<tr>
+  <td>15</td>
+  <td><code>AdminUsersClient.tsx</code><br><small style="color:var(--muted)">src/components/AdminUsersClient.tsx</small></td>
+  <td><span class="tag tag-cmd">Entry</span></td>
+  <td><code>page.tsx</code><br><small style="color:var(--muted)">admin/users/page.tsx</small></td>
+  <td><code>client.ts</code><br><small style="color:var(--muted)">utils/supabase/client.ts</small><br><code>cn()</code><br><small style="color:var(--muted)">src/lib/utils.ts</small><br><code>ConfirmModal()</code><br><small style="color:var(--muted)">src/components/ConfirmModal.tsx</small><br>+5 more</td>
+  <td>Module file in src/components/AdminUsersClient.tsx.</td>
+</tr>
+<tr>
+  <td>16</td>
+  <td><code>next-crm/src/components/ConfirmModal.tsx</code><br><small style="color:var(--muted)">src/components/ConfirmModal.tsx</small></td>
+  <td><span class="tag tag-hook">UI</span></td>
+  <td><code>AdminUsersClient.tsx</code><br><small style="color:var(--muted)">src/components/AdminUsersClient.tsx</small><br><code>ImportModalClient.tsx</code><br><small style="color:var(--muted)">src/components/ImportModalClient.tsx</small><br><code>LeadDetailClient.tsx</code><br><small style="color:var(--muted)">src/components/LeadDetailClient.tsx</small><br>+3 more</td>
+  <td><code>cn()</code><br><small style="color:var(--muted)">src/lib/utils.ts</small><br><code>utils.ts</code><br><small style="color:var(--muted)">src/lib/utils.ts</small></td>
+  <td>Module file in src/components/ConfirmModal.tsx.</td>
+</tr>
+<tr>
+  <td>17</td>
+  <td><code>ImportModalClient.tsx</code><br><small style="color:var(--muted)">src/components/ImportModalClient.tsx</small></td>
+  <td><span class="tag tag-cmd">Entry</span></td>
+  <td><code>LeadsClient.tsx</code><br><small style="color:var(--muted)">src/components/LeadsClient.tsx</small></td>
+  <td><code>client.ts</code><br><small style="color:var(--muted)">utils/supabase/client.ts</small><br><code>cn()</code><br><small style="color:var(--muted)">src/lib/utils.ts</small><br><code>ConfirmModal()</code><br><small style="color:var(--muted)">src/components/ConfirmModal.tsx</small><br>+7 more</td>
+  <td>Module file in src/components/ImportModalClient.tsx.</td>
+</tr>
+<tr>
+  <td>18</td>
+  <td><code>REP_NAMES</code><br><small style="color:var(--muted)">src/components/ImportModalClient.tsx</small></td>
+  <td><span class="tag tag-hook">UI</span></td>
+  <td>External entry / no inbound edge</td>
+  <td>No direct outbound edge</td>
+  <td>REP_NAMES node in src/components/ImportModalClient.tsx.</td>
+</tr>
+<tr>
+  <td>19</td>
+  <td><code>STAGES</code><br><small style="color:var(--muted)">src/components/ImportModalClient.tsx</small></td>
+  <td><span class="tag tag-hook">UI</span></td>
+  <td>External entry / no inbound edge</td>
+  <td>No direct outbound edge</td>
+  <td>STAGES node in src/components/ImportModalClient.tsx.</td>
+</tr>
+<tr>
+  <td>20</td>
+  <td><code>LeadModalClient.tsx</code><br><small style="color:var(--muted)">src/components/LeadModalClient.tsx</small></td>
+  <td><span class="tag tag-cmd">Entry</span></td>
+  <td><code>LeadsClient.tsx</code><br><small style="color:var(--muted)">src/components/LeadsClient.tsx</small></td>
+  <td><code>client.ts</code><br><small style="color:var(--muted)">utils/supabase/client.ts</small><br><code>cn()</code><br><small style="color:var(--muted)">src/lib/utils.ts</small><br><code>ConfirmModal()</code><br><small style="color:var(--muted)">src/components/ConfirmModal.tsx</small><br>+12 more</td>
+  <td>Module file in src/components/LeadModalClient.tsx.</td>
+</tr>
+<tr>
+  <td>21</td>
+  <td><code>LeadsClient.tsx</code><br><small style="color:var(--muted)">src/components/LeadsClient.tsx</small></td>
+  <td><span class="tag tag-cmd">Entry</span></td>
+  <td><code>page.tsx</code><br><small style="color:var(--muted)">app/leads/page.tsx</small></td>
+  <td><code>BulkStatusModal()</code><br><small style="color:var(--muted)">src/components/BulkStatusModal.tsx</small><br><code>BulkStatusModal.tsx</code><br><small style="color:var(--muted)">src/components/BulkStatusModal.tsx</small><br><code>client.ts</code><br><small style="color:var(--muted)">utils/supabase/client.ts</small><br>+19 more</td>
+  <td>Module file in src/components/LeadsClient.tsx.</td>
+</tr>
+<tr>
+  <td>22</td>
+  <td><code>MarkdownRenderer.tsx</code><br><small style="color:var(--muted)">src/components/MarkdownRenderer.tsx</small></td>
+  <td><span class="tag tag-hook">UI</span></td>
+  <td><code>LeadDetailClient.tsx</code><br><small style="color:var(--muted)">src/components/LeadDetailClient.tsx</small><br><code>NotesModalClient.tsx</code><br><small style="color:var(--muted)">src/components/NotesModalClient.tsx</small></td>
+  <td><code>cn()</code><br><small style="color:var(--muted)">src/lib/utils.ts</small><br><code>react-markdown</code><br><small style="color:var(--muted)">next-crm/package.json</small><br><code>remark-gfm</code><br><small style="color:var(--muted)">next-crm/package.json</small><br>+1 more</td>
+  <td>Module file in src/components/MarkdownRenderer.tsx.</td>
+</tr>
+<tr>
+  <td>23</td>
+  <td><code>next-crm/src/hooks/useCategories.ts</code><br><small style="color:var(--muted)">src/hooks/useCategories.ts</small></td>
+  <td><span class="tag tag-hook">UI</span></td>
+  <td><code>ImportModalClient.tsx</code><br><small style="color:var(--muted)">src/components/ImportModalClient.tsx</small><br><code>LeadModalClient.tsx</code><br><small style="color:var(--muted)">src/components/LeadModalClient.tsx</small></td>
+  <td><code>client.ts</code><br><small style="color:var(--muted)">utils/supabase/client.ts</small><br><code>createClient()</code><br><small style="color:var(--muted)">utils/supabase/client.ts</small></td>
+  <td>Module file in src/hooks/useCategories.ts.</td>
+</tr>
+<tr>
+  <td>24</td>
+  <td><code>FALLBACK_CATEGORIES</code><br><small style="color:var(--muted)">src/hooks/useCategories.ts</small></td>
+  <td><span class="tag tag-class">Class</span></td>
+  <td>External entry / no inbound edge</td>
+  <td>No direct outbound edge</td>
+  <td>FALLBACK_CATEGORIES node in src/hooks/useCategories.ts.</td>
+</tr>
+<tr>
+  <td>25</td>
+  <td><code>next-crm/src/lib/utils.ts</code><br><small style="color:var(--muted)">src/lib/utils.ts</small></td>
+  <td><span class="tag tag-class">Module</span></td>
+  <td><code>AdminTargetsClient.tsx</code><br><small style="color:var(--muted)">src/components/AdminTargetsClient.tsx</small><br><code>AdminUsersClient.tsx</code><br><small style="color:var(--muted)">src/components/AdminUsersClient.tsx</small><br><code>ConfirmModal.tsx</code><br><small style="color:var(--muted)">src/components/ConfirmModal.tsx</small><br>+12 more</td>
+  <td>No direct outbound edge</td>
+  <td>Module file in src/lib/utils.ts.</td>
+</tr>
+</table>
+
+<div class="grid">
+  <div class="card">
+    <h4>Key Files</h4>
+    <table style="width:100%;font-size:0.85rem;">
+      <tr><th>File</th><th>Coverage</th></tr>
+      <tr><td><code>src/components/ImportModalClient.tsx</code></td><td>5 nodes</td></tr>
+<tr><td><code>src/components/LeadsClient.tsx</code></td><td>4 nodes</td></tr>
+<tr><td><code>src/components/ConfirmModal.tsx</code></td><td>3 nodes</td></tr>
+<tr><td><code>src/hooks/useCategories.ts</code></td><td>3 nodes</td></tr>
+<tr><td><code>app/leads/page.tsx</code></td><td>2 nodes</td></tr>
+<tr><td><code>src/components/AdminUsersClient.tsx</code></td><td>2 nodes</td></tr>
+<tr><td><code>src/components/LeadModalClient.tsx</code></td><td>2 nodes</td></tr>
+<tr><td><code>src/components/MarkdownRenderer.tsx</code></td><td>2 nodes</td></tr>
+    </table>
+  </div>
+  <div class="card">
+    <h4>Design Notes</h4>
+    <p>This section comes from graphify community clustering. Relationship summary: contains x16, imports x15, imports x15, calls x9. The diagram prioritizes high-confidence calls or usage relationships; the table keeps the broader node inventory.</p>
+  </div>
+</div>
+<hr>
+
+<!-- ====== 15. OIForecastClient.tsx ====== -->
+<h2 id="oiforecastclient-tsx">15. OIForecastClient.tsx</h2>
+<p>OIForecastClient.tsx groups implementation around next, crm, components, oiforecast, mostly in components/OIForecast/OIGrid.tsx, components/OIForecast/OIMilestone.tsx, components/OIForecast/OISummaryCards.tsx. This section covers 25 nodes and 49 internal edges; the diagram shows only representative relationships to stay readable.</p>
+
+<div class="mermaid">
+%%{init: {"theme": "dark", "themeVariables": {"fontSize": "15.0px", "fontFamily": "Segoe UI, system-ui, sans-serif", "primaryColor": "#1e293b", "primaryTextColor": "#e2e8f0", "primaryBorderColor": "#38bdf8", "secondaryColor": "#0f172a", "tertiaryColor": "#334155", "lineColor": "#64748b", "textColor": "#e2e8f0"}, "flowchart": {"htmlLabels": true, "curve": "basis", "nodeSpacing": 48, "rankSpacing": 64, "padding": 14, "diagramPadding": 10, "useMaxWidth": true}}}%%
+flowchart LR
+    %% Section: OIForecastClient.tsx (25 nodes, 49 edges)
     subgraph oiforecastclient_tsx_components_OIForecast_OIGri_19382505["components/OIForecast/OIGrid.tsx"]
         next_crm_src_components_oiforecast_oigrid_ee7aae1a("OIGrid.tsx")
         next_crm_src_components_oiforecast_oigrid_oigrid_a65a756e("OIGrid()<br/><small>components/OIForecast/OIGrid.tsx</small>")
         next_crm_src_components_oiforecast_oigrid_format_001d6b61("formatMoney()<br/><small>components/OIForecast/OIGrid.tsx</small>")
         next_crm_src_components_oiforecast_oigrid_format_e62065c4("formatIDDate()<br/><small>components/OIForecast/OIGrid.tsx</small>")
-        next_crm_src_components_oiforecast_oigrid_oigrid_3edfba42("OIGridProps<br/><small>components/OIForecast/OIGrid.tsx</small>")
     end
     subgraph oiforecastclient_tsx_components_OIForecast_OIMil_ad72ad40["components/OIForecast/OIMilestone.tsx"]
         next_crm_src_components_oiforecast_oimilestone_ec499c25("OIMilestone.tsx")
@@ -2786,59 +3772,62 @@ flowchart LR
         next_crm_src_components_oiforecast_oisummarycard_cdfc6f42("OISummaryCards()<br/><small>components/OIForecast/OISummaryCards.tsx</small>")
         next_crm_src_components_oiforecast_oisummarycard_d71f27b4("formatMoney()<br/><small>components/OIForecast/OISummaryCards.tsx</small>")
     end
-    subgraph oiforecastclient_tsx_next_crm_src_types_ts_0ce08ab3["next-crm/src/types.ts"]
-        next_crm_src_types_oiforecast_75c703d0("OIForecast<br/><small>next-crm/src/types.ts</small>")
-        next_crm_src_types_productoffered_2177e70e("ProductOffered<br/><small>next-crm/src/types.ts</small>")
-        next_crm_src_types_oitarget_e41136c6("OITarget<br/><small>next-crm/src/types.ts</small>")
-    end
     subgraph oiforecastclient_tsx_components_common_CurrencyI_f921c2b8["components/common/CurrencyInput.tsx"]
         next_crm_src_components_common_currencyinput_cur_7bd63d0d("CurrencyInput()<br/><small>components/common/CurrencyInput.tsx</small>")
         next_crm_src_components_common_currencyinput_9b7e5a1c("CurrencyInput.tsx")
     end
-    next_crm_src_components_oiforecastclient_7373dafc("OIForecastClient.tsx")
+    subgraph oiforecastclient_tsx_next_crm_src_types_ts_0ce08ab3["next-crm/src/types.ts"]
+        next_crm_src_types_oiforecast_75c703d0("OIForecast<br/><small>next-crm/src/types.ts</small>")
+        next_crm_src_types_productoffered_2177e70e("ProductOffered<br/><small>next-crm/src/types.ts</small>")
+    end
+    subgraph oiforecastclient_tsx_src_components_OIForecastCl_f4235a72["src/components/OIForecastClient.tsx"]
+        next_crm_src_components_oiforecastclient_7373dafc("OIForecastClient.tsx")
+        next_crm_src_components_oiforecastclient_oiforec_86432406("OIForecastPage()<br/><small>src/components/OIForecastClient.tsx</small>")
+    end
+    next_crm_src_app_oi_forecast_page_8fc9ca9a("page.tsx")
     next_crm_src_components_statusmodalclient_status_f33af602("StatusModalClient()<br/><small>src/components/StatusModalClient.tsx</small>")
     next_crm_src_components_oiforecast_oigrid_oigrid_a65a756e -->|calls| next_crm_src_components_oiforecast_oigrid_format_001d6b61
     next_crm_src_components_oiforecast_oigrid_oigrid_a65a756e -->|calls| next_crm_src_components_oiforecast_oigrid_format_e62065c4
     next_crm_src_components_oiforecast_oimilestone_o_ea607b50 -->|calls| next_crm_src_components_oiforecast_oimilestone_f_134b858d
     next_crm_src_components_oiforecast_oisummarycard_cdfc6f42 -->|calls| next_crm_src_components_oiforecast_oisummarycard_d71f27b4
+    next_crm_src_app_oi_forecast_page_8fc9ca9a -->|imports| next_crm_src_components_oiforecastclient_oiforec_86432406
+    next_crm_src_app_oi_forecast_page_8fc9ca9a -->|imports| next_crm_src_components_oiforecastclient_7373dafc
     next_crm_src_components_oiforecast_oigrid_ee7aae1a -->|imports| next_crm_src_types_oiforecast_75c703d0
     next_crm_src_components_oiforecast_oigrid_ee7aae1a -->|imports| next_crm_src_types_productoffered_2177e70e
     next_crm_src_components_oiforecast_oigrid_ee7aae1a -->|imports| next_crm_src_components_common_currencyinput_cur_7bd63d0d
     next_crm_src_components_oiforecast_oigrid_ee7aae1a -->|imports| next_crm_src_components_statusmodalclient_status_f33af602
     next_crm_src_components_oiforecast_oigrid_ee7aae1a -->|imports| next_crm_src_components_common_currencyinput_9b7e5a1c
     next_crm_src_components_oiforecast_oimilestone_ec499c25 -->|imports| next_crm_src_types_oiforecast_75c703d0
-    next_crm_src_components_oiforecast_oimilestone_ec499c25 -->|imports| next_crm_src_types_oitarget_e41136c6
     next_crm_src_components_oiforecast_oimilestone_ec499c25 -->|imports| next_crm_src_types_productoffered_2177e70e
     next_crm_src_components_oiforecast_oimilestone_ec499c25 -->|imports| next_crm_src_components_common_currencyinput_cur_7bd63d0d
     next_crm_src_components_oiforecast_oimilestone_ec499c25 -->|imports| next_crm_src_components_common_currencyinput_9b7e5a1c
     next_crm_src_components_oiforecast_oisummarycard_d109be8a -->|imports| next_crm_src_types_oiforecast_75c703d0
     next_crm_src_components_oiforecast_oisummarycard_d109be8a -->|imports| next_crm_src_types_productoffered_2177e70e
     next_crm_src_components_oiforecastclient_7373dafc -->|imports| next_crm_src_types_oiforecast_75c703d0
-    next_crm_src_components_oiforecastclient_7373dafc -->|imports| next_crm_src_types_oitarget_e41136c6
     next_crm_src_components_oiforecastclient_7373dafc -->|imports| next_crm_src_types_productoffered_2177e70e
     next_crm_src_components_oiforecastclient_7373dafc -->|imports| next_crm_src_components_oiforecast_oisummarycard_cdfc6f42
     next_crm_src_components_oiforecastclient_7373dafc -->|imports| next_crm_src_components_oiforecast_oigrid_oigrid_a65a756e
     next_crm_src_components_oiforecastclient_7373dafc -->|imports| next_crm_src_components_oiforecast_oimilestone_o_ea607b50
     next_crm_src_components_oiforecastclient_7373dafc -->|imports| next_crm_src_components_oiforecast_oisummarycard_d109be8a
     next_crm_src_components_oiforecastclient_7373dafc -->|imports| next_crm_src_components_oiforecast_oigrid_ee7aae1a
-    %% Omitted for readability: 4 nodes, 1 edges
+    %% Omitted for readability: 7 nodes, 1 edges
     class next_crm_src_components_oiforecast_oigrid_ee7aae1a ui;
     class next_crm_src_components_oiforecast_oigrid_oigrid_a65a756e ui;
     class next_crm_src_components_oiforecast_oigrid_format_001d6b61 ui;
     class next_crm_src_components_oiforecast_oigrid_format_e62065c4 ui;
-    class next_crm_src_components_oiforecast_oigrid_oigrid_3edfba42 ui;
     class next_crm_src_components_oiforecast_oimilestone_ec499c25 ui;
     class next_crm_src_components_oiforecast_oimilestone_o_ea607b50 ui;
     class next_crm_src_components_oiforecast_oimilestone_f_134b858d ui;
     class next_crm_src_components_oiforecast_oisummarycard_d109be8a ui;
     class next_crm_src_components_oiforecast_oisummarycard_cdfc6f42 ui;
     class next_crm_src_components_oiforecast_oisummarycard_d71f27b4 ui;
-    class next_crm_src_types_oiforecast_75c703d0 klass;
-    class next_crm_src_types_productoffered_2177e70e klass;
-    class next_crm_src_types_oitarget_e41136c6 klass;
     class next_crm_src_components_common_currencyinput_cur_7bd63d0d ui;
     class next_crm_src_components_common_currencyinput_9b7e5a1c ui;
+    class next_crm_src_types_oiforecast_75c703d0 klass;
+    class next_crm_src_types_productoffered_2177e70e klass;
     class next_crm_src_components_oiforecastclient_7373dafc entry;
+    class next_crm_src_components_oiforecastclient_oiforec_86432406 ui;
+    class next_crm_src_app_oi_forecast_page_8fc9ca9a ui;
     class next_crm_src_components_statusmodalclient_status_f33af602 entry;
     classDef entry fill:#422006,stroke:#fbbf24,color:#fde68a,stroke-width:1px;
     classDef api fill:#450a0a,stroke:#f87171,color:#fee2e2,stroke-width:1px;
@@ -2919,6 +3908,14 @@ flowchart LR
 </tr>
 <tr>
   <td>8</td>
+  <td><code>OIForecastPage()</code><br><small style="color:var(--muted)">app/oi_forecast/page.tsx</small></td>
+  <td><span class="tag tag-hook">UI</span></td>
+  <td>External entry / no inbound edge</td>
+  <td>No direct outbound edge</td>
+  <td>Organizes documentation pages, navigation, or content lookup.</td>
+</tr>
+<tr>
+  <td>9</td>
   <td><code>CurrencyInput()</code><br><small style="color:var(--muted)">components/common/CurrencyInput.tsx</small></td>
   <td><span class="tag tag-hook">UI</span></td>
   <td><code>AdminTargetsClient.tsx</code><br><small style="color:var(--muted)">src/components/AdminTargetsClient.tsx</small><br><code>BulkStatusModal.tsx</code><br><small style="color:var(--muted)">src/components/BulkStatusModal.tsx</small><br><code>LeadDetailClient.tsx</code><br><small style="color:var(--muted)">src/components/LeadDetailClient.tsx</small><br>+4 more</td>
@@ -2926,7 +3923,7 @@ flowchart LR
   <td>CurrencyInput() node in components/common/CurrencyInput.tsx.</td>
 </tr>
 <tr>
-  <td>9</td>
+  <td>10</td>
   <td><code>formatIDDate()</code><br><small style="color:var(--muted)">components/OIForecast/OIGrid.tsx</small></td>
   <td><span class="tag tag-hook">UI</span></td>
   <td><code>OIGrid()</code><br><small style="color:var(--muted)">components/OIForecast/OIGrid.tsx</small></td>
@@ -2934,7 +3931,7 @@ flowchart LR
   <td>formatIDDate() node in components/OIForecast/OIGrid.tsx.</td>
 </tr>
 <tr>
-  <td>10</td>
+  <td>11</td>
   <td><code>formatMoney()</code><br><small style="color:var(--muted)">components/OIForecast/OIGrid.tsx</small></td>
   <td><span class="tag tag-hook">UI</span></td>
   <td><code>OIGrid()</code><br><small style="color:var(--muted)">components/OIForecast/OIGrid.tsx</small></td>
@@ -2942,7 +3939,7 @@ flowchart LR
   <td>formatMoney() node in components/OIForecast/OIGrid.tsx.</td>
 </tr>
 <tr>
-  <td>11</td>
+  <td>12</td>
   <td><code>OIGrid()</code><br><small style="color:var(--muted)">components/OIForecast/OIGrid.tsx</small></td>
   <td><span class="tag tag-hook">UI</span></td>
   <td><code>OIForecastClient.tsx</code><br><small style="color:var(--muted)">src/components/OIForecastClient.tsx</small></td>
@@ -2950,7 +3947,7 @@ flowchart LR
   <td>OIGrid() node in components/OIForecast/OIGrid.tsx.</td>
 </tr>
 <tr>
-  <td>12</td>
+  <td>13</td>
   <td><code>formatMoney()</code><br><small style="color:var(--muted)">components/OIForecast/OIMilestone.tsx</small></td>
   <td><span class="tag tag-hook">UI</span></td>
   <td><code>OIMilestone()</code><br><small style="color:var(--muted)">components/OIForecast/OIMilestone.tsx</small></td>
@@ -2958,7 +3955,7 @@ flowchart LR
   <td>formatMoney() node in components/OIForecast/OIMilestone.tsx.</td>
 </tr>
 <tr>
-  <td>13</td>
+  <td>14</td>
   <td><code>OIMilestone()</code><br><small style="color:var(--muted)">components/OIForecast/OIMilestone.tsx</small></td>
   <td><span class="tag tag-hook">UI</span></td>
   <td><code>OIForecastClient.tsx</code><br><small style="color:var(--muted)">src/components/OIForecastClient.tsx</small></td>
@@ -2966,7 +3963,7 @@ flowchart LR
   <td>OIMilestone() node in components/OIForecast/OIMilestone.tsx.</td>
 </tr>
 <tr>
-  <td>14</td>
+  <td>15</td>
   <td><code>formatMoney()</code><br><small style="color:var(--muted)">components/OIForecast/OISummaryCards.tsx</small></td>
   <td><span class="tag tag-hook">UI</span></td>
   <td><code>OISummaryCards()</code><br><small style="color:var(--muted)">components/OIForecast/OISummaryCards.tsx</small></td>
@@ -2974,7 +3971,7 @@ flowchart LR
   <td>formatMoney() node in components/OIForecast/OISummaryCards.tsx.</td>
 </tr>
 <tr>
-  <td>15</td>
+  <td>16</td>
   <td><code>OISummaryCards()</code><br><small style="color:var(--muted)">components/OIForecast/OISummaryCards.tsx</small></td>
   <td><span class="tag tag-hook">UI</span></td>
   <td><code>OIForecastClient.tsx</code><br><small style="color:var(--muted)">src/components/OIForecastClient.tsx</small></td>
@@ -2982,7 +3979,15 @@ flowchart LR
   <td>OISummaryCards() node in components/OIForecast/OISummaryCards.tsx.</td>
 </tr>
 <tr>
-  <td>16</td>
+  <td>17</td>
+  <td><code>OIForecastPage()</code><br><small style="color:var(--muted)">src/components/OIForecastClient.tsx</small></td>
+  <td><span class="tag tag-hook">UI</span></td>
+  <td><code>page.tsx</code><br><small style="color:var(--muted)">app/oi_forecast/page.tsx</small></td>
+  <td><code>createClient()</code><br><small style="color:var(--muted)">utils/supabase/client.ts</small></td>
+  <td>Organizes documentation pages, navigation, or content lookup.</td>
+</tr>
+<tr>
+  <td>18</td>
   <td><code>StatusModalClient()</code><br><small style="color:var(--muted)">src/components/StatusModalClient.tsx</small></td>
   <td><span class="tag tag-cmd">Entry</span></td>
   <td><code>LeadDetailClient.tsx</code><br><small style="color:var(--muted)">src/components/LeadDetailClient.tsx</small><br><code>LeadsClient.tsx</code><br><small style="color:var(--muted)">src/components/LeadsClient.tsx</small><br><code>OIGrid.tsx</code><br><small style="color:var(--muted)">components/OIForecast/OIGrid.tsx</small></td>
@@ -2990,7 +3995,15 @@ flowchart LR
   <td>StatusModalClient() node in src/components/StatusModalClient.tsx.</td>
 </tr>
 <tr>
-  <td>17</td>
+  <td>19</td>
+  <td><code>oi_forecast/page.tsx</code><br><small style="color:var(--muted)">app/oi_forecast/page.tsx</small></td>
+  <td><span class="tag tag-hook">UI</span></td>
+  <td>External entry / no inbound edge</td>
+  <td><code>@supabase/ssr</code><br><small style="color:var(--muted)">next-crm/package.json</small><br><code>OIForecastClient.tsx</code><br><small style="color:var(--muted)">src/components/OIForecastClient.tsx</small><br><code>OIForecastPage()</code><br><small style="color:var(--muted)">src/components/OIForecastClient.tsx</small></td>
+  <td>Module file in app/oi_forecast/page.tsx.</td>
+</tr>
+<tr>
+  <td>20</td>
   <td><code>next-crm/src/components/common/CurrencyInput.tsx</code><br><small style="color:var(--muted)">components/common/CurrencyInput.tsx</small></td>
   <td><span class="tag tag-hook">UI</span></td>
   <td><code>AdminTargetsClient.tsx</code><br><small style="color:var(--muted)">src/components/AdminTargetsClient.tsx</small><br><code>BulkStatusModal.tsx</code><br><small style="color:var(--muted)">src/components/BulkStatusModal.tsx</small><br><code>LeadDetailClient.tsx</code><br><small style="color:var(--muted)">src/components/LeadDetailClient.tsx</small><br>+4 more</td>
@@ -2998,7 +4011,7 @@ flowchart LR
   <td>Module file in components/common/CurrencyInput.tsx.</td>
 </tr>
 <tr>
-  <td>18</td>
+  <td>21</td>
   <td><code>next-crm/src/components/OIForecast/OIGrid.tsx</code><br><small style="color:var(--muted)">components/OIForecast/OIGrid.tsx</small></td>
   <td><span class="tag tag-hook">UI</span></td>
   <td><code>OIForecastClient.tsx</code><br><small style="color:var(--muted)">src/components/OIForecastClient.tsx</small></td>
@@ -3006,7 +4019,7 @@ flowchart LR
   <td>Module file in components/OIForecast/OIGrid.tsx.</td>
 </tr>
 <tr>
-  <td>19</td>
+  <td>22</td>
   <td><code>next-crm/src/components/OIForecast/OIMilestone.tsx</code><br><small style="color:var(--muted)">components/OIForecast/OIMilestone.tsx</small></td>
   <td><span class="tag tag-hook">UI</span></td>
   <td><code>OIForecastClient.tsx</code><br><small style="color:var(--muted)">src/components/OIForecastClient.tsx</small></td>
@@ -3014,7 +4027,7 @@ flowchart LR
   <td>Module file in components/OIForecast/OIMilestone.tsx.</td>
 </tr>
 <tr>
-  <td>20</td>
+  <td>23</td>
   <td><code>MONTH_NAMES</code><br><small style="color:var(--muted)">components/OIForecast/OIMilestone.tsx</small></td>
   <td><span class="tag tag-hook">UI</span></td>
   <td>External entry / no inbound edge</td>
@@ -3022,7 +4035,7 @@ flowchart LR
   <td>MONTH_NAMES node in components/OIForecast/OIMilestone.tsx.</td>
 </tr>
 <tr>
-  <td>21</td>
+  <td>24</td>
   <td><code>next-crm/src/components/OIForecast/OISummaryCards.tsx</code><br><small style="color:var(--muted)">components/OIForecast/OISummaryCards.tsx</small></td>
   <td><span class="tag tag-hook">UI</span></td>
   <td><code>OIForecastClient.tsx</code><br><small style="color:var(--muted)">src/components/OIForecastClient.tsx</small></td>
@@ -3030,7 +4043,7 @@ flowchart LR
   <td>Module file in components/OIForecast/OISummaryCards.tsx.</td>
 </tr>
 <tr>
-  <td>22</td>
+  <td>25</td>
   <td><code>OIForecastClient.tsx</code><br><small style="color:var(--muted)">src/components/OIForecastClient.tsx</small></td>
   <td><span class="tag tag-cmd">Entry</span></td>
   <td><code>page.tsx</code><br><small style="color:var(--muted)">app/oi_forecast/page.tsx</small></td>
@@ -3049,944 +4062,83 @@ flowchart LR
 <tr><td><code>components/OIForecast/OISummaryCards.tsx</code></td><td>4 nodes</td></tr>
 <tr><td><code>components/common/CurrencyInput.tsx</code></td><td>3 nodes</td></tr>
 <tr><td><code>next-crm/src/types.ts</code></td><td>3 nodes</td></tr>
-<tr><td><code>src/components/OIForecastClient.tsx</code></td><td>1 nodes</td></tr>
+<tr><td><code>app/oi_forecast/page.tsx</code></td><td>2 nodes</td></tr>
+<tr><td><code>src/components/OIForecastClient.tsx</code></td><td>2 nodes</td></tr>
 <tr><td><code>src/components/StatusModalClient.tsx</code></td><td>1 nodes</td></tr>
     </table>
   </div>
   <div class="card">
     <h4>Design Notes</h4>
-    <p>This section comes from graphify community clustering. Relationship summary: imports x16, contains x13, references x7, imports x5. The diagram prioritizes high-confidence calls or usage relationships; the table keeps the broader node inventory.</p>
-  </div>
-</div>
-<hr>
-
-<!-- ====== 13. cn ====== -->
-<h2 id="cn">13. cn</h2>
-<p>cn groups implementation around next, crm, components, leaddetailclienttsx, mostly in src/components/LeadDetailClient.tsx, src/components/MarkdownEditor.tsx, src/components/NotesModalClient.tsx. This section covers 20 nodes and 30 internal edges; the diagram shows only representative relationships to stay readable.</p>
-
-<div class="mermaid">
-%%{init: {"theme": "dark", "themeVariables": {"fontSize": "15.0px", "fontFamily": "Segoe UI, system-ui, sans-serif", "primaryColor": "#1e293b", "primaryTextColor": "#e2e8f0", "primaryBorderColor": "#38bdf8", "secondaryColor": "#0f172a", "tertiaryColor": "#334155", "lineColor": "#64748b", "textColor": "#e2e8f0"}, "flowchart": {"htmlLabels": true, "curve": "basis", "nodeSpacing": 48, "rankSpacing": 64, "padding": 14, "diagramPadding": 10, "useMaxWidth": true}}}%%
-flowchart LR
-    %% Section: cn (20 nodes, 30 edges)
-    subgraph cn_src_components_LeadDetailClient_tsx_31d315fa["src/components/LeadDetailClient.tsx"]
-        next_crm_src_components_leaddetailclient_dd5f6894("LeadDetailClient.tsx")
-        next_crm_src_components_leaddetailclient_leaddet_c16058b6("LeadDetailClient()<br/><small>src/components/LeadDetailClient.tsx</small>")
-        next_crm_src_components_leaddetailclient_milesto_b161475d("MilestoneItem()<br/><small>src/components/LeadDetailClient.tsx</small>")
-        next_crm_src_components_leaddetailclient_tabbutt_4b688e89("TabButton()<br/><small>src/components/LeadDetailClient.tsx</small>")
-        next_crm_src_components_leaddetailclient_infoite_deb2a118("InfoItem()<br/><small>src/components/LeadDetailClient.tsx</small>")
-        next_crm_src_components_leaddetailclient_statcar_020773f8("StatCard()<br/><small>src/components/LeadDetailClient.tsx</small>")
-    end
-    subgraph cn_src_components_MarkdownEditor_tsx_692efb52["src/components/MarkdownEditor.tsx"]
-        next_crm_src_components_markdowneditor_markdowne_75f89bcc("MarkdownEditor()<br/><small>src/components/MarkdownEditor.tsx</small>")
-        next_crm_src_components_markdowneditor_ff05f703("MarkdownEditor.tsx")
-        next_crm_src_components_markdowneditor_markdowne_c5163160("MarkdownEditorProps<br/><small>src/components/MarkdownEditor.tsx</small>")
-    end
-    subgraph cn_next_crm_src_types_ts_181b8c9b["next-crm/src/types.ts"]
-        next_crm_src_types_funnelhistory_cf004971("FunnelHistory<br/><small>next-crm/src/types.ts</small>")
-        next_crm_src_types_note_436a854a("Note<br/><small>next-crm/src/types.ts</small>")
-    end
-    subgraph cn_src_components_DashboardClient_tsx_63df3fc6["src/components/DashboardClient.tsx"]
-        next_crm_src_components_dashboardclient_ratecard_a434b0a4("RateCard()<br/><small>src/components/DashboardClient.tsx</small>")
-        next_crm_src_components_dashboardclient_statcard_94e82b2c("StatCard()<br/><small>src/components/DashboardClient.tsx</small>")
-    end
-    subgraph cn_src_components_MarkdownRenderer_tsx_bc0e40a4["src/components/MarkdownRenderer.tsx"]
-        next_crm_src_components_markdownrenderer_markdow_3fd0896a("MarkdownRenderer()<br/><small>src/components/MarkdownRenderer.tsx</small>")
-        next_crm_src_components_markdownrenderer_e5de969a("MarkdownRenderer.tsx")
-    end
-    next_crm_src_components_notesmodalclient_43256018("NotesModalClient.tsx")
-    next_crm_src_components_tasksclient_taskcard_81793436("TaskCard()<br/><small>src/components/TasksClient.tsx</small>")
-    next_crm_src_lib_utils_cn_19dad112("cn()<br/><small>src/lib/utils.ts</small>")
-    next_crm_src_components_dashboardclient_ratecard_a434b0a4 -->|calls| next_crm_src_lib_utils_cn_19dad112
-    next_crm_src_components_dashboardclient_statcard_94e82b2c -->|calls| next_crm_src_lib_utils_cn_19dad112
-    next_crm_src_components_leaddetailclient_leaddet_c16058b6 -->|calls| next_crm_src_lib_utils_cn_19dad112
-    next_crm_src_components_leaddetailclient_milesto_b161475d -->|calls| next_crm_src_lib_utils_cn_19dad112
-    next_crm_src_components_leaddetailclient_tabbutt_4b688e89 -->|calls| next_crm_src_lib_utils_cn_19dad112
-    next_crm_src_components_markdownrenderer_markdow_3fd0896a -->|calls| next_crm_src_lib_utils_cn_19dad112
-    next_crm_src_components_tasksclient_taskcard_81793436 -->|calls| next_crm_src_lib_utils_cn_19dad112
-    next_crm_src_components_leaddetailclient_dd5f6894 -->|imports| next_crm_src_lib_utils_cn_19dad112
-    next_crm_src_components_leaddetailclient_dd5f6894 -->|imports| next_crm_src_components_markdownrenderer_markdow_3fd0896a
-    next_crm_src_components_leaddetailclient_dd5f6894 -->|imports| next_crm_src_components_markdowneditor_markdowne_75f89bcc
-    next_crm_src_components_leaddetailclient_dd5f6894 -->|imports| next_crm_src_types_funnelhistory_cf004971
-    next_crm_src_components_leaddetailclient_dd5f6894 -->|imports| next_crm_src_types_note_436a854a
-    next_crm_src_components_leaddetailclient_dd5f6894 -->|imports| next_crm_src_components_markdownrenderer_e5de969a
-    next_crm_src_components_leaddetailclient_dd5f6894 -->|imports| next_crm_src_components_markdowneditor_ff05f703
-    next_crm_src_components_markdownrenderer_e5de969a -->|imports| next_crm_src_lib_utils_cn_19dad112
-    next_crm_src_components_notesmodalclient_43256018 -->|imports| next_crm_src_lib_utils_cn_19dad112
-    next_crm_src_components_notesmodalclient_43256018 -->|imports| next_crm_src_components_markdowneditor_markdowne_75f89bcc
-    next_crm_src_components_notesmodalclient_43256018 -->|imports| next_crm_src_components_markdownrenderer_markdow_3fd0896a
-    next_crm_src_components_notesmodalclient_43256018 -->|imports| next_crm_src_components_markdowneditor_ff05f703
-    next_crm_src_components_notesmodalclient_43256018 -->|imports| next_crm_src_components_markdownrenderer_e5de969a
-    %% Omitted for readability: 2 nodes, 0 edges
-    class next_crm_src_components_leaddetailclient_dd5f6894 entry;
-    class next_crm_src_components_leaddetailclient_leaddet_c16058b6 entry;
-    class next_crm_src_components_leaddetailclient_milesto_b161475d ui;
-    class next_crm_src_components_leaddetailclient_tabbutt_4b688e89 ui;
-    class next_crm_src_components_leaddetailclient_infoite_deb2a118 ui;
-    class next_crm_src_components_leaddetailclient_statcar_020773f8 ui;
-    class next_crm_src_components_markdowneditor_markdowne_75f89bcc ui;
-    class next_crm_src_components_markdowneditor_ff05f703 ui;
-    class next_crm_src_components_markdowneditor_markdowne_c5163160 ui;
-    class next_crm_src_types_funnelhistory_cf004971 klass;
-    class next_crm_src_types_note_436a854a klass;
-    class next_crm_src_components_dashboardclient_ratecard_a434b0a4 ui;
-    class next_crm_src_components_dashboardclient_statcard_94e82b2c ui;
-    class next_crm_src_components_markdownrenderer_markdow_3fd0896a ui;
-    class next_crm_src_components_markdownrenderer_e5de969a ui;
-    class next_crm_src_components_notesmodalclient_43256018 entry;
-    class next_crm_src_components_tasksclient_taskcard_81793436 ui;
-    class next_crm_src_lib_utils_cn_19dad112 function;
-    classDef entry fill:#422006,stroke:#fbbf24,color:#fde68a,stroke-width:1px;
-    classDef api fill:#450a0a,stroke:#f87171,color:#fee2e2,stroke-width:1px;
-    classDef async fill:#2e1065,stroke:#a78bfa,color:#ede9fe,stroke-width:1px;
-    classDef klass fill:#064e3b,stroke:#34d399,color:#d1fae5,stroke-width:1px;
-    classDef ui fill:#831843,stroke:#f472b6,color:#fce7f3,stroke-width:1px;
-    classDef module fill:#172554,stroke:#60a5fa,color:#dbeafe,stroke-width:1px;
-    classDef test fill:#3f3f46,stroke:#a1a1aa,color:#f4f4f5,stroke-width:1px;
-    classDef concept fill:#292524,stroke:#a8a29e,color:#fafaf9,stroke-dasharray:4 3;
-    classDef function fill:#0f172a,stroke:#38bdf8,color:#e0f2fe,stroke-width:1px;
-</div>
-
-<h3>Call Details</h3>
-<table class="call-table">
-<tr>
-  <th style="width:5%">#</th>
-  <th style="width:28%">Node</th>
-  <th style="width:10%">Type</th>
-  <th style="width:17%">Caller</th>
-  <th style="width:20%">Callees</th>
-  <th style="width:20%">Description</th>
-</tr>
-<tr>
-  <td>1</td>
-  <td><code>MarkdownEditorProps</code><br><small style="color:var(--muted)">src/components/MarkdownEditor.tsx</small></td>
-  <td><span class="tag tag-hook">UI</span></td>
-  <td>External entry / no inbound edge</td>
-  <td>No direct outbound edge</td>
-  <td>Exports documentation data to a target format.</td>
-</tr>
-<tr>
-  <td>2</td>
-  <td><code>FunnelHistory</code><br><small style="color:var(--muted)">next-crm/src/types.ts</small></td>
-  <td><span class="tag tag-class">Class</span></td>
-  <td><code>LeadDetailClient.tsx</code><br><small style="color:var(--muted)">src/components/LeadDetailClient.tsx</small></td>
-  <td>No direct outbound edge</td>
-  <td>FunnelHistory node in next-crm/src/types.ts.</td>
-</tr>
-<tr>
-  <td>3</td>
-  <td><code>Note</code><br><small style="color:var(--muted)">next-crm/src/types.ts</small></td>
-  <td><span class="tag tag-class">Class</span></td>
-  <td><code>LeadDetailClient.tsx</code><br><small style="color:var(--muted)">src/components/LeadDetailClient.tsx</small></td>
-  <td>No direct outbound edge</td>
-  <td>Note node in next-crm/src/types.ts.</td>
-</tr>
-<tr>
-  <td>4</td>
-  <td><code>RateCard()</code><br><small style="color:var(--muted)">src/components/DashboardClient.tsx</small></td>
-  <td><span class="tag tag-hook">UI</span></td>
-  <td>External entry / no inbound edge</td>
-  <td><code>cn()</code><br><small style="color:var(--muted)">src/lib/utils.ts</small></td>
-  <td>RateCard() node in src/components/DashboardClient.tsx.</td>
-</tr>
-<tr>
-  <td>5</td>
-  <td><code>StatCard()</code><br><small style="color:var(--muted)">src/components/DashboardClient.tsx</small></td>
-  <td><span class="tag tag-hook">UI</span></td>
-  <td>External entry / no inbound edge</td>
-  <td><code>cn()</code><br><small style="color:var(--muted)">src/lib/utils.ts</small></td>
-  <td>StatCard() node in src/components/DashboardClient.tsx.</td>
-</tr>
-<tr>
-  <td>6</td>
-  <td><code>InfoItem()</code><br><small style="color:var(--muted)">src/components/LeadDetailClient.tsx</small></td>
-  <td><span class="tag tag-hook">UI</span></td>
-  <td>External entry / no inbound edge</td>
-  <td>No direct outbound edge</td>
-  <td>InfoItem() node in src/components/LeadDetailClient.tsx.</td>
-</tr>
-<tr>
-  <td>7</td>
-  <td><code>LeadDetailClient()</code><br><small style="color:var(--muted)">src/components/LeadDetailClient.tsx</small></td>
-  <td><span class="tag tag-cmd">Entry</span></td>
-  <td><code>page.tsx</code><br><small style="color:var(--muted)">lead/[id]/page.tsx</small></td>
-  <td><code>cn()</code><br><small style="color:var(--muted)">src/lib/utils.ts</small><br><code>createClient()</code><br><small style="color:var(--muted)">utils/supabase/client.ts</small></td>
-  <td>LeadDetailClient() node in src/components/LeadDetailClient.tsx.</td>
-</tr>
-<tr>
-  <td>8</td>
-  <td><code>MilestoneItem()</code><br><small style="color:var(--muted)">src/components/LeadDetailClient.tsx</small></td>
-  <td><span class="tag tag-hook">UI</span></td>
-  <td>External entry / no inbound edge</td>
-  <td><code>cn()</code><br><small style="color:var(--muted)">src/lib/utils.ts</small></td>
-  <td>MilestoneItem() node in src/components/LeadDetailClient.tsx.</td>
-</tr>
-<tr>
-  <td>9</td>
-  <td><code>StatCard()</code><br><small style="color:var(--muted)">src/components/LeadDetailClient.tsx</small></td>
-  <td><span class="tag tag-hook">UI</span></td>
-  <td>External entry / no inbound edge</td>
-  <td>No direct outbound edge</td>
-  <td>StatCard() node in src/components/LeadDetailClient.tsx.</td>
-</tr>
-<tr>
-  <td>10</td>
-  <td><code>TabButton()</code><br><small style="color:var(--muted)">src/components/LeadDetailClient.tsx</small></td>
-  <td><span class="tag tag-hook">UI</span></td>
-  <td>External entry / no inbound edge</td>
-  <td><code>cn()</code><br><small style="color:var(--muted)">src/lib/utils.ts</small></td>
-  <td>TabButton() node in src/components/LeadDetailClient.tsx.</td>
-</tr>
-<tr>
-  <td>11</td>
-  <td><code>MarkdownEditor()</code><br><small style="color:var(--muted)">src/components/MarkdownEditor.tsx</small></td>
-  <td><span class="tag tag-hook">UI</span></td>
-  <td><code>LeadDetailClient.tsx</code><br><small style="color:var(--muted)">src/components/LeadDetailClient.tsx</small><br><code>NotesModalClient.tsx</code><br><small style="color:var(--muted)">src/components/NotesModalClient.tsx</small></td>
-  <td>No direct outbound edge</td>
-  <td>Exports documentation data to a target format.</td>
-</tr>
-<tr>
-  <td>12</td>
-  <td><code>MarkdownRenderer()</code><br><small style="color:var(--muted)">src/components/MarkdownRenderer.tsx</small></td>
-  <td><span class="tag tag-hook">UI</span></td>
-  <td><code>LeadDetailClient.tsx</code><br><small style="color:var(--muted)">src/components/LeadDetailClient.tsx</small><br><code>NotesModalClient.tsx</code><br><small style="color:var(--muted)">src/components/NotesModalClient.tsx</small></td>
-  <td><code>cn()</code><br><small style="color:var(--muted)">src/lib/utils.ts</small></td>
-  <td>Exports documentation data to a target format.</td>
-</tr>
-<tr>
-  <td>13</td>
-  <td><code>NotesModalClient()</code><br><small style="color:var(--muted)">src/components/NotesModalClient.tsx</small></td>
-  <td><span class="tag tag-cmd">Entry</span></td>
-  <td><code>LeadsClient.tsx</code><br><small style="color:var(--muted)">src/components/LeadsClient.tsx</small></td>
-  <td><code>createClient()</code><br><small style="color:var(--muted)">utils/supabase/client.ts</small></td>
-  <td>NotesModalClient() node in src/components/NotesModalClient.tsx.</td>
-</tr>
-<tr>
-  <td>14</td>
-  <td><code>TaskCard()</code><br><small style="color:var(--muted)">src/components/TasksClient.tsx</small></td>
-  <td><span class="tag tag-hook">UI</span></td>
-  <td>External entry / no inbound edge</td>
-  <td><code>cn()</code><br><small style="color:var(--muted)">src/lib/utils.ts</small></td>
-  <td>TaskCard() node in src/components/TasksClient.tsx.</td>
-</tr>
-<tr>
-  <td>15</td>
-  <td><code>cn()</code><br><small style="color:var(--muted)">src/lib/utils.ts</small></td>
-  <td><span class="tag tag-func">Function</span></td>
-  <td><code>AdminTargetsClient()</code><br><small style="color:var(--muted)">src/components/AdminTargetsClient.tsx</small><br><code>AdminTargetsClient.tsx</code><br><small style="color:var(--muted)">src/components/AdminTargetsClient.tsx</small><br><code>AdminUsersClient()</code><br><small style="color:var(--muted)">src/components/AdminUsersClient.tsx</small><br>+31 more</td>
-  <td>No direct outbound edge</td>
-  <td>cn() node in src/lib/utils.ts.</td>
-</tr>
-<tr>
-  <td>16</td>
-  <td><code>LeadDetailClient.tsx</code><br><small style="color:var(--muted)">src/components/LeadDetailClient.tsx</small></td>
-  <td><span class="tag tag-cmd">Entry</span></td>
-  <td><code>page.tsx</code><br><small style="color:var(--muted)">lead/[id]/page.tsx</small></td>
-  <td><code>client.ts</code><br><small style="color:var(--muted)">utils/supabase/client.ts</small><br><code>cn()</code><br><small style="color:var(--muted)">src/lib/utils.ts</small><br><code>ConfirmModal()</code><br><small style="color:var(--muted)">src/components/ConfirmModal.tsx</small><br>+19 more</td>
-  <td>Module file in src/components/LeadDetailClient.tsx.</td>
-</tr>
-<tr>
-  <td>17</td>
-  <td><code>MarkdownEditor.tsx</code><br><small style="color:var(--muted)">src/components/MarkdownEditor.tsx</small></td>
-  <td><span class="tag tag-hook">UI</span></td>
-  <td><code>LeadDetailClient.tsx</code><br><small style="color:var(--muted)">src/components/LeadDetailClient.tsx</small><br><code>NotesModalClient.tsx</code><br><small style="color:var(--muted)">src/components/NotesModalClient.tsx</small></td>
-  <td>No direct outbound edge</td>
-  <td>Module file in src/components/MarkdownEditor.tsx.</td>
-</tr>
-<tr>
-  <td>18</td>
-  <td><code>MarkdownRenderer.tsx</code><br><small style="color:var(--muted)">src/components/MarkdownRenderer.tsx</small></td>
-  <td><span class="tag tag-hook">UI</span></td>
-  <td><code>LeadDetailClient.tsx</code><br><small style="color:var(--muted)">src/components/LeadDetailClient.tsx</small><br><code>NotesModalClient.tsx</code><br><small style="color:var(--muted)">src/components/NotesModalClient.tsx</small></td>
-  <td><code>cn()</code><br><small style="color:var(--muted)">src/lib/utils.ts</small><br><code>react-markdown</code><br><small style="color:var(--muted)">next-crm/package.json</small><br><code>remark-gfm</code><br><small style="color:var(--muted)">next-crm/package.json</small><br>+1 more</td>
-  <td>Module file in src/components/MarkdownRenderer.tsx.</td>
-</tr>
-<tr>
-  <td>19</td>
-  <td><code>NotesModalClient.tsx</code><br><small style="color:var(--muted)">src/components/NotesModalClient.tsx</small></td>
-  <td><span class="tag tag-cmd">Entry</span></td>
-  <td><code>LeadsClient.tsx</code><br><small style="color:var(--muted)">src/components/LeadsClient.tsx</small></td>
-  <td><code>client.ts</code><br><small style="color:var(--muted)">utils/supabase/client.ts</small><br><code>cn()</code><br><small style="color:var(--muted)">src/lib/utils.ts</small><br><code>createClient()</code><br><small style="color:var(--muted)">utils/supabase/client.ts</small><br>+9 more</td>
-  <td>Module file in src/components/NotesModalClient.tsx.</td>
-</tr>
-<tr>
-  <td>20</td>
-  <td><code>STAGES</code><br><small style="color:var(--muted)">src/components/NotesModalClient.tsx</small></td>
-  <td><span class="tag tag-hook">UI</span></td>
-  <td>External entry / no inbound edge</td>
-  <td>No direct outbound edge</td>
-  <td>STAGES node in src/components/NotesModalClient.tsx.</td>
-</tr>
-</table>
-
-<div class="grid">
-  <div class="card">
-    <h4>Key Files</h4>
-    <table style="width:100%;font-size:0.85rem;">
-      <tr><th>File</th><th>Coverage</th></tr>
-      <tr><td><code>src/components/LeadDetailClient.tsx</code></td><td>6 nodes</td></tr>
-<tr><td><code>src/components/MarkdownEditor.tsx</code></td><td>3 nodes</td></tr>
-<tr><td><code>src/components/NotesModalClient.tsx</code></td><td>3 nodes</td></tr>
-<tr><td><code>src/components/DashboardClient.tsx</code></td><td>2 nodes</td></tr>
-<tr><td><code>src/components/MarkdownRenderer.tsx</code></td><td>2 nodes</td></tr>
-<tr><td><code>next-crm/src/types.ts</code></td><td>2 nodes</td></tr>
-<tr><td><code>src/components/TasksClient.tsx</code></td><td>1 nodes</td></tr>
-<tr><td><code>src/lib/utils.ts</code></td><td>1 nodes</td></tr>
-    </table>
-  </div>
-  <div class="card">
-    <h4>Design Notes</h4>
-    <p>This section comes from graphify community clustering. Relationship summary: contains x10, imports x9, calls x7, imports x4. The diagram prioritizes high-confidence calls or usage relationships; the table keeps the broader node inventory.</p>
-  </div>
-</div>
-<hr>
-
-<!-- ====== 14. LeadsClient.tsx ====== -->
-<h2 id="leadsclient-tsx">14. LeadsClient.tsx</h2>
-<p>LeadsClient.tsx groups implementation around next, crm, components, importmodalclienttsx, mostly in src/components/ImportModalClient.tsx, src/components/AdminUsersClient.tsx, src/components/ConfirmModal.tsx. This section covers 20 nodes and 40 internal edges; the diagram shows only representative relationships to stay readable.</p>
-
-<div class="mermaid">
-%%{init: {"theme": "dark", "themeVariables": {"fontSize": "15.0px", "fontFamily": "Segoe UI, system-ui, sans-serif", "primaryColor": "#1e293b", "primaryTextColor": "#e2e8f0", "primaryBorderColor": "#38bdf8", "secondaryColor": "#0f172a", "tertiaryColor": "#334155", "lineColor": "#64748b", "textColor": "#e2e8f0"}, "flowchart": {"htmlLabels": true, "curve": "basis", "nodeSpacing": 48, "rankSpacing": 64, "padding": 14, "diagramPadding": 10, "useMaxWidth": true}}}%%
-flowchart LR
-    %% Section: LeadsClient.tsx (20 nodes, 40 edges)
-    subgraph leadsclient_tsx_src_components_ImportModalClient_a96bb767["src/components/ImportModalClient.tsx"]
-        next_crm_src_components_importmodalclient_940eb8ae("ImportModalClient.tsx")
-        next_crm_src_components_importmodalclient_import_bec04a42("ImportModalClient()<br/><small>src/components/ImportModalClient.tsx</small>")
-        next_crm_src_components_importmodalclient_rep_na_dea2fd98("REP_NAMES<br/><small>src/components/ImportModalClient.tsx</small>")
-        next_crm_src_components_importmodalclient_stages_269f055c("STAGES<br/><small>src/components/ImportModalClient.tsx</small>")
-        next_crm_src_components_importmodalclient_parsed_b26a5176("parseDate()<br/><small>src/components/ImportModalClient.tsx</small>")
-    end
-    subgraph leadsclient_tsx_src_components_AdminUsersClient_7d987da2["src/components/AdminUsersClient.tsx"]
-        next_crm_src_components_adminusersclient_83f00627("AdminUsersClient.tsx")
-        next_crm_src_components_adminusersclient_adminus_b0236760("AdminUsersClient()<br/><small>src/components/AdminUsersClient.tsx</small>")
-        next_crm_src_components_adminusersclient_adminus_9da85c04("AdminUsersProps<br/><small>src/components/AdminUsersClient.tsx</small>")
-    end
-    subgraph leadsclient_tsx_src_components_ConfirmModal_tsx_4eb10010["src/components/ConfirmModal.tsx"]
-        next_crm_src_components_confirmmodal_confirmmoda_0145d3fd("ConfirmModal()<br/><small>src/components/ConfirmModal.tsx</small>")
-        next_crm_src_components_confirmmodal_0bb8e44f("ConfirmModal.tsx")
-        next_crm_src_components_confirmmodal_confirmmoda_6db17486("ConfirmModalProps<br/><small>src/components/ConfirmModal.tsx</small>")
-    end
-    subgraph leadsclient_tsx_src_components_LeadModalClient_t_43f420aa["src/components/LeadModalClient.tsx"]
-        next_crm_src_components_leadmodalclient_300d6329("LeadModalClient.tsx")
-        next_crm_src_components_leadmodalclient_leadmoda_828fee2a("LeadModalClient()<br/><small>src/components/LeadModalClient.tsx</small>")
-    end
-    subgraph leadsclient_tsx_src_hooks_useCategories_ts_0f7c3e8c["src/hooks/useCategories.ts"]
-        next_crm_src_hooks_usecategories_usecategories_ea4365ce("useCategories()<br/><small>src/hooks/useCategories.ts</small>")
-        next_crm_src_hooks_usecategories_9057833b("useCategories.ts")
-    end
-    next_crm_src_components_leadsclient_b03e414f("LeadsClient.tsx")
-    next_crm_src_lib_utils_07ed79fa("utils.ts")
-    next_crm_src_utils_supabase_client_1a442e8a("client.ts")
-    next_crm_src_components_importmodalclient_import_bec04a42 -->|calls| next_crm_src_hooks_usecategories_usecategories_ea4365ce
-    next_crm_src_components_leadmodalclient_leadmoda_828fee2a -->|calls| next_crm_src_hooks_usecategories_usecategories_ea4365ce
-    next_crm_src_components_adminusersclient_83f00627 -->|imports| next_crm_src_components_confirmmodal_confirmmoda_0145d3fd
-    next_crm_src_components_adminusersclient_83f00627 -->|imports| next_crm_src_utils_supabase_client_1a442e8a
-    next_crm_src_components_adminusersclient_83f00627 -->|imports| next_crm_src_lib_utils_07ed79fa
-    next_crm_src_components_adminusersclient_83f00627 -->|imports| next_crm_src_components_confirmmodal_0bb8e44f
-    next_crm_src_components_confirmmodal_0bb8e44f -->|imports| next_crm_src_lib_utils_07ed79fa
-    next_crm_src_components_importmodalclient_940eb8ae -->|imports| next_crm_src_components_confirmmodal_confirmmoda_0145d3fd
-    next_crm_src_components_importmodalclient_940eb8ae -->|imports| next_crm_src_hooks_usecategories_usecategories_ea4365ce
-    next_crm_src_components_importmodalclient_940eb8ae -->|imports| next_crm_src_components_confirmmodal_0bb8e44f
-    next_crm_src_components_importmodalclient_940eb8ae -->|imports| next_crm_src_hooks_usecategories_9057833b
-    next_crm_src_components_importmodalclient_940eb8ae -->|imports| next_crm_src_lib_utils_07ed79fa
-    next_crm_src_components_importmodalclient_940eb8ae -->|imports| next_crm_src_utils_supabase_client_1a442e8a
-    next_crm_src_components_leadmodalclient_300d6329 -->|imports| next_crm_src_hooks_usecategories_usecategories_ea4365ce
-    next_crm_src_components_leadmodalclient_300d6329 -->|imports| next_crm_src_components_confirmmodal_confirmmoda_0145d3fd
-    next_crm_src_components_leadmodalclient_300d6329 -->|imports| next_crm_src_hooks_usecategories_9057833b
-    next_crm_src_components_leadmodalclient_300d6329 -->|imports| next_crm_src_lib_utils_07ed79fa
-    next_crm_src_components_leadmodalclient_300d6329 -->|imports| next_crm_src_utils_supabase_client_1a442e8a
-    next_crm_src_components_leadmodalclient_300d6329 -->|imports| next_crm_src_components_confirmmodal_0bb8e44f
-    next_crm_src_components_leadsclient_b03e414f -->|imports| next_crm_src_components_leadmodalclient_leadmoda_828fee2a
-    next_crm_src_components_leadsclient_b03e414f -->|imports| next_crm_src_components_importmodalclient_import_bec04a42
-    next_crm_src_components_leadsclient_b03e414f -->|imports| next_crm_src_components_confirmmodal_confirmmoda_0145d3fd
-    next_crm_src_components_leadsclient_b03e414f -->|imports| next_crm_src_components_leadmodalclient_300d6329
-    next_crm_src_components_leadsclient_b03e414f -->|imports| next_crm_src_components_importmodalclient_940eb8ae
-    %% Omitted for readability: 2 nodes, 4 edges
-    class next_crm_src_components_importmodalclient_940eb8ae entry;
-    class next_crm_src_components_importmodalclient_import_bec04a42 entry;
-    class next_crm_src_components_importmodalclient_rep_na_dea2fd98 ui;
-    class next_crm_src_components_importmodalclient_stages_269f055c ui;
-    class next_crm_src_components_importmodalclient_parsed_b26a5176 ui;
-    class next_crm_src_components_adminusersclient_83f00627 entry;
-    class next_crm_src_components_adminusersclient_adminus_b0236760 entry;
-    class next_crm_src_components_adminusersclient_adminus_9da85c04 ui;
-    class next_crm_src_components_confirmmodal_confirmmoda_0145d3fd ui;
-    class next_crm_src_components_confirmmodal_0bb8e44f ui;
-    class next_crm_src_components_confirmmodal_confirmmoda_6db17486 ui;
-    class next_crm_src_components_leadmodalclient_300d6329 entry;
-    class next_crm_src_components_leadmodalclient_leadmoda_828fee2a entry;
-    class next_crm_src_hooks_usecategories_usecategories_ea4365ce ui;
-    class next_crm_src_hooks_usecategories_9057833b ui;
-    class next_crm_src_components_leadsclient_b03e414f entry;
-    class next_crm_src_lib_utils_07ed79fa module;
-    class next_crm_src_utils_supabase_client_1a442e8a entry;
-    classDef entry fill:#422006,stroke:#fbbf24,color:#fde68a,stroke-width:1px;
-    classDef api fill:#450a0a,stroke:#f87171,color:#fee2e2,stroke-width:1px;
-    classDef async fill:#2e1065,stroke:#a78bfa,color:#ede9fe,stroke-width:1px;
-    classDef klass fill:#064e3b,stroke:#34d399,color:#d1fae5,stroke-width:1px;
-    classDef ui fill:#831843,stroke:#f472b6,color:#fce7f3,stroke-width:1px;
-    classDef module fill:#172554,stroke:#60a5fa,color:#dbeafe,stroke-width:1px;
-    classDef test fill:#3f3f46,stroke:#a1a1aa,color:#f4f4f5,stroke-width:1px;
-    classDef concept fill:#292524,stroke:#a8a29e,color:#fafaf9,stroke-dasharray:4 3;
-    classDef function fill:#0f172a,stroke:#38bdf8,color:#e0f2fe,stroke-width:1px;
-</div>
-
-<h3>Call Details</h3>
-<table class="call-table">
-<tr>
-  <th style="width:5%">#</th>
-  <th style="width:28%">Node</th>
-  <th style="width:10%">Type</th>
-  <th style="width:17%">Caller</th>
-  <th style="width:20%">Callees</th>
-  <th style="width:20%">Description</th>
-</tr>
-<tr>
-  <td>1</td>
-  <td><code>AdminUsersProps</code><br><small style="color:var(--muted)">src/components/AdminUsersClient.tsx</small></td>
-  <td><span class="tag tag-hook">UI</span></td>
-  <td>External entry / no inbound edge</td>
-  <td>No direct outbound edge</td>
-  <td>AdminUsersProps node in src/components/AdminUsersClient.tsx.</td>
-</tr>
-<tr>
-  <td>2</td>
-  <td><code>ConfirmModalProps</code><br><small style="color:var(--muted)">src/components/ConfirmModal.tsx</small></td>
-  <td><span class="tag tag-hook">UI</span></td>
-  <td>External entry / no inbound edge</td>
-  <td>No direct outbound edge</td>
-  <td>ConfirmModalProps node in src/components/ConfirmModal.tsx.</td>
-</tr>
-<tr>
-  <td>3</td>
-  <td><code>AdminUsersClient()</code><br><small style="color:var(--muted)">src/components/AdminUsersClient.tsx</small></td>
-  <td><span class="tag tag-cmd">Entry</span></td>
-  <td><code>page.tsx</code><br><small style="color:var(--muted)">admin/users/page.tsx</small></td>
-  <td><code>cn()</code><br><small style="color:var(--muted)">src/lib/utils.ts</small><br><code>createClient()</code><br><small style="color:var(--muted)">utils/supabase/client.ts</small></td>
-  <td>AdminUsersClient() node in src/components/AdminUsersClient.tsx.</td>
-</tr>
-<tr>
-  <td>4</td>
-  <td><code>ConfirmModal()</code><br><small style="color:var(--muted)">src/components/ConfirmModal.tsx</small></td>
-  <td><span class="tag tag-hook">UI</span></td>
-  <td><code>AdminUsersClient.tsx</code><br><small style="color:var(--muted)">src/components/AdminUsersClient.tsx</small><br><code>ImportModalClient.tsx</code><br><small style="color:var(--muted)">src/components/ImportModalClient.tsx</small><br><code>LeadDetailClient.tsx</code><br><small style="color:var(--muted)">src/components/LeadDetailClient.tsx</small><br>+3 more</td>
-  <td><code>cn()</code><br><small style="color:var(--muted)">src/lib/utils.ts</small></td>
-  <td>ConfirmModal() node in src/components/ConfirmModal.tsx.</td>
-</tr>
-<tr>
-  <td>5</td>
-  <td><code>ImportModalClient()</code><br><small style="color:var(--muted)">src/components/ImportModalClient.tsx</small></td>
-  <td><span class="tag tag-cmd">Entry</span></td>
-  <td><code>LeadsClient.tsx</code><br><small style="color:var(--muted)">src/components/LeadsClient.tsx</small></td>
-  <td><code>cn()</code><br><small style="color:var(--muted)">src/lib/utils.ts</small><br><code>createClient()</code><br><small style="color:var(--muted)">utils/supabase/client.ts</small><br><code>useCategories()</code><br><small style="color:var(--muted)">src/hooks/useCategories.ts</small></td>
-  <td>ImportModalClient() node in src/components/ImportModalClient.tsx.</td>
-</tr>
-<tr>
-  <td>6</td>
-  <td><code>parseDate()</code><br><small style="color:var(--muted)">src/components/ImportModalClient.tsx</small></td>
-  <td><span class="tag tag-hook">UI</span></td>
-  <td>External entry / no inbound edge</td>
-  <td>No direct outbound edge</td>
-  <td>parseDate() node in src/components/ImportModalClient.tsx.</td>
-</tr>
-<tr>
-  <td>7</td>
-  <td><code>LeadModalClient()</code><br><small style="color:var(--muted)">src/components/LeadModalClient.tsx</small></td>
-  <td><span class="tag tag-cmd">Entry</span></td>
-  <td><code>LeadsClient.tsx</code><br><small style="color:var(--muted)">src/components/LeadsClient.tsx</small></td>
-  <td><code>cn()</code><br><small style="color:var(--muted)">src/lib/utils.ts</small><br><code>createClient()</code><br><small style="color:var(--muted)">utils/supabase/client.ts</small><br><code>useCategories()</code><br><small style="color:var(--muted)">src/hooks/useCategories.ts</small></td>
-  <td>LeadModalClient() node in src/components/LeadModalClient.tsx.</td>
-</tr>
-<tr>
-  <td>8</td>
-  <td><code>InterestBadge()</code><br><small style="color:var(--muted)">src/components/LeadsClient.tsx</small></td>
-  <td><span class="tag tag-hook">UI</span></td>
-  <td>External entry / no inbound edge</td>
-  <td>No direct outbound edge</td>
-  <td>InterestBadge() node in src/components/LeadsClient.tsx.</td>
-</tr>
-<tr>
-  <td>9</td>
-  <td><code>useCategories()</code><br><small style="color:var(--muted)">src/hooks/useCategories.ts</small></td>
-  <td><span class="tag tag-hook">UI</span></td>
-  <td><code>ImportModalClient()</code><br><small style="color:var(--muted)">src/components/ImportModalClient.tsx</small><br><code>ImportModalClient.tsx</code><br><small style="color:var(--muted)">src/components/ImportModalClient.tsx</small><br><code>LeadModalClient()</code><br><small style="color:var(--muted)">src/components/LeadModalClient.tsx</small><br>+1 more</td>
-  <td><code>createClient()</code><br><small style="color:var(--muted)">utils/supabase/client.ts</small></td>
-  <td>useCategories() node in src/hooks/useCategories.ts.</td>
-</tr>
-<tr>
-  <td>10</td>
-  <td><code>AdminUsersClient.tsx</code><br><small style="color:var(--muted)">src/components/AdminUsersClient.tsx</small></td>
-  <td><span class="tag tag-cmd">Entry</span></td>
-  <td><code>page.tsx</code><br><small style="color:var(--muted)">admin/users/page.tsx</small></td>
-  <td><code>client.ts</code><br><small style="color:var(--muted)">utils/supabase/client.ts</small><br><code>cn()</code><br><small style="color:var(--muted)">src/lib/utils.ts</small><br><code>ConfirmModal()</code><br><small style="color:var(--muted)">src/components/ConfirmModal.tsx</small><br>+5 more</td>
-  <td>Module file in src/components/AdminUsersClient.tsx.</td>
-</tr>
-<tr>
-  <td>11</td>
-  <td><code>next-crm/src/components/ConfirmModal.tsx</code><br><small style="color:var(--muted)">src/components/ConfirmModal.tsx</small></td>
-  <td><span class="tag tag-hook">UI</span></td>
-  <td><code>AdminUsersClient.tsx</code><br><small style="color:var(--muted)">src/components/AdminUsersClient.tsx</small><br><code>ImportModalClient.tsx</code><br><small style="color:var(--muted)">src/components/ImportModalClient.tsx</small><br><code>LeadDetailClient.tsx</code><br><small style="color:var(--muted)">src/components/LeadDetailClient.tsx</small><br>+3 more</td>
-  <td><code>cn()</code><br><small style="color:var(--muted)">src/lib/utils.ts</small><br><code>utils.ts</code><br><small style="color:var(--muted)">src/lib/utils.ts</small></td>
-  <td>Module file in src/components/ConfirmModal.tsx.</td>
-</tr>
-<tr>
-  <td>12</td>
-  <td><code>ImportModalClient.tsx</code><br><small style="color:var(--muted)">src/components/ImportModalClient.tsx</small></td>
-  <td><span class="tag tag-cmd">Entry</span></td>
-  <td><code>LeadsClient.tsx</code><br><small style="color:var(--muted)">src/components/LeadsClient.tsx</small></td>
-  <td><code>client.ts</code><br><small style="color:var(--muted)">utils/supabase/client.ts</small><br><code>cn()</code><br><small style="color:var(--muted)">src/lib/utils.ts</small><br><code>ConfirmModal()</code><br><small style="color:var(--muted)">src/components/ConfirmModal.tsx</small><br>+7 more</td>
-  <td>Module file in src/components/ImportModalClient.tsx.</td>
-</tr>
-<tr>
-  <td>13</td>
-  <td><code>REP_NAMES</code><br><small style="color:var(--muted)">src/components/ImportModalClient.tsx</small></td>
-  <td><span class="tag tag-hook">UI</span></td>
-  <td>External entry / no inbound edge</td>
-  <td>No direct outbound edge</td>
-  <td>REP_NAMES node in src/components/ImportModalClient.tsx.</td>
-</tr>
-<tr>
-  <td>14</td>
-  <td><code>STAGES</code><br><small style="color:var(--muted)">src/components/ImportModalClient.tsx</small></td>
-  <td><span class="tag tag-hook">UI</span></td>
-  <td>External entry / no inbound edge</td>
-  <td>No direct outbound edge</td>
-  <td>STAGES node in src/components/ImportModalClient.tsx.</td>
-</tr>
-<tr>
-  <td>15</td>
-  <td><code>LeadModalClient.tsx</code><br><small style="color:var(--muted)">src/components/LeadModalClient.tsx</small></td>
-  <td><span class="tag tag-cmd">Entry</span></td>
-  <td><code>LeadsClient.tsx</code><br><small style="color:var(--muted)">src/components/LeadsClient.tsx</small></td>
-  <td><code>client.ts</code><br><small style="color:var(--muted)">utils/supabase/client.ts</small><br><code>cn()</code><br><small style="color:var(--muted)">src/lib/utils.ts</small><br><code>ConfirmModal()</code><br><small style="color:var(--muted)">src/components/ConfirmModal.tsx</small><br>+12 more</td>
-  <td>Module file in src/components/LeadModalClient.tsx.</td>
-</tr>
-<tr>
-  <td>16</td>
-  <td><code>LeadsClient.tsx</code><br><small style="color:var(--muted)">src/components/LeadsClient.tsx</small></td>
-  <td><span class="tag tag-cmd">Entry</span></td>
-  <td><code>page.tsx</code><br><small style="color:var(--muted)">app/leads/page.tsx</small></td>
-  <td><code>BulkStatusModal()</code><br><small style="color:var(--muted)">src/components/BulkStatusModal.tsx</small><br><code>BulkStatusModal.tsx</code><br><small style="color:var(--muted)">src/components/BulkStatusModal.tsx</small><br><code>client.ts</code><br><small style="color:var(--muted)">utils/supabase/client.ts</small><br>+19 more</td>
-  <td>Module file in src/components/LeadsClient.tsx.</td>
-</tr>
-<tr>
-  <td>17</td>
-  <td><code>next-crm/src/hooks/useCategories.ts</code><br><small style="color:var(--muted)">src/hooks/useCategories.ts</small></td>
-  <td><span class="tag tag-hook">UI</span></td>
-  <td><code>ImportModalClient.tsx</code><br><small style="color:var(--muted)">src/components/ImportModalClient.tsx</small><br><code>LeadModalClient.tsx</code><br><small style="color:var(--muted)">src/components/LeadModalClient.tsx</small></td>
-  <td><code>client.ts</code><br><small style="color:var(--muted)">utils/supabase/client.ts</small><br><code>createClient()</code><br><small style="color:var(--muted)">utils/supabase/client.ts</small></td>
-  <td>Module file in src/hooks/useCategories.ts.</td>
-</tr>
-<tr>
-  <td>18</td>
-  <td><code>FALLBACK_CATEGORIES</code><br><small style="color:var(--muted)">src/hooks/useCategories.ts</small></td>
-  <td><span class="tag tag-class">Class</span></td>
-  <td>External entry / no inbound edge</td>
-  <td>No direct outbound edge</td>
-  <td>FALLBACK_CATEGORIES node in src/hooks/useCategories.ts.</td>
-</tr>
-<tr>
-  <td>19</td>
-  <td><code>next-crm/src/lib/utils.ts</code><br><small style="color:var(--muted)">src/lib/utils.ts</small></td>
-  <td><span class="tag tag-class">Module</span></td>
-  <td><code>AdminTargetsClient.tsx</code><br><small style="color:var(--muted)">src/components/AdminTargetsClient.tsx</small><br><code>AdminUsersClient.tsx</code><br><small style="color:var(--muted)">src/components/AdminUsersClient.tsx</small><br><code>ConfirmModal.tsx</code><br><small style="color:var(--muted)">src/components/ConfirmModal.tsx</small><br>+12 more</td>
-  <td>No direct outbound edge</td>
-  <td>Module file in src/lib/utils.ts.</td>
-</tr>
-<tr>
-  <td>20</td>
-  <td><code>client.ts</code><br><small style="color:var(--muted)">utils/supabase/client.ts</small></td>
-  <td><span class="tag tag-cmd">Entry</span></td>
-  <td><code>AdminApprovalsClient.tsx</code><br><small style="color:var(--muted)">src/components/AdminApprovalsClient.tsx</small><br><code>AdminTargetsClient.tsx</code><br><small style="color:var(--muted)">src/components/AdminTargetsClient.tsx</small><br><code>AdminUsersClient.tsx</code><br><small style="color:var(--muted)">src/components/AdminUsersClient.tsx</small><br>+17 more</td>
-  <td><code>@supabase/ssr</code><br><small style="color:var(--muted)">next-crm/package.json</small></td>
-  <td>Module file in utils/supabase/client.ts.</td>
-</tr>
-</table>
-
-<div class="grid">
-  <div class="card">
-    <h4>Key Files</h4>
-    <table style="width:100%;font-size:0.85rem;">
-      <tr><th>File</th><th>Coverage</th></tr>
-      <tr><td><code>src/components/ImportModalClient.tsx</code></td><td>5 nodes</td></tr>
-<tr><td><code>src/components/AdminUsersClient.tsx</code></td><td>3 nodes</td></tr>
-<tr><td><code>src/components/ConfirmModal.tsx</code></td><td>3 nodes</td></tr>
-<tr><td><code>src/hooks/useCategories.ts</code></td><td>3 nodes</td></tr>
-<tr><td><code>src/components/LeadModalClient.tsx</code></td><td>2 nodes</td></tr>
-<tr><td><code>src/components/LeadsClient.tsx</code></td><td>2 nodes</td></tr>
-<tr><td><code>src/lib/utils.ts</code></td><td>1 nodes</td></tr>
-<tr><td><code>utils/supabase/client.ts</code></td><td>1 nodes</td></tr>
-    </table>
-  </div>
-  <div class="card">
-    <h4>Design Notes</h4>
-    <p>This section comes from graphify community clustering. Relationship summary: imports x18, contains x12, imports x8, calls x2. The diagram prioritizes high-confidence calls or usage relationships; the table keeps the broader node inventory.</p>
-  </div>
-</div>
-<hr>
-
-<!-- ====== 15. createClient ====== -->
-<h2 id="createclient">15. createClient</h2>
-<p>createClient groups implementation around next, crm, app, pagetsx, mostly in app/actions/importActions.ts, app/actions/leadActions.ts, admin/approvals/page.tsx. This section covers 20 nodes and 36 internal edges; the diagram shows only representative relationships to stay readable.</p>
-
-<div class="mermaid">
-%%{init: {"theme": "dark", "themeVariables": {"fontSize": "15.0px", "fontFamily": "Segoe UI, system-ui, sans-serif", "primaryColor": "#1e293b", "primaryTextColor": "#e2e8f0", "primaryBorderColor": "#38bdf8", "secondaryColor": "#0f172a", "tertiaryColor": "#334155", "lineColor": "#64748b", "textColor": "#e2e8f0"}, "flowchart": {"htmlLabels": true, "curve": "basis", "nodeSpacing": 48, "rankSpacing": 64, "padding": 14, "diagramPadding": 10, "useMaxWidth": true}}}%%
-flowchart LR
-    %% Section: createClient (20 nodes, 36 edges)
-    subgraph createclient_app_actions_leadActions_ts_1400fb40["app/actions/leadActions.ts"]
-        next_crm_src_app_actions_leadactions_80ad196b("leadActions.ts")
-        next_crm_src_app_actions_leadactions_bulkdeletel_945d03cb("bulkDeleteLeads()<br/><small>app/actions/leadActions.ts</small>")
-        next_crm_src_app_actions_leadactions_importleads_dcf59bb3("importLeadsBatch()<br/><small>app/actions/leadActions.ts</small>")
-    end
-    subgraph createclient_admin_approvals_page_tsx_93f172a1["admin/approvals/page.tsx"]
-        next_crm_src_app_admin_approvals_page_16d0bf73("page.tsx")
-        next_crm_src_app_admin_approvals_page_approvalsp_fb03a148("ApprovalsPage()<br/><small>admin/approvals/page.tsx</small>")
-    end
-    subgraph createclient_admin_targets_page_tsx_0ebea577["admin/targets/page.tsx"]
-        next_crm_src_app_admin_targets_page_5acc41a8("page.tsx")
-        next_crm_src_app_admin_targets_page_targetspage_3c5c6bc8("TargetsPage()<br/><small>admin/targets/page.tsx</small>")
-    end
-    subgraph createclient_admin_users_page_tsx_9f143c28["admin/users/page.tsx"]
-        next_crm_src_app_admin_users_page_3458b314("page.tsx")
-        next_crm_src_app_admin_users_page_userspage_461671c4("UsersPage()<br/><small>admin/users/page.tsx</small>")
-    end
-    subgraph createclient_app_actions_importActions_ts_3c602977["app/actions/importActions.ts"]
-        next_crm_src_app_actions_importactions_2325e995("importActions.ts")
-        next_crm_src_app_actions_importactions_processim_9cba0abe("processImport()<br/><small>app/actions/importActions.ts</small>")
-    end
-    subgraph createclient_auth_callback_route_ts_7eb34788["auth/callback/route.ts"]
-        next_crm_src_app_auth_callback_route_21ae7cd8("route.ts")
-        next_crm_src_app_auth_callback_route_get_9a2be922("GET()<br/><small>auth/callback/route.ts</small>")
-    end
-    subgraph createclient_lead_id_page_tsx_926831c2["lead/[id]/page.tsx"]
-        next_crm_src_app_lead_id_page_leaddetailpage_a42c358f("LeadDetailPage()<br/><small>lead/[id]/page.tsx</small>")
-        next_crm_src_app_lead_id_page_9a0f7a18("page.tsx")
-    end
-    subgraph createclient_utils_supabase_server_ts_2f512dc4["utils/supabase/server.ts"]
-        next_crm_src_utils_supabase_server_createclient_a56b7501("createClient()<br/><small>utils/supabase/server.ts</small>")
-        next_crm_src_utils_supabase_server_33ec2055("server.ts")
-    end
-    next_crm_src_app_tasks_page_taskspage_dc15cbc8("TasksPage()<br/><small>app/tasks/page.tsx</small>")
-    next_crm_src_app_actions_importactions_processim_9cba0abe -->|calls| next_crm_src_utils_supabase_server_createclient_a56b7501
-    next_crm_src_app_actions_leadactions_bulkdeletel_945d03cb -->|calls| next_crm_src_utils_supabase_server_createclient_a56b7501
-    next_crm_src_app_actions_leadactions_importleads_dcf59bb3 -->|calls| next_crm_src_utils_supabase_server_createclient_a56b7501
-    next_crm_src_app_admin_approvals_page_approvalsp_fb03a148 -->|calls| next_crm_src_utils_supabase_server_createclient_a56b7501
-    next_crm_src_app_admin_targets_page_targetspage_3c5c6bc8 -->|calls| next_crm_src_utils_supabase_server_createclient_a56b7501
-    next_crm_src_app_admin_users_page_userspage_461671c4 -->|calls| next_crm_src_utils_supabase_server_createclient_a56b7501
-    next_crm_src_app_auth_callback_route_get_9a2be922 -->|calls| next_crm_src_utils_supabase_server_createclient_a56b7501
-    next_crm_src_app_lead_id_page_leaddetailpage_a42c358f -->|calls| next_crm_src_utils_supabase_server_createclient_a56b7501
-    next_crm_src_app_tasks_page_taskspage_dc15cbc8 -->|calls| next_crm_src_utils_supabase_server_createclient_a56b7501
-    next_crm_src_app_actions_importactions_2325e995 -->|imports| next_crm_src_utils_supabase_server_createclient_a56b7501
-    next_crm_src_app_actions_importactions_2325e995 -->|imports| next_crm_src_utils_supabase_server_33ec2055
-    next_crm_src_app_actions_leadactions_80ad196b -->|imports| next_crm_src_utils_supabase_server_createclient_a56b7501
-    next_crm_src_app_actions_leadactions_80ad196b -->|imports| next_crm_src_utils_supabase_server_33ec2055
-    next_crm_src_app_admin_approvals_page_16d0bf73 -->|imports| next_crm_src_utils_supabase_server_createclient_a56b7501
-    next_crm_src_app_admin_approvals_page_16d0bf73 -->|imports| next_crm_src_utils_supabase_server_33ec2055
-    next_crm_src_app_admin_targets_page_5acc41a8 -->|imports| next_crm_src_utils_supabase_server_createclient_a56b7501
-    next_crm_src_app_admin_targets_page_5acc41a8 -->|imports| next_crm_src_utils_supabase_server_33ec2055
-    next_crm_src_app_admin_users_page_3458b314 -->|imports| next_crm_src_utils_supabase_server_createclient_a56b7501
-    next_crm_src_app_admin_users_page_3458b314 -->|imports| next_crm_src_utils_supabase_server_33ec2055
-    next_crm_src_app_auth_callback_route_21ae7cd8 -->|imports| next_crm_src_utils_supabase_server_createclient_a56b7501
-    next_crm_src_app_auth_callback_route_21ae7cd8 -->|imports| next_crm_src_utils_supabase_server_33ec2055
-    next_crm_src_app_lead_id_page_9a0f7a18 -->|imports| next_crm_src_utils_supabase_server_createclient_a56b7501
-    next_crm_src_app_lead_id_page_9a0f7a18 -->|imports| next_crm_src_utils_supabase_server_33ec2055
-    %% Omitted for readability: 2 nodes, 0 edges
-    class next_crm_src_app_actions_leadactions_80ad196b module;
-    class next_crm_src_app_actions_leadactions_bulkdeletel_945d03cb function;
-    class next_crm_src_app_actions_leadactions_importleads_dcf59bb3 function;
-    class next_crm_src_app_admin_approvals_page_16d0bf73 ui;
-    class next_crm_src_app_admin_approvals_page_approvalsp_fb03a148 ui;
-    class next_crm_src_app_admin_targets_page_5acc41a8 ui;
-    class next_crm_src_app_admin_targets_page_targetspage_3c5c6bc8 ui;
-    class next_crm_src_app_admin_users_page_3458b314 ui;
-    class next_crm_src_app_admin_users_page_userspage_461671c4 ui;
-    class next_crm_src_app_actions_importactions_2325e995 module;
-    class next_crm_src_app_actions_importactions_processim_9cba0abe function;
-    class next_crm_src_app_auth_callback_route_21ae7cd8 api;
-    class next_crm_src_app_auth_callback_route_get_9a2be922 function;
-    class next_crm_src_app_lead_id_page_leaddetailpage_a42c358f ui;
-    class next_crm_src_app_lead_id_page_9a0f7a18 ui;
-    class next_crm_src_utils_supabase_server_createclient_a56b7501 entry;
-    class next_crm_src_utils_supabase_server_33ec2055 module;
-    class next_crm_src_app_tasks_page_taskspage_dc15cbc8 ui;
-    classDef entry fill:#422006,stroke:#fbbf24,color:#fde68a,stroke-width:1px;
-    classDef api fill:#450a0a,stroke:#f87171,color:#fee2e2,stroke-width:1px;
-    classDef async fill:#2e1065,stroke:#a78bfa,color:#ede9fe,stroke-width:1px;
-    classDef klass fill:#064e3b,stroke:#34d399,color:#d1fae5,stroke-width:1px;
-    classDef ui fill:#831843,stroke:#f472b6,color:#fce7f3,stroke-width:1px;
-    classDef module fill:#172554,stroke:#60a5fa,color:#dbeafe,stroke-width:1px;
-    classDef test fill:#3f3f46,stroke:#a1a1aa,color:#f4f4f5,stroke-width:1px;
-    classDef concept fill:#292524,stroke:#a8a29e,color:#fafaf9,stroke-dasharray:4 3;
-    classDef function fill:#0f172a,stroke:#38bdf8,color:#e0f2fe,stroke-width:1px;
-</div>
-
-<h3>Call Details</h3>
-<table class="call-table">
-<tr>
-  <th style="width:5%">#</th>
-  <th style="width:28%">Node</th>
-  <th style="width:10%">Type</th>
-  <th style="width:17%">Caller</th>
-  <th style="width:20%">Callees</th>
-  <th style="width:20%">Description</th>
-</tr>
-<tr>
-  <td>1</td>
-  <td><code>processImport()</code><br><small style="color:var(--muted)">app/actions/importActions.ts</small></td>
-  <td><span class="tag tag-func">Function</span></td>
-  <td>External entry / no inbound edge</td>
-  <td><code>createClient()</code><br><small style="color:var(--muted)">utils/supabase/server.ts</small></td>
-  <td>processImport() node in app/actions/importActions.ts.</td>
-</tr>
-<tr>
-  <td>2</td>
-  <td><code>bulkDeleteLeads()</code><br><small style="color:var(--muted)">app/actions/leadActions.ts</small></td>
-  <td><span class="tag tag-func">Function</span></td>
-  <td>External entry / no inbound edge</td>
-  <td><code>createClient()</code><br><small style="color:var(--muted)">utils/supabase/server.ts</small></td>
-  <td>bulkDeleteLeads() node in app/actions/leadActions.ts.</td>
-</tr>
-<tr>
-  <td>3</td>
-  <td><code>importLeadsBatch()</code><br><small style="color:var(--muted)">app/actions/leadActions.ts</small></td>
-  <td><span class="tag tag-func">Function</span></td>
-  <td>External entry / no inbound edge</td>
-  <td><code>createClient()</code><br><small style="color:var(--muted)">utils/supabase/server.ts</small></td>
-  <td>importLeadsBatch() node in app/actions/leadActions.ts.</td>
-</tr>
-<tr>
-  <td>4</td>
-  <td><code>ApprovalsPage()</code><br><small style="color:var(--muted)">admin/approvals/page.tsx</small></td>
-  <td><span class="tag tag-hook">UI</span></td>
-  <td>External entry / no inbound edge</td>
-  <td><code>createClient()</code><br><small style="color:var(--muted)">utils/supabase/server.ts</small></td>
-  <td>Organizes documentation pages, navigation, or content lookup.</td>
-</tr>
-<tr>
-  <td>5</td>
-  <td><code>TargetsPage()</code><br><small style="color:var(--muted)">admin/targets/page.tsx</small></td>
-  <td><span class="tag tag-hook">UI</span></td>
-  <td>External entry / no inbound edge</td>
-  <td><code>createClient()</code><br><small style="color:var(--muted)">utils/supabase/server.ts</small></td>
-  <td>Organizes documentation pages, navigation, or content lookup.</td>
-</tr>
-<tr>
-  <td>6</td>
-  <td><code>UsersPage()</code><br><small style="color:var(--muted)">admin/users/page.tsx</small></td>
-  <td><span class="tag tag-hook">UI</span></td>
-  <td>External entry / no inbound edge</td>
-  <td><code>createClient()</code><br><small style="color:var(--muted)">utils/supabase/server.ts</small></td>
-  <td>Organizes documentation pages, navigation, or content lookup.</td>
-</tr>
-<tr>
-  <td>7</td>
-  <td><code>GET()</code><br><small style="color:var(--muted)">auth/callback/route.ts</small></td>
-  <td><span class="tag tag-func">Function</span></td>
-  <td>External entry / no inbound edge</td>
-  <td><code>createClient()</code><br><small style="color:var(--muted)">utils/supabase/server.ts</small></td>
-  <td>GET() node in auth/callback/route.ts.</td>
-</tr>
-<tr>
-  <td>8</td>
-  <td><code>LeadDetailPage()</code><br><small style="color:var(--muted)">lead/[id]/page.tsx</small></td>
-  <td><span class="tag tag-hook">UI</span></td>
-  <td>External entry / no inbound edge</td>
-  <td><code>createClient()</code><br><small style="color:var(--muted)">utils/supabase/server.ts</small></td>
-  <td>Organizes documentation pages, navigation, or content lookup.</td>
-</tr>
-<tr>
-  <td>9</td>
-  <td><code>TasksPage()</code><br><small style="color:var(--muted)">app/tasks/page.tsx</small></td>
-  <td><span class="tag tag-hook">UI</span></td>
-  <td>External entry / no inbound edge</td>
-  <td><code>createClient()</code><br><small style="color:var(--muted)">utils/supabase/server.ts</small></td>
-  <td>Organizes documentation pages, navigation, or content lookup.</td>
-</tr>
-<tr>
-  <td>10</td>
-  <td><code>createClient()</code><br><small style="color:var(--muted)">utils/supabase/server.ts</small></td>
-  <td><span class="tag tag-cmd">Entry</span></td>
-  <td><code>ApprovalsPage()</code><br><small style="color:var(--muted)">admin/approvals/page.tsx</small><br><code>bulkDeleteLeads()</code><br><small style="color:var(--muted)">app/actions/leadActions.ts</small><br><code>GET()</code><br><small style="color:var(--muted)">auth/callback/route.ts</small><br>+14 more</td>
-  <td>No direct outbound edge</td>
-  <td>createClient() node in utils/supabase/server.ts.</td>
-</tr>
-<tr>
-  <td>11</td>
-  <td><code>importActions.ts</code><br><small style="color:var(--muted)">app/actions/importActions.ts</small></td>
-  <td><span class="tag tag-class">Module</span></td>
-  <td>External entry / no inbound edge</td>
-  <td><code>createClient()</code><br><small style="color:var(--muted)">utils/supabase/server.ts</small><br><code>server.ts</code><br><small style="color:var(--muted)">utils/supabase/server.ts</small></td>
-  <td>Module file in app/actions/importActions.ts.</td>
-</tr>
-<tr>
-  <td>12</td>
-  <td><code>leadActions.ts</code><br><small style="color:var(--muted)">app/actions/leadActions.ts</small></td>
-  <td><span class="tag tag-class">Module</span></td>
-  <td>External entry / no inbound edge</td>
-  <td><code>createClient()</code><br><small style="color:var(--muted)">utils/supabase/server.ts</small><br><code>server.ts</code><br><small style="color:var(--muted)">utils/supabase/server.ts</small></td>
-  <td>Module file in app/actions/leadActions.ts.</td>
-</tr>
-<tr>
-  <td>13</td>
-  <td><code>approvals/page.tsx</code><br><small style="color:var(--muted)">admin/approvals/page.tsx</small></td>
-  <td><span class="tag tag-hook">UI</span></td>
-  <td>External entry / no inbound edge</td>
-  <td><code>AdminApprovalsClient()</code><br><small style="color:var(--muted)">src/components/AdminApprovalsClient.tsx</small><br><code>AdminApprovalsClient.tsx</code><br><small style="color:var(--muted)">src/components/AdminApprovalsClient.tsx</small><br><code>createClient()</code><br><small style="color:var(--muted)">utils/supabase/server.ts</small><br>+1 more</td>
-  <td>Module file in admin/approvals/page.tsx.</td>
-</tr>
-<tr>
-  <td>14</td>
-  <td><code>targets/page.tsx</code><br><small style="color:var(--muted)">admin/targets/page.tsx</small></td>
-  <td><span class="tag tag-hook">UI</span></td>
-  <td>External entry / no inbound edge</td>
-  <td><code>AdminTargetsClient()</code><br><small style="color:var(--muted)">src/components/AdminTargetsClient.tsx</small><br><code>AdminTargetsClient.tsx</code><br><small style="color:var(--muted)">src/components/AdminTargetsClient.tsx</small><br><code>createClient()</code><br><small style="color:var(--muted)">utils/supabase/server.ts</small><br>+1 more</td>
-  <td>Module file in admin/targets/page.tsx.</td>
-</tr>
-<tr>
-  <td>15</td>
-  <td><code>users/page.tsx</code><br><small style="color:var(--muted)">admin/users/page.tsx</small></td>
-  <td><span class="tag tag-hook">UI</span></td>
-  <td>External entry / no inbound edge</td>
-  <td><code>AdminUsersClient()</code><br><small style="color:var(--muted)">src/components/AdminUsersClient.tsx</small><br><code>AdminUsersClient.tsx</code><br><small style="color:var(--muted)">src/components/AdminUsersClient.tsx</small><br><code>createClient()</code><br><small style="color:var(--muted)">utils/supabase/server.ts</small><br>+1 more</td>
-  <td>Module file in admin/users/page.tsx.</td>
-</tr>
-<tr>
-  <td>16</td>
-  <td><code>route.ts</code><br><small style="color:var(--muted)">auth/callback/route.ts</small></td>
-  <td><span class="tag tag-endpoint">API</span></td>
-  <td>External entry / no inbound edge</td>
-  <td><code>createClient()</code><br><small style="color:var(--muted)">utils/supabase/server.ts</small><br><code>server.ts</code><br><small style="color:var(--muted)">utils/supabase/server.ts</small></td>
-  <td>Module file in auth/callback/route.ts.</td>
-</tr>
-<tr>
-  <td>17</td>
-  <td><code>[id]/page.tsx</code><br><small style="color:var(--muted)">lead/[id]/page.tsx</small></td>
-  <td><span class="tag tag-hook">UI</span></td>
-  <td>External entry / no inbound edge</td>
-  <td><code>createClient()</code><br><small style="color:var(--muted)">utils/supabase/server.ts</small><br><code>LeadDetailClient()</code><br><small style="color:var(--muted)">src/components/LeadDetailClient.tsx</small><br><code>LeadDetailClient.tsx</code><br><small style="color:var(--muted)">src/components/LeadDetailClient.tsx</small><br>+1 more</td>
-  <td>Module file in lead/[id]/page.tsx.</td>
-</tr>
-<tr>
-  <td>18</td>
-  <td><code>tasks/page.tsx</code><br><small style="color:var(--muted)">app/tasks/page.tsx</small></td>
-  <td><span class="tag tag-hook">UI</span></td>
-  <td>External entry / no inbound edge</td>
-  <td><code>createClient()</code><br><small style="color:var(--muted)">utils/supabase/server.ts</small><br><code>server.ts</code><br><small style="color:var(--muted)">utils/supabase/server.ts</small><br><code>TasksClient()</code><br><small style="color:var(--muted)">src/components/TasksClient.tsx</small><br>+1 more</td>
-  <td>Module file in app/tasks/page.tsx.</td>
-</tr>
-<tr>
-  <td>19</td>
-  <td><code>server.ts</code><br><small style="color:var(--muted)">utils/supabase/server.ts</small></td>
-  <td><span class="tag tag-class">Module</span></td>
-  <td><code>importActions.ts</code><br><small style="color:var(--muted)">app/actions/importActions.ts</small><br><code>leadActions.ts</code><br><small style="color:var(--muted)">app/actions/leadActions.ts</small><br><code>page.tsx</code><br><small style="color:var(--muted)">lead/[id]/page.tsx</small><br>+5 more</td>
-  <td><code>@supabase/ssr</code><br><small style="color:var(--muted)">next-crm/package.json</small></td>
-  <td>Module file in utils/supabase/server.ts.</td>
-</tr>
-<tr>
-  <td>20</td>
-  <td><code>NOTE: Ini adalah abstraksi dari logika 1400 baris lama.</code><br><small style="color:var(--muted)">app/actions/importActions.ts</small></td>
-  <td><span class="tag tag-func">Concept</span></td>
-  <td>External entry / no inbound edge</td>
-  <td>No direct outbound edge</td>
-  <td>Design note for NOTE: Ini adalah abstraksi dari logika 1400 baris lama..</td>
-</tr>
-</table>
-
-<div class="grid">
-  <div class="card">
-    <h4>Key Files</h4>
-    <table style="width:100%;font-size:0.85rem;">
-      <tr><th>File</th><th>Coverage</th></tr>
-      <tr><td><code>app/actions/importActions.ts</code></td><td>3 nodes</td></tr>
-<tr><td><code>app/actions/leadActions.ts</code></td><td>3 nodes</td></tr>
-<tr><td><code>admin/approvals/page.tsx</code></td><td>2 nodes</td></tr>
-<tr><td><code>admin/targets/page.tsx</code></td><td>2 nodes</td></tr>
-<tr><td><code>admin/users/page.tsx</code></td><td>2 nodes</td></tr>
-<tr><td><code>auth/callback/route.ts</code></td><td>2 nodes</td></tr>
-<tr><td><code>lead/[id]/page.tsx</code></td><td>2 nodes</td></tr>
-<tr><td><code>app/tasks/page.tsx</code></td><td>2 nodes</td></tr>
-    </table>
-  </div>
-  <div class="card">
-    <h4>Design Notes</h4>
-    <p>This section comes from graphify community clustering. Relationship summary: contains x10, calls x9, imports x8, imports x8. The diagram prioritizes high-confidence calls or usage relationships; the table keeps the broader node inventory.</p>
+    <p>This section comes from graphify community clustering. Relationship summary: imports x17, contains x15, references x7, imports x6. The diagram prioritizes high-confidence calls or usage relationships; the table keeps the broader node inventory.</p>
   </div>
 </div>
 <hr>
 
 <!-- ====== 16. Other ====== -->
 <h2 id="other">16. Other</h2>
-<p>Other groups implementation around scripts, check, crm, next, mostly in next-crm/src/types.ts, implementation_plan.md, scripts/fix_tasks_ts.cjs. This section covers 580 nodes and 593 internal edges; the diagram shows only representative relationships to stay readable.</p>
+<p>Other groups implementation around scripts, check, fix, crm, mostly in implementation_plan.md, scripts/fix_tasks_ts.cjs, scripts/fix_all_ts.cjs. This section covers 559 nodes and 533 internal edges; the diagram shows only representative relationships to stay readable.</p>
 
 <div class="mermaid">
 %%{init: {"theme": "dark", "themeVariables": {"fontSize": "15.0px", "fontFamily": "Segoe UI, system-ui, sans-serif", "primaryColor": "#1e293b", "primaryTextColor": "#e2e8f0", "primaryBorderColor": "#38bdf8", "secondaryColor": "#0f172a", "tertiaryColor": "#334155", "lineColor": "#64748b", "textColor": "#e2e8f0"}, "flowchart": {"htmlLabels": true, "curve": "basis", "nodeSpacing": 48, "rankSpacing": 64, "padding": 14, "diagramPadding": 10, "useMaxWidth": true}}}%%
 flowchart LR
-    %% Section: Other (580 nodes, 593 edges)
+    %% Section: Other (559 nodes, 533 edges)
     subgraph other_scripts_migrate_from_local_cjs_f5bf2915["scripts/migrate_from_local.cjs"]
         scripts_migrate_from_local_migrateleadsparts_3836516d("migrateLeadsParts()<br/><small>scripts/migrate_from_local.cjs</small>")
         scripts_migrate_from_local_parsefirebasedate_cacf15be("parseFirebaseDate()<br/><small>scripts/migrate_from_local.cjs</small>")
         scripts_migrate_from_local_migrateoiforecasts_d02eeb86("migrateOIForecasts()<br/><small>scripts/migrate_from_local.cjs</small>")
+        scripts_migrate_from_local_run_ea4f8bf6("run()<br/><small>scripts/migrate_from_local.cjs</small>")
     end
-    subgraph other_src_components_DashboardClient_tsx_4a6ddcc3["src/components/DashboardClient.tsx"]
-        next_crm_src_components_dashboardclient_375d202e("DashboardClient.tsx")
-        next_crm_src_components_dashboardclient_dashboar_c6a3a26e("DashboardClient()<br/><small>src/components/DashboardClient.tsx</small>")
-        next_crm_src_components_dashboardclient_getstatu_1b504e9d("getStatusColor()<br/><small>src/components/DashboardClient.tsx</small>")
+    subgraph other_scripts_backup_firestore_cjs_cb3a8817["scripts/backup_firestore.cjs"]
+        scripts_backup_firestore_backupcollection_dfe12380("backupCollection()<br/><small>scripts/backup_firestore.cjs</small>")
+        scripts_backup_firestore_runbackup_3c015265("runBackup()<br/><small>scripts/backup_firestore.cjs</small>")
     end
-    subgraph other_src_components_AdminTargetsClient_tsx_14d73d7c["src/components/AdminTargetsClient.tsx"]
-        next_crm_src_components_admintargetsclient_a785c9a7("AdminTargetsClient.tsx")
-        next_crm_src_components_admintargetsclient_admin_d270677b("AdminTargetsClient()<br/><small>src/components/AdminTargetsClient.tsx</small>")
+    subgraph other_scripts_fix_migration_cjs_b8510319["scripts/fix_migration.cjs"]
+        scripts_fix_migration_fix_a0bfbf96("fix()<br/><small>scripts/fix_migration.cjs</small>")
+        scripts_fix_migration_parsedate_7ed2eda6("parseDate()<br/><small>scripts/fix_migration.cjs</small>")
     end
-    subgraph other_src_components_BulkStatusModal_tsx_1f04c0c2["src/components/BulkStatusModal.tsx"]
-        next_crm_src_components_bulkstatusmodal_4dbdbd34("BulkStatusModal.tsx")
-        next_crm_src_components_bulkstatusmodal_bulkstat_ca70824b("BulkStatusModal()<br/><small>src/components/BulkStatusModal.tsx</small>")
+    subgraph other_scripts_migrate_cjs_a1d29f8e["scripts/migrate.cjs"]
+        scripts_migrate_migratedata_b66d2e56("migrateData()<br/><small>scripts/migrate.cjs</small>")
+        scripts_migrate_parsedate_92450628("parseDate()<br/><small>scripts/migrate.cjs</small>")
     end
-    subgraph other_src_components_LeadsClient_tsx_081a7f86["src/components/LeadsClient.tsx"]
-        next_crm_src_components_leadsclient_leadsclient_b8be44a6("LeadsClient()<br/><small>src/components/LeadsClient.tsx</small>")
-        next_crm_src_components_leadsclient_getstatuscol_2118c4d0("getStatusColor()<br/><small>src/components/LeadsClient.tsx</small>")
+    subgraph other_scripts_migrate_remaining_cjs_5130c9d1["scripts/migrate_remaining.cjs"]
+        scripts_migrate_remaining_run_054e0ab3("run()<br/><small>scripts/migrate_remaining.cjs</small>")
+        scripts_migrate_remaining_parsedate_d04561fb("parseDate()<br/><small>scripts/migrate_remaining.cjs</small>")
     end
-    next_crm_src_app_login_page_loginpage_62a48972("LoginPage()<br/><small>app/login/page.tsx</small>")
-    next_crm_src_components_oiforecastclient_oiforec_86432406("OIForecastPage()<br/><small>src/components/OIForecastClient.tsx</small>")
+    next_crm_src_app_admin_approvals_page_16d0bf73("page.tsx")
+    next_crm_src_app_admin_targets_page_5acc41a8("page.tsx")
+    next_crm_src_app_actions_importactions_2325e995("importActions.ts")
+    next_crm_src_components_admintargetsclient_a785c9a7("AdminTargetsClient.tsx")
+    next_crm_src_components_notesmodalclient_43256018("NotesModalClient.tsx")
     next_crm_src_components_statusmodalclient_3ddbfcc6("StatusModalClient.tsx")
-    next_crm_src_components_taskmodal_83f64efc("TaskModal.tsx")
-    next_crm_src_components_tasksclient_44dba6c5("TasksClient.tsx")
-    next_crm_src_utils_supabase_client_createclient_e47fcc62("createClient()<br/><small>utils/supabase/client.ts</small>")
-    next_crm_src_components_leadsclient_leadsclient_b8be44a6 -->|calls| next_crm_src_utils_supabase_client_createclient_e47fcc62
-    next_crm_src_components_leadsclient_leadsclient_b8be44a6 -->|calls| next_crm_src_components_leadsclient_getstatuscol_2118c4d0
-    next_crm_src_components_oiforecastclient_oiforec_86432406 -->|calls| next_crm_src_utils_supabase_client_createclient_e47fcc62
-    next_crm_src_app_login_page_loginpage_62a48972 -->|calls| next_crm_src_utils_supabase_client_createclient_e47fcc62
-    next_crm_src_components_admintargetsclient_admin_d270677b -->|calls| next_crm_src_utils_supabase_client_createclient_e47fcc62
-    next_crm_src_components_bulkstatusmodal_bulkstat_ca70824b -->|calls| next_crm_src_utils_supabase_client_createclient_e47fcc62
-    next_crm_src_components_dashboardclient_dashboar_c6a3a26e -->|calls| next_crm_src_utils_supabase_client_createclient_e47fcc62
-    next_crm_src_components_dashboardclient_dashboar_c6a3a26e -->|calls| next_crm_src_components_dashboardclient_getstatu_1b504e9d
     scripts_migrate_from_local_migrateleadsparts_3836516d -->|calls| scripts_migrate_from_local_parsefirebasedate_cacf15be
     scripts_migrate_from_local_migrateoiforecasts_d02eeb86 -->|calls| scripts_migrate_from_local_parsefirebasedate_cacf15be
-    next_crm_src_components_admintargetsclient_a785c9a7 -->|imports| next_crm_src_utils_supabase_client_createclient_e47fcc62
-    next_crm_src_components_bulkstatusmodal_4dbdbd34 -->|imports| next_crm_src_utils_supabase_client_createclient_e47fcc62
-    next_crm_src_components_dashboardclient_375d202e -->|imports| next_crm_src_utils_supabase_client_createclient_e47fcc62
-    next_crm_src_components_dashboardclient_375d202e -->|imports| next_crm_src_components_bulkstatusmodal_bulkstat_ca70824b
-    next_crm_src_components_dashboardclient_375d202e -->|imports| next_crm_src_components_bulkstatusmodal_4dbdbd34
-    next_crm_src_components_statusmodalclient_3ddbfcc6 -->|imports| next_crm_src_utils_supabase_client_createclient_e47fcc62
-    next_crm_src_components_taskmodal_83f64efc -->|imports| next_crm_src_utils_supabase_client_createclient_e47fcc62
-    next_crm_src_components_tasksclient_44dba6c5 -->|imports| next_crm_src_utils_supabase_client_createclient_e47fcc62
-    next_crm_src_components_tasksclient_44dba6c5 -->|imports| next_crm_src_components_taskmodal_83f64efc
-    %% Omitted for readability: 562 nodes, 0 edges
+    scripts_migrate_from_local_run_ea4f8bf6 -->|calls| scripts_migrate_from_local_migrateleadsparts_3836516d
+    scripts_migrate_from_local_run_ea4f8bf6 -->|calls| scripts_migrate_from_local_migrateoiforecasts_d02eeb86
+    scripts_backup_firestore_backupcollection_dfe12380 -->|calls| scripts_backup_firestore_backupcollection_dfe12380
+    scripts_backup_firestore_runbackup_3c015265 -->|calls| scripts_backup_firestore_backupcollection_dfe12380
+    scripts_fix_migration_fix_a0bfbf96 -->|calls| scripts_fix_migration_parsedate_7ed2eda6
+    scripts_migrate_migratedata_b66d2e56 -->|calls| scripts_migrate_parsedate_92450628
+    scripts_migrate_remaining_run_054e0ab3 -->|calls| scripts_migrate_remaining_parsedate_d04561fb
+    next_crm_src_app_admin_targets_page_5acc41a8 -->|imports| next_crm_src_components_admintargetsclient_a785c9a7
+    %% Omitted for readability: 541 nodes, 0 edges
     class scripts_migrate_from_local_migrateleadsparts_3836516d function;
     class scripts_migrate_from_local_parsefirebasedate_cacf15be function;
     class scripts_migrate_from_local_migrateoiforecasts_d02eeb86 function;
-    class next_crm_src_components_dashboardclient_375d202e entry;
-    class next_crm_src_components_dashboardclient_dashboar_c6a3a26e entry;
-    class next_crm_src_components_dashboardclient_getstatu_1b504e9d ui;
+    class scripts_migrate_from_local_run_ea4f8bf6 function;
+    class scripts_backup_firestore_backupcollection_dfe12380 function;
+    class scripts_backup_firestore_runbackup_3c015265 function;
+    class scripts_fix_migration_fix_a0bfbf96 function;
+    class scripts_fix_migration_parsedate_7ed2eda6 function;
+    class scripts_migrate_migratedata_b66d2e56 function;
+    class scripts_migrate_parsedate_92450628 function;
+    class scripts_migrate_remaining_run_054e0ab3 function;
+    class scripts_migrate_remaining_parsedate_d04561fb function;
+    class next_crm_src_app_admin_approvals_page_16d0bf73 ui;
+    class next_crm_src_app_admin_targets_page_5acc41a8 ui;
+    class next_crm_src_app_actions_importactions_2325e995 module;
     class next_crm_src_components_admintargetsclient_a785c9a7 entry;
-    class next_crm_src_components_admintargetsclient_admin_d270677b entry;
-    class next_crm_src_components_bulkstatusmodal_4dbdbd34 ui;
-    class next_crm_src_components_bulkstatusmodal_bulkstat_ca70824b ui;
-    class next_crm_src_components_leadsclient_leadsclient_b8be44a6 entry;
-    class next_crm_src_components_leadsclient_getstatuscol_2118c4d0 ui;
-    class next_crm_src_app_login_page_loginpage_62a48972 ui;
-    class next_crm_src_components_oiforecastclient_oiforec_86432406 ui;
+    class next_crm_src_components_notesmodalclient_43256018 entry;
     class next_crm_src_components_statusmodalclient_3ddbfcc6 entry;
-    class next_crm_src_components_taskmodal_83f64efc ui;
-    class next_crm_src_components_tasksclient_44dba6c5 entry;
-    class next_crm_src_utils_supabase_client_createclient_e47fcc62 entry;
     classDef entry fill:#422006,stroke:#fbbf24,color:#fde68a,stroke-width:1px;
     classDef api fill:#450a0a,stroke:#f87171,color:#fee2e2,stroke-width:1px;
     classDef async fill:#2e1065,stroke:#a78bfa,color:#ede9fe,stroke-width:1px;
@@ -4010,158 +4162,6 @@ flowchart LR
 </tr>
 <tr>
   <td>1</td>
-  <td><code>AdminTargetsProps</code><br><small style="color:var(--muted)">src/components/AdminTargetsClient.tsx</small></td>
-  <td><span class="tag tag-hook">UI</span></td>
-  <td>External entry / no inbound edge</td>
-  <td>No direct outbound edge</td>
-  <td>AdminTargetsProps node in src/components/AdminTargetsClient.tsx.</td>
-</tr>
-<tr>
-  <td>2</td>
-  <td><code>DashboardProps</code><br><small style="color:var(--muted)">src/components/DashboardClient.tsx</small></td>
-  <td><span class="tag tag-hook">UI</span></td>
-  <td>External entry / no inbound edge</td>
-  <td>No direct outbound edge</td>
-  <td>DashboardProps node in src/components/DashboardClient.tsx.</td>
-</tr>
-<tr>
-  <td>3</td>
-  <td><code>AuditLog</code><br><small style="color:var(--muted)">next-crm/src/types.ts</small></td>
-  <td><span class="tag tag-class">Class</span></td>
-  <td><code>AdminTargetsClient.tsx</code><br><small style="color:var(--muted)">src/components/AdminTargetsClient.tsx</small></td>
-  <td>No direct outbound edge</td>
-  <td>AuditLog node in next-crm/src/types.ts.</td>
-</tr>
-<tr>
-  <td>4</td>
-  <td><code>GlobalTarget</code><br><small style="color:var(--muted)">next-crm/src/types.ts</small></td>
-  <td><span class="tag tag-class">Class</span></td>
-  <td><code>AdminTargetsClient.tsx</code><br><small style="color:var(--muted)">src/components/AdminTargetsClient.tsx</small><br><code>DashboardClient.tsx</code><br><small style="color:var(--muted)">src/components/DashboardClient.tsx</small></td>
-  <td>No direct outbound edge</td>
-  <td>GlobalTarget node in next-crm/src/types.ts.</td>
-</tr>
-<tr>
-  <td>5</td>
-  <td><code>IndividualTarget</code><br><small style="color:var(--muted)">next-crm/src/types.ts</small></td>
-  <td><span class="tag tag-class">Class</span></td>
-  <td><code>AdminTargetsClient.tsx</code><br><small style="color:var(--muted)">src/components/AdminTargetsClient.tsx</small><br><code>DashboardClient.tsx</code><br><small style="color:var(--muted)">src/components/DashboardClient.tsx</small></td>
-  <td>No direct outbound edge</td>
-  <td>IndividualTarget node in next-crm/src/types.ts.</td>
-</tr>
-<tr>
-  <td>6</td>
-  <td><code>LeadStatus</code><br><small style="color:var(--muted)">next-crm/src/types.ts</small></td>
-  <td><span class="tag tag-class">Class</span></td>
-  <td><code>BulkStatusModal.tsx</code><br><small style="color:var(--muted)">src/components/BulkStatusModal.tsx</small><br><code>DashboardClient.tsx</code><br><small style="color:var(--muted)">src/components/DashboardClient.tsx</small><br><code>LeadsClient.tsx</code><br><small style="color:var(--muted)">src/components/LeadsClient.tsx</small><br>+1 more</td>
-  <td>No direct outbound edge</td>
-  <td>LeadStatus node in next-crm/src/types.ts.</td>
-</tr>
-<tr>
-  <td>7</td>
-  <td><code>LoginPage()</code><br><small style="color:var(--muted)">app/login/page.tsx</small></td>
-  <td><span class="tag tag-hook">UI</span></td>
-  <td>External entry / no inbound edge</td>
-  <td><code>createClient()</code><br><small style="color:var(--muted)">utils/supabase/client.ts</small></td>
-  <td>Organizes documentation pages, navigation, or content lookup.</td>
-</tr>
-<tr>
-  <td>8</td>
-  <td><code>DashboardPage()</code><br><small style="color:var(--muted)">src/app/page.tsx</small></td>
-  <td><span class="tag tag-hook">UI</span></td>
-  <td>External entry / no inbound edge</td>
-  <td>No direct outbound edge</td>
-  <td>Organizes documentation pages, navigation, or content lookup.</td>
-</tr>
-<tr>
-  <td>9</td>
-  <td><code>AdminTargetsClient()</code><br><small style="color:var(--muted)">src/components/AdminTargetsClient.tsx</small></td>
-  <td><span class="tag tag-cmd">Entry</span></td>
-  <td><code>page.tsx</code><br><small style="color:var(--muted)">admin/targets/page.tsx</small></td>
-  <td><code>cn()</code><br><small style="color:var(--muted)">src/lib/utils.ts</small><br><code>createClient()</code><br><small style="color:var(--muted)">utils/supabase/client.ts</small></td>
-  <td>AdminTargetsClient() node in src/components/AdminTargetsClient.tsx.</td>
-</tr>
-<tr>
-  <td>10</td>
-  <td><code>BulkStatusModal()</code><br><small style="color:var(--muted)">src/components/BulkStatusModal.tsx</small></td>
-  <td><span class="tag tag-hook">UI</span></td>
-  <td><code>DashboardClient.tsx</code><br><small style="color:var(--muted)">src/components/DashboardClient.tsx</small><br><code>LeadsClient.tsx</code><br><small style="color:var(--muted)">src/components/LeadsClient.tsx</small></td>
-  <td><code>createClient()</code><br><small style="color:var(--muted)">utils/supabase/client.ts</small></td>
-  <td>BulkStatusModal() node in src/components/BulkStatusModal.tsx.</td>
-</tr>
-<tr>
-  <td>11</td>
-  <td><code>DashboardClient()</code><br><small style="color:var(--muted)">src/components/DashboardClient.tsx</small></td>
-  <td><span class="tag tag-cmd">Entry</span></td>
-  <td><code>page.tsx</code><br><small style="color:var(--muted)">src/app/page.tsx</small></td>
-  <td><code>cn()</code><br><small style="color:var(--muted)">src/lib/utils.ts</small><br><code>createClient()</code><br><small style="color:var(--muted)">utils/supabase/client.ts</small><br><code>getStatusColor()</code><br><small style="color:var(--muted)">src/components/DashboardClient.tsx</small></td>
-  <td>DashboardClient() node in src/components/DashboardClient.tsx.</td>
-</tr>
-<tr>
-  <td>12</td>
-  <td><code>getStatusColor()</code><br><small style="color:var(--muted)">src/components/DashboardClient.tsx</small></td>
-  <td><span class="tag tag-hook">UI</span></td>
-  <td><code>DashboardClient()</code><br><small style="color:var(--muted)">src/components/DashboardClient.tsx</small></td>
-  <td>No direct outbound edge</td>
-  <td>getStatusColor() node in src/components/DashboardClient.tsx.</td>
-</tr>
-<tr>
-  <td>13</td>
-  <td><code>createClient()</code><br><small style="color:var(--muted)">utils/supabase/client.ts</small></td>
-  <td><span class="tag tag-cmd">Entry</span></td>
-  <td><code>AdminApprovalsClient()</code><br><small style="color:var(--muted)">src/components/AdminApprovalsClient.tsx</small><br><code>AdminApprovalsClient.tsx</code><br><small style="color:var(--muted)">src/components/AdminApprovalsClient.tsx</small><br><code>AdminTargetsClient()</code><br><small style="color:var(--muted)">src/components/AdminTargetsClient.tsx</small><br>+37 more</td>
-  <td>No direct outbound edge</td>
-  <td>createClient() node in utils/supabase/client.ts.</td>
-</tr>
-<tr>
-  <td>14</td>
-  <td><code>login/page.tsx</code><br><small style="color:var(--muted)">app/login/page.tsx</small></td>
-  <td><span class="tag tag-hook">UI</span></td>
-  <td>External entry / no inbound edge</td>
-  <td><code>client.ts</code><br><small style="color:var(--muted)">utils/supabase/client.ts</small><br><code>createClient()</code><br><small style="color:var(--muted)">utils/supabase/client.ts</small></td>
-  <td>Module file in app/login/page.tsx.</td>
-</tr>
-<tr>
-  <td>15</td>
-  <td><code>app/page.tsx</code><br><small style="color:var(--muted)">src/app/page.tsx</small></td>
-  <td><span class="tag tag-hook">UI</span></td>
-  <td>External entry / no inbound edge</td>
-  <td><code>@supabase/ssr</code><br><small style="color:var(--muted)">next-crm/package.json</small><br><code>DashboardClient()</code><br><small style="color:var(--muted)">src/components/DashboardClient.tsx</small><br><code>DashboardClient.tsx</code><br><small style="color:var(--muted)">src/components/DashboardClient.tsx</small></td>
-  <td>Module file in src/app/page.tsx.</td>
-</tr>
-<tr>
-  <td>16</td>
-  <td><code>AdminTargetsClient.tsx</code><br><small style="color:var(--muted)">src/components/AdminTargetsClient.tsx</small></td>
-  <td><span class="tag tag-cmd">Entry</span></td>
-  <td><code>page.tsx</code><br><small style="color:var(--muted)">admin/targets/page.tsx</small></td>
-  <td><code>AuditLog</code><br><small style="color:var(--muted)">next-crm/src/types.ts</small><br><code>client.ts</code><br><small style="color:var(--muted)">utils/supabase/client.ts</small><br><code>cn()</code><br><small style="color:var(--muted)">src/lib/utils.ts</small><br>+8 more</td>
-  <td>Module file in src/components/AdminTargetsClient.tsx.</td>
-</tr>
-<tr>
-  <td>17</td>
-  <td><code>next-crm/src/components/BulkStatusModal.tsx</code><br><small style="color:var(--muted)">src/components/BulkStatusModal.tsx</small></td>
-  <td><span class="tag tag-hook">UI</span></td>
-  <td><code>DashboardClient.tsx</code><br><small style="color:var(--muted)">src/components/DashboardClient.tsx</small><br><code>LeadsClient.tsx</code><br><small style="color:var(--muted)">src/components/LeadsClient.tsx</small></td>
-  <td><code>client.ts</code><br><small style="color:var(--muted)">utils/supabase/client.ts</small><br><code>createClient()</code><br><small style="color:var(--muted)">utils/supabase/client.ts</small><br><code>CurrencyInput()</code><br><small style="color:var(--muted)">components/common/CurrencyInput.tsx</small><br>+6 more</td>
-  <td>Module file in src/components/BulkStatusModal.tsx.</td>
-</tr>
-<tr>
-  <td>18</td>
-  <td><code>STAGES</code><br><small style="color:var(--muted)">src/components/BulkStatusModal.tsx</small></td>
-  <td><span class="tag tag-hook">UI</span></td>
-  <td>External entry / no inbound edge</td>
-  <td>No direct outbound edge</td>
-  <td>STAGES node in src/components/BulkStatusModal.tsx.</td>
-</tr>
-<tr>
-  <td>19</td>
-  <td><code>DashboardClient.tsx</code><br><small style="color:var(--muted)">src/components/DashboardClient.tsx</small></td>
-  <td><span class="tag tag-cmd">Entry</span></td>
-  <td><code>page.tsx</code><br><small style="color:var(--muted)">src/app/page.tsx</small></td>
-  <td><code>BulkStatusModal()</code><br><small style="color:var(--muted)">src/components/BulkStatusModal.tsx</small><br><code>BulkStatusModal.tsx</code><br><small style="color:var(--muted)">src/components/BulkStatusModal.tsx</small><br><code>client.ts</code><br><small style="color:var(--muted)">utils/supabase/client.ts</small><br>+9 more</td>
-  <td>Module file in src/components/DashboardClient.tsx.</td>
-</tr>
-<tr>
-  <td>20</td>
   <td><code>AdminApprovalsProps</code><br><small style="color:var(--muted)">src/components/AdminApprovalsClient.tsx</small></td>
   <td><span class="tag tag-hook">UI</span></td>
   <td>External entry / no inbound edge</td>
@@ -4169,7 +4169,15 @@ flowchart LR
   <td>AdminApprovalsProps node in src/components/AdminApprovalsClient.tsx.</td>
 </tr>
 <tr>
-  <td>21</td>
+  <td>2</td>
+  <td><code>AdminUsersProps</code><br><small style="color:var(--muted)">src/components/AdminUsersClient.tsx</small></td>
+  <td><span class="tag tag-hook">UI</span></td>
+  <td>External entry / no inbound edge</td>
+  <td>No direct outbound edge</td>
+  <td>AdminUsersProps node in src/components/AdminUsersClient.tsx.</td>
+</tr>
+<tr>
+  <td>3</td>
   <td><code>BulkStatusModalProps</code><br><small style="color:var(--muted)">src/components/BulkStatusModal.tsx</small></td>
   <td><span class="tag tag-hook">UI</span></td>
   <td>External entry / no inbound edge</td>
@@ -4177,7 +4185,7 @@ flowchart LR
   <td>BulkStatusModalProps node in src/components/BulkStatusModal.tsx.</td>
 </tr>
 <tr>
-  <td>22</td>
+  <td>4</td>
   <td><code>ImportModalProps</code><br><small style="color:var(--muted)">src/components/ImportModalClient.tsx</small></td>
   <td><span class="tag tag-hook">UI</span></td>
   <td>External entry / no inbound edge</td>
@@ -4185,7 +4193,7 @@ flowchart LR
   <td>ImportModalProps node in src/components/ImportModalClient.tsx.</td>
 </tr>
 <tr>
-  <td>23</td>
+  <td>5</td>
   <td><code>LeadDetailProps</code><br><small style="color:var(--muted)">src/components/LeadDetailClient.tsx</small></td>
   <td><span class="tag tag-hook">UI</span></td>
   <td>External entry / no inbound edge</td>
@@ -4193,7 +4201,7 @@ flowchart LR
   <td>LeadDetailProps node in src/components/LeadDetailClient.tsx.</td>
 </tr>
 <tr>
-  <td>24</td>
+  <td>6</td>
   <td><code>LeadModalProps</code><br><small style="color:var(--muted)">src/components/LeadModalClient.tsx</small></td>
   <td><span class="tag tag-hook">UI</span></td>
   <td>External entry / no inbound edge</td>
@@ -4201,7 +4209,7 @@ flowchart LR
   <td>LeadModalProps node in src/components/LeadModalClient.tsx.</td>
 </tr>
 <tr>
-  <td>25</td>
+  <td>7</td>
   <td><code>LeadsTableProps</code><br><small style="color:var(--muted)">src/components/LeadsClient.tsx</small></td>
   <td><span class="tag tag-hook">UI</span></td>
   <td>External entry / no inbound edge</td>
@@ -4209,7 +4217,7 @@ flowchart LR
   <td>LeadsTableProps node in src/components/LeadsClient.tsx.</td>
 </tr>
 <tr>
-  <td>26</td>
+  <td>8</td>
   <td><code>NotesModalProps</code><br><small style="color:var(--muted)">src/components/NotesModalClient.tsx</small></td>
   <td><span class="tag tag-hook">UI</span></td>
   <td>External entry / no inbound edge</td>
@@ -4217,7 +4225,7 @@ flowchart LR
   <td>NotesModalProps node in src/components/NotesModalClient.tsx.</td>
 </tr>
 <tr>
-  <td>27</td>
+  <td>9</td>
   <td><code>OIForecastPageProps</code><br><small style="color:var(--muted)">src/components/OIForecastClient.tsx</small></td>
   <td><span class="tag tag-hook">UI</span></td>
   <td>External entry / no inbound edge</td>
@@ -4225,7 +4233,7 @@ flowchart LR
   <td>Organizes documentation pages, navigation, or content lookup.</td>
 </tr>
 <tr>
-  <td>28</td>
+  <td>10</td>
   <td><code>StatusModalProps</code><br><small style="color:var(--muted)">src/components/StatusModalClient.tsx</small></td>
   <td><span class="tag tag-hook">UI</span></td>
   <td>External entry / no inbound edge</td>
@@ -4233,7 +4241,7 @@ flowchart LR
   <td>StatusModalProps node in src/components/StatusModalClient.tsx.</td>
 </tr>
 <tr>
-  <td>29</td>
+  <td>11</td>
   <td><code>TasksProps</code><br><small style="color:var(--muted)">src/components/TasksClient.tsx</small></td>
   <td><span class="tag tag-hook">UI</span></td>
   <td>External entry / no inbound edge</td>
@@ -4241,12 +4249,156 @@ flowchart LR
   <td>TasksProps node in src/components/TasksClient.tsx.</td>
 </tr>
 <tr>
-  <td>30</td>
+  <td>12</td>
   <td><code>EditRequest</code><br><small style="color:var(--muted)">next-crm/src/types.ts</small></td>
   <td><span class="tag tag-class">Class</span></td>
   <td><code>AdminApprovalsClient.tsx</code><br><small style="color:var(--muted)">src/components/AdminApprovalsClient.tsx</small><br><code>LeadsClient.tsx</code><br><small style="color:var(--muted)">src/components/LeadsClient.tsx</small><br><code>NotesModalClient.tsx</code><br><small style="color:var(--muted)">src/components/NotesModalClient.tsx</small></td>
   <td>No direct outbound edge</td>
   <td>EditRequest node in next-crm/src/types.ts.</td>
+</tr>
+<tr>
+  <td>13</td>
+  <td><code>InterestLevel</code><br><small style="color:var(--muted)">next-crm/src/types.ts</small></td>
+  <td><span class="tag tag-class">Class</span></td>
+  <td><code>BulkStatusModal.tsx</code><br><small style="color:var(--muted)">src/components/BulkStatusModal.tsx</small><br><code>LeadsClient.tsx</code><br><small style="color:var(--muted)">src/components/LeadsClient.tsx</small><br><code>StatusModalClient.tsx</code><br><small style="color:var(--muted)">src/components/StatusModalClient.tsx</small></td>
+  <td>No direct outbound edge</td>
+  <td>InterestLevel node in next-crm/src/types.ts.</td>
+</tr>
+<tr>
+  <td>14</td>
+  <td><code>Lead</code><br><small style="color:var(--muted)">next-crm/src/types.ts</small></td>
+  <td><span class="tag tag-class">Class</span></td>
+  <td><code>AdminApprovalsClient.tsx</code><br><small style="color:var(--muted)">src/components/AdminApprovalsClient.tsx</small><br><code>BulkStatusModal.tsx</code><br><small style="color:var(--muted)">src/components/BulkStatusModal.tsx</small><br><code>DashboardClient.tsx</code><br><small style="color:var(--muted)">src/components/DashboardClient.tsx</small><br>+10 more</td>
+  <td>No direct outbound edge</td>
+  <td>Lead node in next-crm/src/types.ts.</td>
+</tr>
+<tr>
+  <td>15</td>
+  <td><code>LeadStatus</code><br><small style="color:var(--muted)">next-crm/src/types.ts</small></td>
+  <td><span class="tag tag-class">Class</span></td>
+  <td><code>BulkStatusModal.tsx</code><br><small style="color:var(--muted)">src/components/BulkStatusModal.tsx</small><br><code>DashboardClient.tsx</code><br><small style="color:var(--muted)">src/components/DashboardClient.tsx</small><br><code>LeadsClient.tsx</code><br><small style="color:var(--muted)">src/components/LeadsClient.tsx</small><br>+1 more</td>
+  <td>No direct outbound edge</td>
+  <td>LeadStatus node in next-crm/src/types.ts.</td>
+</tr>
+<tr>
+  <td>16</td>
+  <td><code>UserProfile</code><br><small style="color:var(--muted)">next-crm/src/types.ts</small></td>
+  <td><span class="tag tag-class">Class</span></td>
+  <td><code>AdminTargetsClient.tsx</code><br><small style="color:var(--muted)">src/components/AdminTargetsClient.tsx</small><br><code>AdminUsersClient.tsx</code><br><small style="color:var(--muted)">src/components/AdminUsersClient.tsx</small><br><code>BulkStatusModal.tsx</code><br><small style="color:var(--muted)">src/components/BulkStatusModal.tsx</small><br>+12 more</td>
+  <td>No direct outbound edge</td>
+  <td>UserProfile node in next-crm/src/types.ts.</td>
+</tr>
+<tr>
+  <td>17</td>
+  <td><code>AdminApprovalsClient()</code><br><small style="color:var(--muted)">src/components/AdminApprovalsClient.tsx</small></td>
+  <td><span class="tag tag-cmd">Entry</span></td>
+  <td><code>page.tsx</code><br><small style="color:var(--muted)">admin/approvals/page.tsx</small></td>
+  <td><code>createClient()</code><br><small style="color:var(--muted)">utils/supabase/client.ts</small></td>
+  <td>AdminApprovalsClient() node in src/components/AdminApprovalsClient.tsx.</td>
+</tr>
+<tr>
+  <td>18</td>
+  <td><code>AdminApprovalsClient.tsx</code><br><small style="color:var(--muted)">src/components/AdminApprovalsClient.tsx</small></td>
+  <td><span class="tag tag-cmd">Entry</span></td>
+  <td><code>page.tsx</code><br><small style="color:var(--muted)">admin/approvals/page.tsx</small></td>
+  <td><code>client.ts</code><br><small style="color:var(--muted)">utils/supabase/client.ts</small><br><code>createClient()</code><br><small style="color:var(--muted)">utils/supabase/client.ts</small><br><code>EditRequest</code><br><small style="color:var(--muted)">next-crm/src/types.ts</small><br>+2 more</td>
+  <td>Module file in src/components/AdminApprovalsClient.tsx.</td>
+</tr>
+<tr>
+  <td>19</td>
+  <td><code>StatusModalClient.tsx</code><br><small style="color:var(--muted)">src/components/StatusModalClient.tsx</small></td>
+  <td><span class="tag tag-cmd">Entry</span></td>
+  <td><code>LeadDetailClient.tsx</code><br><small style="color:var(--muted)">src/components/LeadDetailClient.tsx</small><br><code>LeadsClient.tsx</code><br><small style="color:var(--muted)">src/components/LeadsClient.tsx</small><br><code>OIGrid.tsx</code><br><small style="color:var(--muted)">components/OIForecast/OIGrid.tsx</small></td>
+  <td><code>client.ts</code><br><small style="color:var(--muted)">utils/supabase/client.ts</small><br><code>cn()</code><br><small style="color:var(--muted)">src/lib/utils.ts</small><br><code>createClient()</code><br><small style="color:var(--muted)">utils/supabase/client.ts</small><br>+9 more</td>
+  <td>Module file in src/components/StatusModalClient.tsx.</td>
+</tr>
+<tr>
+  <td>20</td>
+  <td><code>STAGES</code><br><small style="color:var(--muted)">src/components/StatusModalClient.tsx</small></td>
+  <td><span class="tag tag-hook">UI</span></td>
+  <td>External entry / no inbound edge</td>
+  <td>No direct outbound edge</td>
+  <td>STAGES node in src/components/StatusModalClient.tsx.</td>
+</tr>
+<tr>
+  <td>21</td>
+  <td><code>processImport()</code><br><small style="color:var(--muted)">app/actions/importActions.ts</small></td>
+  <td><span class="tag tag-func">Function</span></td>
+  <td>External entry / no inbound edge</td>
+  <td><code>createClient()</code><br><small style="color:var(--muted)">utils/supabase/server.ts</small></td>
+  <td>processImport() node in app/actions/importActions.ts.</td>
+</tr>
+<tr>
+  <td>22</td>
+  <td><code>bulkDeleteLeads()</code><br><small style="color:var(--muted)">app/actions/leadActions.ts</small></td>
+  <td><span class="tag tag-func">Function</span></td>
+  <td>External entry / no inbound edge</td>
+  <td><code>createClient()</code><br><small style="color:var(--muted)">utils/supabase/server.ts</small></td>
+  <td>bulkDeleteLeads() node in app/actions/leadActions.ts.</td>
+</tr>
+<tr>
+  <td>23</td>
+  <td><code>importLeadsBatch()</code><br><small style="color:var(--muted)">app/actions/leadActions.ts</small></td>
+  <td><span class="tag tag-func">Function</span></td>
+  <td>External entry / no inbound edge</td>
+  <td><code>createClient()</code><br><small style="color:var(--muted)">utils/supabase/server.ts</small></td>
+  <td>importLeadsBatch() node in app/actions/leadActions.ts.</td>
+</tr>
+<tr>
+  <td>24</td>
+  <td><code>ApprovalsPage()</code><br><small style="color:var(--muted)">admin/approvals/page.tsx</small></td>
+  <td><span class="tag tag-hook">UI</span></td>
+  <td>External entry / no inbound edge</td>
+  <td><code>createClient()</code><br><small style="color:var(--muted)">utils/supabase/server.ts</small></td>
+  <td>Organizes documentation pages, navigation, or content lookup.</td>
+</tr>
+<tr>
+  <td>25</td>
+  <td><code>TargetsPage()</code><br><small style="color:var(--muted)">admin/targets/page.tsx</small></td>
+  <td><span class="tag tag-hook">UI</span></td>
+  <td>External entry / no inbound edge</td>
+  <td><code>createClient()</code><br><small style="color:var(--muted)">utils/supabase/server.ts</small></td>
+  <td>Organizes documentation pages, navigation, or content lookup.</td>
+</tr>
+<tr>
+  <td>26</td>
+  <td><code>UsersPage()</code><br><small style="color:var(--muted)">admin/users/page.tsx</small></td>
+  <td><span class="tag tag-hook">UI</span></td>
+  <td>External entry / no inbound edge</td>
+  <td><code>createClient()</code><br><small style="color:var(--muted)">utils/supabase/server.ts</small></td>
+  <td>Organizes documentation pages, navigation, or content lookup.</td>
+</tr>
+<tr>
+  <td>27</td>
+  <td><code>GET()</code><br><small style="color:var(--muted)">auth/callback/route.ts</small></td>
+  <td><span class="tag tag-func">Function</span></td>
+  <td>External entry / no inbound edge</td>
+  <td><code>createClient()</code><br><small style="color:var(--muted)">utils/supabase/server.ts</small></td>
+  <td>GET() node in auth/callback/route.ts.</td>
+</tr>
+<tr>
+  <td>28</td>
+  <td><code>LeadDetailPage()</code><br><small style="color:var(--muted)">lead/[id]/page.tsx</small></td>
+  <td><span class="tag tag-hook">UI</span></td>
+  <td>External entry / no inbound edge</td>
+  <td><code>createClient()</code><br><small style="color:var(--muted)">utils/supabase/server.ts</small></td>
+  <td>Organizes documentation pages, navigation, or content lookup.</td>
+</tr>
+<tr>
+  <td>29</td>
+  <td><code>TasksPage()</code><br><small style="color:var(--muted)">app/tasks/page.tsx</small></td>
+  <td><span class="tag tag-hook">UI</span></td>
+  <td>External entry / no inbound edge</td>
+  <td><code>createClient()</code><br><small style="color:var(--muted)">utils/supabase/server.ts</small></td>
+  <td>Organizes documentation pages, navigation, or content lookup.</td>
+</tr>
+<tr>
+  <td>30</td>
+  <td><code>createClient()</code><br><small style="color:var(--muted)">utils/supabase/server.ts</small></td>
+  <td><span class="tag tag-cmd">Entry</span></td>
+  <td><code>ApprovalsPage()</code><br><small style="color:var(--muted)">admin/approvals/page.tsx</small><br><code>bulkDeleteLeads()</code><br><small style="color:var(--muted)">app/actions/leadActions.ts</small><br><code>GET()</code><br><small style="color:var(--muted)">auth/callback/route.ts</small><br>+14 more</td>
+  <td>No direct outbound edge</td>
+  <td>createClient() node in utils/supabase/server.ts.</td>
 </tr>
 </table>
 
@@ -4255,19 +4407,19 @@ flowchart LR
     <h4>Key Files</h4>
     <table style="width:100%;font-size:0.85rem;">
       <tr><th>File</th><th>Coverage</th></tr>
-      <tr><td><code>next-crm/src/types.ts</code></td><td>20 nodes</td></tr>
-<tr><td><code>implementation_plan.md</code></td><td>15 nodes</td></tr>
+      <tr><td><code>implementation_plan.md</code></td><td>15 nodes</td></tr>
 <tr><td><code>scripts/fix_tasks_ts.cjs</code></td><td>13 nodes</td></tr>
 <tr><td><code>scripts/fix_all_ts.cjs</code></td><td>11 nodes</td></tr>
 <tr><td><code>scripts/migrate_from_local.cjs</code></td><td>11 nodes</td></tr>
 <tr><td><code>scripts/backup_firestore.cjs</code></td><td>10 nodes</td></tr>
 <tr><td><code>scripts/fix_modals_logic.cjs</code></td><td>10 nodes</td></tr>
 <tr><td><code>scripts/port_tasks.cjs</code></td><td>10 nodes</td></tr>
+<tr><td><code>implementation_plan - Blueprint Migrasi CoreDesk CRM TNT V2 - Nextjs Supabase.md</code></td><td>9 nodes</td></tr>
     </table>
   </div>
   <div class="card">
     <h4>Design Notes</h4>
-    <p>This section comes from graphify community clustering. Relationship summary: contains x453, imports x47, calls x32, references x31. The diagram prioritizes high-confidence calls or usage relationships; the table keeps the broader node inventory.</p>
+    <p>This section comes from graphify community clustering. Relationship summary: contains x427, references x30, calls x28, imports x26. The diagram prioritizes high-confidence calls or usage relationships; the table keeps the broader node inventory.</p>
   </div>
 </div>
 <hr>
@@ -4279,16 +4431,16 @@ flowchart LR
     <h4>Graph</h4>
     <table style="width:100%;font-size:0.85rem;">
       <tr><td>Nodes</td><td>1194</td></tr>
-      <tr><td>Edges</td><td>1756</td></tr>
+      <tr><td>Edges</td><td>1757</td></tr>
       <tr><td>Hyperedges</td><td>0</td></tr>
-      <tr><td>Communities</td><td>139</td></tr>
+      <tr><td>Communities</td><td>138</td></tr>
       <tr><td>Documented Sections</td><td>15</td></tr>
     </table>
   </div>
   <div class="card">
     <h4>Edge Confidence</h4>
     <table style="width:100%;font-size:0.85rem;">
-      <tr><td>EXTRACTED</td><td>1756</td></tr>
+      <tr><td>EXTRACTED</td><td>1757</td></tr>
       <tr><td>INFERRED</td><td>0</td></tr>
       <tr><td>AMBIGUOUS</td><td>0</td></tr>
     </table>
@@ -4297,7 +4449,7 @@ flowchart LR
 
 <div style="text-align:center; padding:40px 0; color: var(--muted); font-size:0.9rem;">
   <p>crm-sales-tnt-v2 — Architecture Documentation</p>
-  <p>Generated: 2026-09-16 06:35 UTC · graphify callflow-html</p>
+  <p>Generated: 2026-09-16 07:44 UTC · graphify callflow-html</p>
 </div>
 
 </div><!-- .container -->

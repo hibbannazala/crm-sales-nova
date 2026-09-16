@@ -14,11 +14,12 @@ interface StatusModalProps {
   lead: Lead;
   user: UserProfile;
   users?: UserProfile[];
+  onSaved?: (newStatus: LeadStatus, dealValue?: number) => void;
 }
 
 const STAGES: LeadStatus[] = ["Leads", "Chated", "Responsed", "Set Meeting", "Hold", "Close Win", "Close Lost", "Failed"];
 
-export default function StatusModalClient({ isOpen, onClose, lead, user, users = [] }: StatusModalProps) {
+export default function StatusModalClient({ isOpen, onClose, lead, user, users = [], onSaved }: StatusModalProps) {
   const router = useRouter();
   const supabase = createClient();
   const [status, setStatus] = useState<LeadStatus>(lead.status);
@@ -330,12 +331,15 @@ export default function StatusModalClient({ isOpen, onClose, lead, user, users =
           const forecastStatus = status === 'Close Win' ? 'WIN' : (status === 'Close Lost' || status === 'Failed' ? 'LOSE' : 'OPEN');
           
           for (const fData of forecastSnap) {
-
-            const fCategory = fData.category || ''; 
+            const fCategory = (fData.category || '').toLowerCase();
+            const fProduct = (fData.product || '').toLowerCase();
+            const currentLeadProducts = (productOffered && productOffered.length > 0 ? productOffered : (lead.productOffered || [])).map(p => p.toLowerCase());
             
-            const isProductMatch = (lead.productOffered || []).some(p => 
-              fCategory.toLowerCase().includes(p.toLowerCase()) || p.toLowerCase().includes(fCategory.toLowerCase().replace(' campaign', '').trim())
-            );
+            // Match by product column or category string or if productOffered contains product/category
+            const isProductMatch = currentLeadProducts.length === 0 || currentLeadProducts.some(p => 
+              fProduct.includes(p) || p.includes(fProduct) ||
+              fCategory.includes(p) || p.includes(fCategory.replace(' campaign', '').trim())
+            ) || fCategory.includes('custom') || fCategory === '';
 
             if (isProductMatch) {
               const fCampaign = Number(fData.campaign_number || 1);
@@ -374,6 +378,7 @@ export default function StatusModalClient({ isOpen, onClose, lead, user, users =
       });
 
       toast.success(isOverride ? "Data diperbarui (Override)" : "Jejak Funnel tercatat");
+      if (onSaved) onSaved(status, Number(dealValue || 0));
       router.refresh();
       onClose();
     } catch (error: any) {

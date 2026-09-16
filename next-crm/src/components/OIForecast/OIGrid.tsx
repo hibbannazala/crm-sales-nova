@@ -541,6 +541,18 @@ export default function OIGrid({ forecasts, selectedMonthYear, activeTab, leads,
           user={user}
           users={users}
           onClose={() => setSelectedLeadForStatus(null)}
+          onSaved={(newStatus, dealVal) => {
+            const fStatus = newStatus === 'Close Win' ? 'WIN' : (newStatus === 'Close Lost' || newStatus === 'Failed' ? 'LOSE' : 'OPEN');
+            const targetForecast = forecasts.find(f => f.leadId === selectedLeadForStatus.id);
+            if (targetForecast) {
+              const updates: any = { status: fStatus };
+              if (fStatus === 'WIN' && dealVal) {
+                updates.value = dealVal;
+                updates.grossMargin = dealVal - (targetForecast.budgetAds || 0) - (targetForecast.budgetCreator || 0);
+              }
+              onUpdateForecast(targetForecast.id, updates);
+            }
+          }}
         />
       )}
     </div>

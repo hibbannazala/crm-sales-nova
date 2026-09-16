@@ -32,27 +32,13 @@ export default async function OIForecastPage() {
   let hasMore = true;
   let page = 0;
   while (hasMore) {
-    const { data } = await supabase.from('leads').select('*').range(page * 1000, (page + 1) * 1000 - 1);
+    const { data } = await supabase.from('leads').select('*, funnelHistory:funnel_history(*)').range(page * 1000, (page + 1) * 1000 - 1);
     if (data && data.length > 0) {
       allLeads = [...allLeads, ...data];
       page++;
       if (data.length < 1000) hasMore = false;
     } else {
       hasMore = false;
-    }
-  }
-
-  let allForecasts: any[] = [];
-  let forecastPage = 0;
-  let hasMoreForecasts = true;
-  while (hasMoreForecasts) {
-    const { data } = await supabase.from('oi_forecast').select('*').range(forecastPage * 1000, (forecastPage + 1) * 1000 - 1);
-    if (data && data.length > 0) {
-      allForecasts = [...allForecasts, ...data];
-      forecastPage++;
-      if (data.length < 1000) hasMoreForecasts = false;
-    } else {
-      hasMoreForecasts = false;
     }
   }
 
@@ -81,7 +67,14 @@ export default async function OIForecastPage() {
     status: l.status,
     dealValue: l.deal_value || 0,
     isDeleted: l.is_deleted || false,
-    funnelHistory: l.funnel_history || []
+    funnelHistory: (l.funnelHistory || l.funnel_history || []).map((h: any) => ({
+      stage: h.stage,
+      date: h.date_occurred,
+      by: h.by_user_name,
+      dealValue: h.deal_value,
+      campaignNumber: h.campaign_number,
+      note: h.note
+    }))
   });
 
   const mapForecast = (f: any) => ({

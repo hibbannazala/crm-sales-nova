@@ -1,17 +1,17 @@
 # Graph Report - crm-sales-tnt-v2  (2026-09-16)
 
 ## Corpus Check
-- 211 files · ~209,253 words
+- 211 files · ~209,345 words
 - Verdict: corpus is large enough that graph structure adds value.
 - Unclassified: 10 file(s) not represented in the graph (top: (none) 5, .css 2, .example 1)
 
 ## Summary
-- 1194 nodes · 1756 edges · 139 communities (85 shown, 54 thin omitted)
+- 1194 nodes · 1757 edges · 138 communities (84 shown, 54 thin omitted)
 - Extraction: 100% EXTRACTED · 0% INFERRED · 0% AMBIGUOUS
 - Token cost: 0 input · 0 output
 
 ## Graph Freshness
-- Built from commit: `1adc0f7c`
+- Built from commit: `2ea9f9d2`
 - Run `git rev-parse HEAD` and compare to check if the graph is stale.
 - Run `graphify update .` after code changes (no API cost).
 
@@ -19,7 +19,7 @@
 - src/types.ts
 - pg
 - 00000000000002_recreate_schema_text.sql
-- LeadsClient.tsx
+- cn
 - next-crm/package.json
 - package.json
 - OIForecastClient.tsx
@@ -29,14 +29,14 @@
 - compilerOptions
 - dependencies
 - What You Must Do When Invoked
-- cn
+- NotesModalClient.tsx
 - compilerOptions
 - backup_incremental.cjs
 - fix_tasks_ts.cjs
 - createClient
 - fix_all_ts.cjs
 - migrate_from_local.cjs
-- next-crm/src/components/Sidebar.tsx
+- AdminTargetsClient.tsx
 - devDependencies
 - UserProfile
 - backup_firestore.cjs
@@ -132,7 +132,6 @@
 - graphify reference: extra exports and benchmark
 - Tahapan Implementasi (Migration Strategy)
 - Proposed Changes
-- @supabase/ssr
 - sync_rename_basemen_to_mcn.cjs
 - graphify reference: query, path, explain
 - graphify reference: add a URL and watch a folder
@@ -165,19 +164,19 @@
 ## Surprising Connections (you probably didn't know these)
 - `users` --references--> `auth`  [EXTRACTED]
   supabase/migrations/00000000000000_initial_schema.sql → src/firebase.ts
-- `AdminUsersProps` --references--> `UserProfile`  [EXTRACTED]
-  next-crm/src/components/AdminUsersClient.tsx → next-crm/src/types.ts
-- `PendingScreen()` --calls--> `createClient()`  [EXTRACTED]
-  next-crm/src/components/PendingScreen.tsx → next-crm/src/utils/supabase/client.ts
-- `NavItem()` --calls--> `cn()`  [EXTRACTED]
-  next-crm/src/components/Sidebar.tsx → next-crm/src/lib/utils.ts
-- `processImport()` --calls--> `createClient()`  [EXTRACTED]
-  next-crm/src/app/actions/importActions.ts → next-crm/src/utils/supabase/server.ts
+- `StatCard()` --calls--> `cn()`  [EXTRACTED]
+  next-crm/src/components/DashboardClient.tsx → next-crm/src/lib/utils.ts
+- `RateCard()` --calls--> `cn()`  [EXTRACTED]
+  next-crm/src/components/DashboardClient.tsx → next-crm/src/lib/utils.ts
+- `TabButton()` --calls--> `cn()`  [EXTRACTED]
+  next-crm/src/components/LeadDetailClient.tsx → next-crm/src/lib/utils.ts
+- `MilestoneItem()` --calls--> `cn()`  [EXTRACTED]
+  next-crm/src/components/LeadDetailClient.tsx → next-crm/src/lib/utils.ts
 
 ## Import Cycles
 - None detected.
 
-## Communities (139 total, 54 thin omitted)
+## Communities (138 total, 54 thin omitted)
 
 ### Community 0 - "src/types.ts"
 Cohesion: 0.05
@@ -191,9 +190,9 @@ Nodes (20): pg, { Client }, { Client }, fs, path, { Client }, { Client }, { Clie
 Cohesion: 0.10
 Nodes (34): auth.users, edit_requests, funnel_history, global_audit_logs, global_targets, individual_targets, lead_notes, leads (+26 more)
 
-### Community 3 - "LeadsClient.tsx"
-Cohesion: 0.21
-Nodes (10): AdminUsersClient(), AdminUsersProps, ConfirmModal(), ConfirmModalProps, ImportModalClient(), REP_NAMES, STAGES, LeadModalClient() (+2 more)
+### Community 3 - "cn"
+Cohesion: 0.18
+Nodes (13): AdminUsersClient(), ConfirmModal(), ConfirmModalProps, ImportModalClient(), REP_NAMES, STAGES, LeadModalClient(), getStatusColor() (+5 more)
 
 ### Community 4 - "next-crm/package.json"
 Cohesion: 0.07
@@ -204,12 +203,12 @@ Cohesion: 0.08
 Nodes (25): clsx, date-fns, lucide-react, motion, papaparse, react, react-dom, sonner (+17 more)
 
 ### Community 6 - "OIForecastClient.tsx"
-Cohesion: 0.19
-Nodes (17): CurrencyInput(), CurrencyInputProps, formatIDDate(), formatMoney(), OIGrid(), OIGridProps, formatMoney(), MONTH_NAMES (+9 more)
+Cohesion: 0.16
+Nodes (18): CurrencyInput(), CurrencyInputProps, formatIDDate(), formatMoney(), OIGrid(), OIGridProps, formatMoney(), MONTH_NAMES (+10 more)
 
 ### Community 7 - "next-crm/src/types.ts"
-Cohesion: 0.17
-Nodes (15): TaskModal(), TaskModalProps, TaskCardProps, TasksClient(), DEFAULT_PERMISSIONS, ForecastStatus, LEAD_SOURCES, LeadSource (+7 more)
+Cohesion: 0.11
+Nodes (21): LeadDetailClient(), MilestoneItem(), TabButton(), TaskModal(), TaskModalProps, TaskCard(), TaskCardProps, TasksClient() (+13 more)
 
 ### Community 8 - "createClient"
 Cohesion: 0.19
@@ -231,9 +230,9 @@ Nodes (17): dependencies, clsx, date-fns, lucide-react, motion, next, papaparse,
 Cohesion: 0.08
 Nodes (24): For /graphify add and --watch, For /graphify query, For the commit hook and native CLAUDE.md integration, For --update and --cluster-only, /graphify, Honesty Rules, Interpreter guard for subcommands, Part A - Structural extraction for code files (+16 more)
 
-### Community 13 - "cn"
-Cohesion: 0.16
-Nodes (14): RateCard(), StatCard(), LeadDetailClient(), MilestoneItem(), TabButton(), MarkdownEditor(), MarkdownEditorProps, MarkdownRenderer() (+6 more)
+### Community 13 - "NotesModalClient.tsx"
+Cohesion: 0.40
+Nodes (4): MarkdownEditor(), MarkdownEditorProps, NotesModalClient(), STAGES
 
 ### Community 14 - "compilerOptions"
 Cohesion: 0.12
@@ -248,8 +247,8 @@ Cohesion: 0.15
 Nodes (12): confirmModalContent, destConfirmModal, destTaskModal, destTasksClient, fs, pageContent, pagePath, path (+4 more)
 
 ### Community 17 - "createClient"
-Cohesion: 0.20
-Nodes (13): LoginPage(), AdminTargetsClient(), AdminTargetsProps, BulkStatusModal(), STAGES, DashboardClient(), DashboardProps, getStatusColor() (+5 more)
+Cohesion: 0.14
+Nodes (16): metadata, RootLayout(), LoginPage(), AppLayout(), BulkStatusModal(), STAGES, DashboardClient(), getStatusColor() (+8 more)
 
 ### Community 18 - "fix_all_ts.cjs"
 Cohesion: 0.18
@@ -259,17 +258,17 @@ Nodes (10): bulk, bulkPath, fs, leadsClient, leadsClientPath, leadsPage, leadsPa
 Cohesion: 0.25
 Nodes (10): BACKUP_DIR, { createClient }, crypto, fs, migrateLeadsParts(), migrateOIForecasts(), parseFirebaseDate(), path (+2 more)
 
-### Community 20 - "next-crm/src/components/Sidebar.tsx"
-Cohesion: 0.24
-Nodes (7): metadata, RootLayout(), AppLayout(), PendingScreen(), NavItem(), Sidebar(), SidebarProps
+### Community 20 - "AdminTargetsClient.tsx"
+Cohesion: 0.48
+Nodes (6): AdminTargetsClient(), AdminTargetsProps, DashboardProps, AuditLog, GlobalTarget, IndividualTarget
 
 ### Community 21 - "devDependencies"
 Cohesion: 0.20
 Nodes (10): devDependencies, eslint, eslint-config-next, tailwindcss, @tailwindcss/postcss, @types/node, @types/papaparse, @types/react (+2 more)
 
 ### Community 22 - "UserProfile"
-Cohesion: 0.19
-Nodes (16): AdminApprovalsClient(), AdminApprovalsProps, BulkStatusModalProps, ImportModalProps, LeadDetailProps, LeadModalProps, LeadsTableProps, NotesModalProps (+8 more)
+Cohesion: 0.17
+Nodes (18): AdminApprovalsClient(), AdminApprovalsProps, AdminUsersProps, BulkStatusModalProps, ImportModalProps, LeadDetailProps, LeadModalProps, LeadsTableProps (+10 more)
 
 ### Community 23 - "backup_firestore.cjs"
 Cohesion: 0.22
@@ -491,10 +490,6 @@ Nodes (8): Blueprint Migrasi: CoreDesk CRM TNT V2 -> Next.js & Supabase, Daftar 
 Cohesion: 0.25
 Nodes (7): 1. `src/components/ImportModal.tsx`, 2. `src/components/LeadModal.tsx` (Tambah Lead Manual), 3. `src/types.ts` & `firebase-blueprint.json`, Open Questions, Proposed Changes, Rencana Peningkatan Sistem Anti-Duplikat & Import Individu, User Review Required
 
-### Community 120 - "@supabase/ssr"
-Cohesion: 0.25
-Nodes (4): getStatusColor(), LeadsClient(), OIForecastPage(), @supabase/ssr
-
 ### Community 121 - "sync_rename_basemen_to_mcn.cjs"
 Cohesion: 0.29
 Nodes (5): { createClient }, envPath, fs, path, supabase
@@ -529,9 +524,9 @@ _Questions this graph is uniquely positioned to answer:_
 
 - **Why does `react-router-dom` connect `src/types.ts` to `package.json`?**
   _High betweenness centrality (0.018) - this node is a cross-community bridge._
-- **Why does `@supabase/ssr` connect `@supabase/ssr` to `LeadsClient.tsx`, `next-crm/package.json`, `createClient`, `createClient`, `next-crm/src/components/Sidebar.tsx`, `src/middleware.ts`?**
+- **Why does `@supabase/ssr` connect `createClient` to `cn`, `next-crm/package.json`, `OIForecastClient.tsx`, `createClient`, `src/middleware.ts`?**
   _High betweenness centrality (0.015) - this node is a cross-community bridge._
-- **Why does `createClient()` connect `createClient` to `LeadsClient.tsx`, `OIForecastClient.tsx`, `next-crm/src/types.ts`, `cn`, `next-crm/src/components/Sidebar.tsx`, `UserProfile`, `@supabase/ssr`?**
+- **Why does `createClient()` connect `createClient` to `cn`, `OIForecastClient.tsx`, `next-crm/src/types.ts`, `NotesModalClient.tsx`, `AdminTargetsClient.tsx`, `UserProfile`?**
   _High betweenness centrality (0.006) - this node is a cross-community bridge._
 - **What connects `{ initializeApp, cert }`, `{ getFirestore }`, `serviceAccount` to the rest of the system?**
   _620 weakly-connected nodes found - possible documentation gaps or missing edges._
