@@ -128,16 +128,22 @@ export default function DashboardClient({ leads, user, users, targets = [], indi
       const { data: tableData, count } = await query;
       
       if (tableData) {
-        const mapped = tableData.map(l => ({
-          id: l.id,
-          dateInput: l.date_input,
-          dateChated: l.date_chated,
-          dateResponsed: l.date_responsed,
-          dateSetMeeting: l.date_set_meeting,
-          dateClosed: l.date_closed,
-          dateFailed: l.date_failed,
-          picName: l.pic_name || l.owner,
-          brandName: l.brand_name,
+        const mapped = (tableData as any[]).map((l: any) => {
+          const latestHistory = (l.funnelHistory || l.filtered || [])
+            .filter((h: any) => h.by_user_name && h.by_user_name !== 'System' && h.by_user_name !== '-')
+            .sort((a: any, b: any) => new Date(b.date_occurred).getTime() - new Date(a.date_occurred).getTime())[0];
+          const derivedPic = l.pic_name || l.owner || latestHistory?.by_user_name || '-';
+
+          return {
+            id: l.id,
+            dateInput: l.date_input,
+            dateChated: l.date_chated,
+            dateResponsed: l.date_responsed,
+            dateSetMeeting: l.date_set_meeting,
+            dateClosed: l.date_closed,
+            dateFailed: l.date_failed,
+            picName: derivedPic,
+            brandName: l.brand_name,
           contact: l.contact,
           source: l.source || l.lead_source,
           category: l.category,
@@ -168,7 +174,8 @@ export default function DashboardClient({ leads, user, users, targets = [], indi
             by: h.by_user_name,
             timestamp: h.created_at ? new Date(h.created_at).getTime() : 0
           }))
-        }));
+        };
+      });
         
         // If filterAdmin is set, we need to filter the table client side since postgREST doesn't support complex relation filtering easily
         // Or we just rely on the RPC for table? 

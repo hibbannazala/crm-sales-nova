@@ -582,7 +582,7 @@ export default function LeadModalClient({ isOpen, onClose, lead, user, leads = [
                             <p className="text-[10px] font-bold text-blue-700 mt-1">
                               {(() => {
                                 const picName = smartMatch.picName || "PIC lain";
-                                const isSystem = picName.toLowerCase().includes('sistem') || picName.toLowerCase().includes('system') || smartMatch.source?.toLowerCase().includes('sistem');
+                                const isSystem = picName.toLowerCase().includes('sistem') || picName.toLowerCase().includes('system') || (smartMatch as any).source?.toLowerCase().includes('sistem') || smartMatch.leadSource?.toLowerCase().includes('sistem');
                                 
                                 if (smartMatch.status === 'Leads') {
                                   if (!isSystem) {
@@ -628,8 +628,8 @@ export default function LeadModalClient({ isOpen, onClose, lead, user, leads = [
                         className="w-full px-3 py-2 border border-purple-200 bg-white rounded-lg focus:ring-2 focus:ring-purple-500 font-bold text-purple-900"
                       >
                         <option value="">-- Assign ke Saya ({user.name}) --</option>
-                        {users.filter(u => u.status === 'active' && u.name !== user.name).map(u => (
-                          <option key={u.id} value={u.name}>{u.name} ({u.role})</option>
+                        {users.filter((u: any) => u.role !== 'pending' && u.name !== user.name).map((u: any) => (
+                          <option key={u.id || u.uid} value={u.name}>{u.name} ({u.role})</option>
                         ))}
                       </select>
                       <p className="text-[10px] text-purple-600 mt-1.5 font-medium leading-tight">

@@ -59,7 +59,7 @@ export default async function LeadsPage() {
   let hasMore = true;
   let page = 0;
   while (hasMore) {
-    const { data } = await supabase.from('leads').select('*, funnelHistory:funnel_history(*), notes:lead_notes(*)').range(page * 1000, (page + 1) * 1000 - 1);
+    const { data } = await supabase.from('leads').select('*, funnelHistory:funnel_history(*)').range(page * 1000, (page + 1) * 1000 - 1);
     if (data && data.length > 0) {
       allLeads = [...allLeads, ...data];
       page++;
@@ -84,26 +84,26 @@ export default async function LeadsPage() {
 
   // We need to map Supabase columns (snake_case) back to Firebase properties (camelCase) 
   // if LeadsClient still uses camelCase.
-  // We can do this safely inside LeadsClient or here. Let's do a simple mapping here.
-  const mapLead = (l: any) => ({
-    id: l.id,
-    dateInput: l.date_input,
-    picName: l.pic_name,
-    brandName: l.brand_name,
-    contact: l.contact,
-    source: l.source,
-    category: l.category,
-    productOffered: l.product_offered || [],
-    notes: (l.notes || []).map((n: any) => ({
-      text: n.text,
-      author: n.author_name,
-      timestamp: n.created_at,
-      type: n.note_type,
-      isLog: n.is_log
-    })),
-    priority: l.priority || 'Low',
-    interestLevel: l.interest_level || 'Low',
-    status: l.status,
+  const mapLead = (l: any) => {
+    // Derive PIC from funnel history if pic_name is not yet set
+    const latestHistory = (l.funnelHistory || [])
+      .filter((h: any) => h.by_user_name && h.by_user_name !== 'System' && h.by_user_name !== '-')
+      .sort((a: any, b: any) => new Date(b.date_occurred).getTime() - new Date(a.date_occurred).getTime())[0];
+    const derivedPic = l.pic_name || latestHistory?.by_user_name || '-';
+
+    return {
+      id: l.id,
+      dateInput: l.date_input,
+      picName: derivedPic,
+      brandName: l.brand_name,
+      contact: l.contact,
+      source: l.source,
+      category: l.category,
+      productOffered: l.product_offered || [],
+      notes: [], // Notes are fetched on-demand in lead detail page to avoid transferring megabytes of text
+      priority: l.priority || 'Low',
+      interestLevel: l.interest_level || 'Low',
+      status: l.status,
     dealValue: l.deal_value || 0,
     isDeleted: l.is_deleted || false,
     funnelHistory: (l.funnelHistory || []).map((h: any) => ({
@@ -116,7 +116,8 @@ export default async function LeadsPage() {
       by: h.by_user_name,
       timestamp: h.created_at ? new Date(h.created_at).getTime() : 0
     }))
-  });
+  };
+};
 
   const mappedLeads = allLeads.map(mapLead);
 

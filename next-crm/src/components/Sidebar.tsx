@@ -5,6 +5,7 @@ import { LayoutDashboard, Users, ClipboardCheck, UserCog, LogOut, ShieldCheck, T
 import { cn } from '@/lib/utils';
 import { usePathname, useRouter } from 'next/navigation';
 import Link from 'next/link';
+import { createClient } from '@/utils/supabase/client';
 
 interface SidebarProps {
   user: any;
@@ -23,6 +24,7 @@ export default function Sidebar({
   pendingUsersCount,
   pendingApprovalsCount
 }: SidebarProps) {
+  const supabase = createClient();
   const isAdmin = user?.role === 'admin' || user?.role === 'lord';
   const [hoveredLabel, setHoveredLabel] = useState<{label: string, top: number} | null>(null);
   const pathname = usePathname();

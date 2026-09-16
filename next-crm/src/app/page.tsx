@@ -53,20 +53,6 @@ export default async function DashboardPage() {
   }
   finalUser.uid = finalUser.id;
 
-
-  let allLeads: any[] = [];
-  let hasMore = true;
-  let page = 0;
-  while (hasMore) {
-    const { data } = await supabase.from('leads').select('*, funnelHistory:funnel_history(*), notes:lead_notes(*)').range(page * 1000, (page + 1) * 1000 - 1);
-    if (data && data.length > 0) {
-      allLeads = [...allLeads, ...data];
-      page++;
-      if (data.length < 1000) hasMore = false;
-    } else {
-      hasMore = false;
-    }
-  }
   const { data: rawUsers } = await supabase.from('users').select('*');
   const users = (rawUsers || []).map((u: any) => ({
     uid: u.id,
@@ -77,45 +63,12 @@ export default async function DashboardPage() {
   const { data: globalTargets } = await supabase.from('global_targets').select('*');
   const { data: individualTargets } = await supabase.from('individual_targets').select('*');
 
-  const mapLead = (l: any) => ({
-    id: l.id,
-    dateInput: l.date_input,
-    picName: l.pic_name || l.owner,
-    brandName: l.brand_name,
-    contact: l.contact,
-    source: l.source || l.lead_source,
-    category: l.category,
-    productOffered: l.product_offered || [],
-    notes: (l.notes || []).map((n: any) => ({
-      text: n.text,
-      author: n.author_name,
-      timestamp: n.created_at,
-      type: n.note_type,
-      isLog: n.is_log
-    })),
-    priority: l.priority || 'Low',
-    interestLevel: l.interest_level || 'Low',
-    status: l.status,
-    dealValue: l.deal_value || 0,
-    isDeleted: l.is_deleted || false,
-    funnelHistory: (l.funnelHistory || []).map((h: any) => ({
-      stage: h.stage,
-      date: h.date_occurred,
-      dealValue: h.deal_value,
-      campaignNumber: h.campaign_number,
-      note: h.note,
-      assignedBy: h.assigned_by,
-      by: h.by_user_name,
-      timestamp: h.created_at ? new Date(h.created_at).getTime() : 0
-    }))
-  });
-
-  const mappedLeads = allLeads.map(mapLead);
-
+  // DashboardClient manages its own paginated data via get_dashboard_stats and .range() query
+  // Passing empty array avoids fetching 6000+ leads and notes into memory unnecessarily
   return (
     <div className="min-h-screen bg-slate-50 flex flex-col">
       <DashboardClient 
-        leads={mappedLeads}
+        leads={[]}
         user={finalUser as any}
         users={(users || []) as any}
         targets={globalTargets as any}

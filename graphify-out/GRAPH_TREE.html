@@ -1,0 +1,363 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>/ — graphify tree viewer</title>
+  <style>
+    body {
+      font-family: 'Segoe UI', sans-serif;
+      margin: 0;
+      padding: 0;
+      background: #f9f9f9;
+      color: #333;
+    }
+    h1 {
+      margin: 20px 0 0 24px;
+      font-size: 2.2rem;
+      font-weight: bold;
+      color: #1e3a56;
+    }
+    .controls {
+      margin: 20px 0 15px 24px;
+    }
+    button {
+      margin-right: 10px;
+      padding: 8px 18px;
+      background: #007bff;
+      color: #fff;
+      border: none;
+      border-radius: 5px;
+      font-size: 0.95rem;
+      cursor: pointer;
+      transition: background 0.2s ease-in-out;
+      box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+    }
+    button:hover {
+      background: #0056b3;
+    }
+    button:active {
+      background: #004085;
+    }
+    #tree-container {
+      width: calc(100vw - 48px); /* Adjust for body margin/padding */
+      height: 85vh;
+      overflow: auto;
+      border-radius: 8px;
+      background: #fff;
+      margin-left: 24px;
+      margin-right: 24px;
+      box-shadow: 0 4px 12px rgba(0,0,0,0.08);
+      border: 1px solid #ddd;
+    }
+    svg {
+      background: #fff;
+      border-radius: 8px;
+      display: block; /* Important for D3 */
+    }
+    .node circle {
+      stroke-width: 2.5px;
+    }
+    .node text { /* Base style for the <text> container */
+      font: 13px 'Segoe UI', sans-serif;
+      paint-order: stroke fill; /* Ensures text is readable over lines */
+      stroke: #fff; /* White halo */
+      stroke-width: 3px; /* Halo thickness */
+      stroke-linejoin: round;
+      stroke-opacity: 0.85; /* Halo opacity */
+    }
+    .link {
+      fill: none;
+      stroke-opacity: 0.7;
+      stroke-width: 2px;
+    }
+  </style>
+</head>
+<body>
+  <h1>/ — Knowledge Graph</h1>
+  <div class="controls">
+    <button onclick="expandAll()">Expand All</button>
+    <button onclick="collapseAll()">Collapse All</button>
+    <button onclick="resetView()">Reset View</button>
+  </div>
+  <div id="tree-container">
+    <svg id="tree-svg" width="6000" height="8000"></svg>
+  </div>
+
+  <script src="https://d3js.org/d3.v7.min.js"></script>
+  <script>
+    const initialJsonData = {"name":"/","total_count":844,"children":[{"name":"firebase","total_count":1,"children":[{"name":"firestore","total_count":1,"children":[]}]},{"name":"inspect_fb.cjs","total_count":5,"children":[{"name":"db","total_count":1,"children":[]},{"name":"inspectTasks()","total_count":1,"children":[]},{"name":"serviceAccount","total_count":1,"children":[]},{"name":"{ getFirestore }","total_count":1,"children":[]},{"name":"{ initializeApp, cert }","total_count":1,"children":[]}]},{"name":"next-crm","total_count":206,"children":[{"name":"eslint.config.mjs","total_count":1,"children":[{"name":"eslintConfig","total_count":1,"children":[]}]},{"name":"next.config.ts","total_count":1,"children":[{"name":"nextConfig","total_count":1,"children":[]}]},{"name":"package.json","total_count":60,"children":[{"name":"@supabase/ssr","total_count":1,"children":[]},{"name":"@supabase/ssr","total_count":1,"children":[]},{"name":"@supabase/supabase-js","total_count":1,"children":[]},{"name":"@supabase/supabase-js","total_count":1,"children":[]},{"name":"@tailwindcss/postcss","total_count":1,"children":[]},{"name":"@tailwindcss/postcss","total_count":1,"children":[]},{"name":"@tailwindcss/typography","total_count":1,"children":[]},{"name":"@tailwindcss/typography","total_count":1,"children":[]},{"name":"@types/node","total_count":1,"children":[]},{"name":"@types/node","total_count":1,"children":[]},{"name":"@types/papaparse","total_count":1,"children":[]},{"name":"@types/papaparse","total_count":1,"children":[]},{"name":"@types/react","total_count":1,"children":[]},{"name":"@types/react","total_count":1,"children":[]},{"name":"@types/react-dom","total_count":1,"children":[]},{"name":"@types/react-dom","total_count":1,"children":[]},{"name":"build","total_count":1,"children":[]},{"name":"clsx","total_count":1,"children":[]},{"name":"clsx","total_count":1,"children":[]},{"name":"date-fns","total_count":1,"children":[]},{"name":"date-fns","total_count":1,"children":[]},{"name":"dependencies","total_count":1,"children":[]},{"name":"dev","total_count":1,"children":[]},{"name":"devDependencies","total_count":1,"children":[]},{"name":"eslint","total_count":1,"children":[]},{"name":"eslint","total_count":1,"children":[]},{"name":"eslint-config-next","total_count":1,"children":[]},{"name":"eslint-config-next","total_count":1,"children":[]},{"name":"lint","total_count":1,"children":[]},{"name":"lucide-react","total_count":1,"children":[]},{"name":"lucide-react","total_count":1,"children":[]},{"name":"motion","total_count":1,"children":[]},{"name":"motion","total_count":1,"children":[]},{"name":"name","total_count":1,"children":[]},{"name":"next","total_count":1,"children":[]},{"name":"next","total_count":1,"children":[]},{"name":"papaparse","total_count":1,"children":[]},{"name":"papaparse","total_count":1,"children":[]},{"name":"private","total_count":1,"children":[]},{"name":"react","total_count":1,"children":[]},{"name":"react","total_count":1,"children":[]},{"name":"react-dom","total_count":1,"children":[]},{"name":"react-dom","total_count":1,"children":[]},{"name":"react-markdown","total_count":1,"children":[]},{"name":"react-markdown","total_count":1,"children":[]},{"name":"remark-gfm","total_count":1,"children":[]},{"name":"remark-gfm","total_count":1,"children":[]},{"name":"scripts","total_count":1,"children":[]},{"name":"sonner","total_count":1,"children":[]},{"name":"sonner","total_count":1,"children":[]},{"name":"start","total_count":1,"children":[]},{"name":"tailwind-merge","total_count":1,"children":[]},{"name":"tailwind-merge","total_count":1,"children":[]},{"name":"tailwindcss","total_count":1,"children":[]},{"name":"tailwindcss","total_count":1,"children":[]},{"name":"typescript","total_count":1,"children":[]},{"name":"typescript","total_count":1,"children":[]},{"name":"version","total_count":1,"children":[]},{"name":"zustand","total_count":1,"children":[]},{"name":"zustand","total_count":1,"children":[]}]},{"name":"postcss.config.mjs","total_count":1,"children":[{"name":"config","total_count":1,"children":[]}]},{"name":"src","total_count":124,"children":[{"name":"app","total_count":18,"children":[{"name":"actions","total_count":4,"children":[{"name":"importActions.ts","total_count":2,"children":[{"name":"NOTE: Ini adalah abstraksi dari logika 1400 baris lama.","total_count":1,"children":[]},{"name":"processImport()","total_count":1,"children":[]}]},{"name":"leadActions.ts","total_count":2,"children":[{"name":"bulkDeleteLeads()","total_count":1,"children":[]},{"name":"importLeadsBatch()","total_count":1,"children":[]}]}]},{"name":"admin","total_count":3,"children":[{"name":"approvals","total_count":1,"children":[{"name":"page.tsx","total_count":1,"children":[{"name":"ApprovalsPage()","total_count":1,"children":[]}]}]},{"name":"targets","total_count":1,"children":[{"name":"page.tsx","total_count":1,"children":[{"name":"TargetsPage()","total_count":1,"children":[]}]}]},{"name":"users","total_count":1,"children":[{"name":"page.tsx","total_count":1,"children":[{"name":"UsersPage()","total_count":1,"children":[]}]}]}]},{"name":"auth","total_count":1,"children":[{"name":"callback","total_count":1,"children":[{"name":"route.ts","total_count":1,"children":[{"name":"GET()","total_count":1,"children":[]}]}]}]},{"name":"layout.tsx","total_count":2,"children":[{"name":"metadata","total_count":1,"children":[]},{"name":"RootLayout()","total_count":1,"children":[]}]},{"name":"lead","total_count":1,"children":[{"name":"[id]","total_count":1,"children":[{"name":"page.tsx","total_count":1,"children":[{"name":"LeadDetailPage()","total_count":1,"children":[]}]}]}]},{"name":"leads","total_count":1,"children":[{"name":"page.tsx","total_count":1,"children":[{"name":"LeadsPage()","total_count":1,"children":[]}]}]},{"name":"loading.tsx","total_count":1,"children":[{"name":"Loading()","total_count":1,"children":[]}]},{"name":"login","total_count":1,"children":[{"name":"page.tsx","total_count":1,"children":[{"name":"LoginPage()","total_count":1,"children":[]}]}]},{"name":"oi_forecast","total_count":1,"children":[{"name":"page.tsx","total_count":1,"children":[{"name":"OIForecastPage()","total_count":1,"children":[]}]}]},{"name":"page.tsx","total_count":1,"children":[{"name":"DashboardPage()","total_count":1,"children":[]}]},{"name":"permissions","total_count":1,"children":[{"name":"page.tsx","total_count":1,"children":[{"name":"PermissionsPage()","total_count":1,"children":[]}]}]},{"name":"tasks","total_count":1,"children":[{"name":"page.tsx","total_count":1,"children":[{"name":"TasksPage()","total_count":1,"children":[]}]}]}]},{"name":"components","total_count":74,"children":[{"name":"AdminApprovalsClient.tsx","total_count":2,"children":[{"name":"AdminApprovalsClient()","total_count":1,"children":[]},{"name":"AdminApprovalsProps","total_count":1,"children":[]}]},{"name":"AdminTargetsClient.tsx","total_count":2,"children":[{"name":"AdminTargetsClient()","total_count":1,"children":[]},{"name":"AdminTargetsProps","total_count":1,"children":[]}]},{"name":"AdminUsersClient.tsx","total_count":2,"children":[{"name":"AdminUsersClient()","total_count":1,"children":[]},{"name":"AdminUsersProps","total_count":1,"children":[]}]},{"name":"AppLayout.tsx","total_count":1,"children":[{"name":"AppLayout()","total_count":1,"children":[]}]},{"name":"BulkStatusModal.tsx","total_count":3,"children":[{"name":"BulkStatusModal()","total_count":1,"children":[]},{"name":"BulkStatusModalProps","total_count":1,"children":[]},{"name":"STAGES","total_count":1,"children":[]}]},{"name":"common","total_count":2,"children":[{"name":"CurrencyInput.tsx","total_count":2,"children":[{"name":"CurrencyInput()","total_count":1,"children":[]},{"name":"CurrencyInputProps","total_count":1,"children":[]}]}]},{"name":"ConfirmModal.tsx","total_count":2,"children":[{"name":"ConfirmModal()","total_count":1,"children":[]},{"name":"ConfirmModalProps","total_count":1,"children":[]}]},{"name":"DashboardClient.tsx","total_count":5,"children":[{"name":"DashboardClient()","total_count":1,"children":[]},{"name":"DashboardProps","total_count":1,"children":[]},{"name":"getStatusColor()","total_count":1,"children":[]},{"name":"RateCard()","total_count":1,"children":[]},{"name":"StatCard()","total_count":1,"children":[]}]},{"name":"ImportModalClient.tsx","total_count":5,"children":[{"name":"ImportModalClient()","total_count":1,"children":[]},{"name":"ImportModalProps","total_count":1,"children":[]},{"name":"parseDate()","total_count":1,"children":[]},{"name":"REP_NAMES","total_count":1,"children":[]},{"name":"STAGES","total_count":1,"children":[]}]},{"name":"LeadDetailClient.tsx","total_count":6,"children":[{"name":"InfoItem()","total_count":1,"children":[]},{"name":"LeadDetailClient()","total_count":1,"children":[]},{"name":"LeadDetailProps","total_count":1,"children":[]},{"name":"MilestoneItem()","total_count":1,"children":[]},{"name":"StatCard()","total_count":1,"children":[]},{"name":"TabButton()","total_count":1,"children":[]}]},{"name":"LeadModalClient.tsx","total_count":2,"children":[{"name":"LeadModalClient()","total_count":1,"children":[]},{"name":"LeadModalProps","total_count":1,"children":[]}]},{"name":"LeadsClient.tsx","total_count":4,"children":[{"name":"getStatusColor()","total_count":1,"children":[]},{"name":"InterestBadge()","total_count":1,"children":[]},{"name":"LeadsClient()","total_count":1,"children":[]},{"name":"LeadsTableProps","total_count":1,"children":[]}]},{"name":"MarkdownEditor.tsx","total_count":2,"children":[{"name":"MarkdownEditor()","total_count":1,"children":[]},{"name":"MarkdownEditorProps","total_count":1,"children":[]}]},{"name":"MarkdownRenderer.tsx","total_count":1,"children":[{"name":"MarkdownRenderer()","total_count":1,"children":[]}]},{"name":"NotesModalClient.tsx","total_count":3,"children":[{"name":"NotesModalClient()","total_count":1,"children":[]},{"name":"NotesModalProps","total_count":1,"children":[]},{"name":"STAGES","total_count":1,"children":[]}]},{"name":"OIForecast","total_count":11,"children":[{"name":"OIGrid.tsx","total_count":4,"children":[{"name":"formatIDDate()","total_count":1,"children":[]},{"name":"formatMoney()","total_count":1,"children":[]},{"name":"OIGrid()","total_count":1,"children":[]},{"name":"OIGridProps","total_count":1,"children":[]}]},{"name":"OIMilestone.tsx","total_count":4,"children":[{"name":"formatMoney()","total_count":1,"children":[]},{"name":"MONTH_NAMES","total_count":1,"children":[]},{"name":"OIMilestone()","total_count":1,"children":[]},{"name":"OIMilestoneProps","total_count":1,"children":[]}]},{"name":"OISummaryCards.tsx","total_count":3,"children":[{"name":"formatMoney()","total_count":1,"children":[]},{"name":"OISummaryCards()","total_count":1,"children":[]},{"name":"OISummaryCardsProps","total_count":1,"children":[]}]}]},{"name":"OIForecastClient.tsx","total_count":2,"children":[{"name":"OIForecastPage()","total_count":1,"children":[]},{"name":"OIForecastPageProps","total_count":1,"children":[]}]},{"name":"PendingScreen.tsx","total_count":1,"children":[{"name":"PendingScreen()","total_count":1,"children":[]}]},{"name":"PermissionSettingsClient.tsx","total_count":6,"children":[{"name":"CATEGORIES","total_count":1,"children":[]},{"name":"DEFAULT_PERMISSIONS","total_count":1,"children":[]},{"name":"PERMISSION_LABELS","total_count":1,"children":[]},{"name":"PermissionSet","total_count":1,"children":[]},{"name":"PermissionSettingsClient()","total_count":1,"children":[]},{"name":"RolePermissions","total_count":1,"children":[]}]},{"name":"Sidebar.tsx","total_count":3,"children":[{"name":"NavItem()","total_count":1,"children":[]},{"name":"Sidebar()","total_count":1,"children":[]},{"name":"SidebarProps","total_count":1,"children":[]}]},{"name":"StatusModalClient.tsx","total_count":3,"children":[{"name":"STAGES","total_count":1,"children":[]},{"name":"StatusModalClient()","total_count":1,"children":[]},{"name":"StatusModalProps","total_count":1,"children":[]}]},{"name":"TaskModal.tsx","total_count":2,"children":[{"name":"TaskModal()","total_count":1,"children":[]},{"name":"TaskModalProps","total_count":1,"children":[]}]},{"name":"TasksClient.tsx","total_count":4,"children":[{"name":"TaskCard()","total_count":1,"children":[]},{"name":"TaskCardProps","total_count":1,"children":[]},{"name":"TasksClient()","total_count":1,"children":[]},{"name":"TasksProps","total_count":1,"children":[]}]}]},{"name":"hooks","total_count":2,"children":[{"name":"useCategories.ts","total_count":2,"children":[{"name":"FALLBACK_CATEGORIES","total_count":1,"children":[]},{"name":"useCategories()","total_count":1,"children":[]}]}]},{"name":"lib","total_count":1,"children":[{"name":"utils.ts","total_count":1,"children":[{"name":"cn()","total_count":1,"children":[]}]}]},{"name":"middleware.ts","total_count":2,"children":[{"name":"config","total_count":1,"children":[]},{"name":"middleware()","total_count":1,"children":[]}]},{"name":"types.ts","total_count":24,"children":[{"name":"AuditLog","total_count":1,"children":[]},{"name":"DEFAULT_PERMISSIONS","total_count":1,"children":[]},{"name":"EditRequest","total_count":1,"children":[]},{"name":"ForecastStatus","total_count":1,"children":[]},{"name":"FunnelHistory","total_count":1,"children":[]},{"name":"GlobalTarget","total_count":1,"children":[]},{"name":"IndividualTarget","total_count":1,"children":[]},{"name":"InterestLevel","total_count":1,"children":[]},{"name":"Lead","total_count":1,"children":[]},{"name":"LEAD_SOURCES","total_count":1,"children":[]},{"name":"LeadSource","total_count":1,"children":[]},{"name":"LeadStatus","total_count":1,"children":[]},{"name":"LORD_PERMISSIONS","total_count":1,"children":[]},{"name":"Note","total_count":1,"children":[]},{"name":"OIForecast","total_count":1,"children":[]},{"name":"OITarget","total_count":1,"children":[]},{"name":"PermissionSet","total_count":1,"children":[]},{"name":"ProductOffered","total_count":1,"children":[]},{"name":"RolePermissions","total_count":1,"children":[]},{"name":"Task","total_count":1,"children":[]},{"name":"TaskPriority","total_count":1,"children":[]},{"name":"TaskStatus","total_count":1,"children":[]},{"name":"UserProfile","total_count":1,"children":[]},{"name":"UserRole","total_count":1,"children":[]}]},{"name":"utils","total_count":3,"children":[{"name":"supabase","total_count":3,"children":[{"name":"client.ts","total_count":1,"children":[{"name":"createClient()","total_count":1,"children":[]}]},{"name":"middleware.ts","total_count":1,"children":[{"name":"updateSession()","total_count":1,"children":[]}]},{"name":"server.ts","total_count":1,"children":[{"name":"createClient()","total_count":1,"children":[]}]}]}]}]},{"name":"supabase","total_count":1,"children":[{"name":"migrations","total_count":1,"children":[{"name":"fix_rls.sql","total_count":1,"children":[]}]}]},{"name":"tsconfig.json","total_count":18,"children":[{"name":"allowJs","total_count":1,"children":[]},{"name":"compilerOptions","total_count":1,"children":[]},{"name":"esModuleInterop","total_count":1,"children":[]},{"name":"exclude","total_count":1,"children":[]},{"name":"include","total_count":1,"children":[]},{"name":"incremental","total_count":1,"children":[]},{"name":"isolatedModules","total_count":1,"children":[]},{"name":"jsx","total_count":1,"children":[]},{"name":"lib","total_count":1,"children":[]},{"name":"module","total_count":1,"children":[]},{"name":"moduleResolution","total_count":1,"children":[]},{"name":"noEmit","total_count":1,"children":[]},{"name":"paths","total_count":1,"children":[]},{"name":"plugins","total_count":1,"children":[]},{"name":"resolveJsonModule","total_count":1,"children":[]},{"name":"skipLibCheck","total_count":1,"children":[]},{"name":"strict","total_count":1,"children":[]},{"name":"target","total_count":1,"children":[]}]}]},{"name":"package.json","total_count":67,"children":[{"name":"@google/genai","total_count":1,"children":[]},{"name":"@google/genai","total_count":1,"children":[]},{"name":"@supabase/supabase-js","total_count":1,"children":[]},{"name":"@supabase/supabase-js","total_count":1,"children":[]},{"name":"@tailwindcss/vite","total_count":1,"children":[]},{"name":"@tailwindcss/vite","total_count":1,"children":[]},{"name":"@types/express","total_count":1,"children":[]},{"name":"@types/express","total_count":1,"children":[]},{"name":"@types/node","total_count":1,"children":[]},{"name":"@types/node","total_count":1,"children":[]},{"name":"@types/papaparse","total_count":1,"children":[]},{"name":"@types/papaparse","total_count":1,"children":[]},{"name":"@vitejs/plugin-react","total_count":1,"children":[]},{"name":"@vitejs/plugin-react","total_count":1,"children":[]},{"name":"autoprefixer","total_count":1,"children":[]},{"name":"autoprefixer","total_count":1,"children":[]},{"name":"build","total_count":1,"children":[]},{"name":"clean","total_count":1,"children":[]},{"name":"clsx","total_count":1,"children":[]},{"name":"clsx","total_count":1,"children":[]},{"name":"date-fns","total_count":1,"children":[]},{"name":"date-fns","total_count":1,"children":[]},{"name":"dependencies","total_count":1,"children":[]},{"name":"dev","total_count":1,"children":[]},{"name":"devDependencies","total_count":1,"children":[]},{"name":"dotenv","total_count":1,"children":[]},{"name":"dotenv","total_count":1,"children":[]},{"name":"express","total_count":1,"children":[]},{"name":"express","total_count":1,"children":[]},{"name":"firebase","total_count":1,"children":[]},{"name":"firebase","total_count":1,"children":[]},{"name":"firebase-admin","total_count":1,"children":[]},{"name":"firebase-admin","total_count":1,"children":[]},{"name":"lint","total_count":1,"children":[]},{"name":"lucide-react","total_count":1,"children":[]},{"name":"lucide-react","total_count":1,"children":[]},{"name":"motion","total_count":1,"children":[]},{"name":"motion","total_count":1,"children":[]},{"name":"name","total_count":1,"children":[]},{"name":"papaparse","total_count":1,"children":[]},{"name":"papaparse","total_count":1,"children":[]},{"name":"pg","total_count":1,"children":[]},{"name":"pg","total_count":1,"children":[]},{"name":"preview","total_count":1,"children":[]},{"name":"private","total_count":1,"children":[]},{"name":"react","total_count":1,"children":[]},{"name":"react","total_count":1,"children":[]},{"name":"react-dom","total_count":1,"children":[]},{"name":"react-dom","total_count":1,"children":[]},{"name":"react-router-dom","total_count":1,"children":[]},{"name":"react-router-dom","total_count":1,"children":[]},{"name":"scripts","total_count":1,"children":[]},{"name":"sonner","total_count":1,"children":[]},{"name":"sonner","total_count":1,"children":[]},{"name":"tailwind-merge","total_count":1,"children":[]},{"name":"tailwind-merge","total_count":1,"children":[]},{"name":"tailwindcss","total_count":1,"children":[]},{"name":"tailwindcss","total_count":1,"children":[]},{"name":"tsx","total_count":1,"children":[]},{"name":"tsx","total_count":1,"children":[]},{"name":"type","total_count":1,"children":[]},{"name":"typescript","total_count":1,"children":[]},{"name":"typescript","total_count":1,"children":[]},{"name":"version","total_count":1,"children":[]},{"name":"vite","total_count":1,"children":[]},{"name":"vite","total_count":1,"children":[]},{"name":"vite","total_count":1,"children":[]}]},{"name":"scratch","total_count":4,"children":[{"name":"analyze.ts","total_count":3,"children":[{"name":"analyze()","total_count":1,"children":[]},{"name":"db","total_count":1,"children":[]},{"name":"serviceAccount","total_count":1,"children":[]}]},{"name":"migration_history.js","total_count":1,"children":[{"name":"migrateHistory()","total_count":1,"children":[]}]}]},{"name":"scripts","total_count":399,"children":[{"name":"add_pic_name_column.cjs","total_count":2,"children":[{"name":"addColumn()","total_count":1,"children":[]},{"name":"{ Client }","total_count":1,"children":[]}]},{"name":"apply_rpc.cjs","total_count":4,"children":[{"name":"fs","total_count":1,"children":[]},{"name":"path","total_count":1,"children":[]},{"name":"run()","total_count":1,"children":[]},{"name":"{ Client }","total_count":1,"children":[]}]},{"name":"backup_firestore.cjs","total_count":9,"children":[{"name":"BACKUP_DIR","total_count":1,"children":[]},{"name":"backupCollection()","total_count":1,"children":[]},{"name":"db","total_count":1,"children":[]},{"name":"fs","total_count":1,"children":[]},{"name":"path","total_count":1,"children":[]},{"name":"runBackup()","total_count":1,"children":[]},{"name":"serviceAccount","total_count":1,"children":[]},{"name":"{ getFirestore }","total_count":1,"children":[]},{"name":"{ initializeApp, cert }","total_count":1,"children":[]}]},{"name":"backup_incremental.cjs","total_count":13,"children":[{"name":"BACKUP_DIR","total_count":1,"children":[]},{"name":"crypto","total_count":1,"children":[]},{"name":"db","total_count":1,"children":[]},{"name":"fs","total_count":1,"children":[]},{"name":"getSubCollectionsData()","total_count":1,"children":[]},{"name":"hashData()","total_count":1,"children":[]},{"name":"LOG_FILE","total_count":1,"children":[]},{"name":"logError()","total_count":1,"children":[]},{"name":"path","total_count":1,"children":[]},{"name":"runBackup()","total_count":1,"children":[]},{"name":"serviceAccount","total_count":1,"children":[]},{"name":"{ getFirestore }","total_count":1,"children":[]},{"name":"{ initializeApp, cert }","total_count":1,"children":[]}]},{"name":"check_08hx.cjs","total_count":3,"children":[{"name":"check()","total_count":1,"children":[]},{"name":"supabase","total_count":1,"children":[]},{"name":"{ createClient }","total_count":1,"children":[]}]},{"name":"check_all_datechated.cjs","total_count":4,"children":[{"name":"BACKUP_DIR","total_count":1,"children":[]},{"name":"check()","total_count":1,"children":[]},{"name":"fs","total_count":1,"children":[]},{"name":"path","total_count":1,"children":[]}]},{"name":"check_all_time.cjs","total_count":4,"children":[{"name":"BACKUP_DIR","total_count":1,"children":[]},{"name":"check()","total_count":1,"children":[]},{"name":"fs","total_count":1,"children":[]},{"name":"path","total_count":1,"children":[]}]},{"name":"check_august.cjs","total_count":3,"children":[{"name":"check()","total_count":1,"children":[]},{"name":"supabase","total_count":1,"children":[]},{"name":"{ createClient }","total_count":1,"children":[]}]},{"name":"check_chated_august.cjs","total_count":3,"children":[{"name":"check()","total_count":1,"children":[]},{"name":"supabase","total_count":1,"children":[]},{"name":"{ createClient }","total_count":1,"children":[]}]},{"name":"check_counts.cjs","total_count":3,"children":[{"name":"check()","total_count":1,"children":[]},{"name":"supabase","total_count":1,"children":[]},{"name":"{ createClient }","total_count":1,"children":[]}]},{"name":"check_date.cjs","total_count":3,"children":[{"name":"check()","total_count":1,"children":[]},{"name":"supabase","total_count":1,"children":[]},{"name":"{ createClient }","total_count":1,"children":[]}]},{"name":"check_duplicates.cjs","total_count":3,"children":[{"name":"check()","total_count":1,"children":[]},{"name":"supabase","total_count":1,"children":[]},{"name":"{ createClient }","total_count":1,"children":[]}]},{"name":"check_firebase.cjs","total_count":1,"children":[{"name":"admin","total_count":1,"children":[]}]},{"name":"check_firebase_raw.cjs","total_count":5,"children":[{"name":"BACKUP_DIR","total_count":1,"children":[]},{"name":"data","total_count":1,"children":[]},{"name":"file","total_count":1,"children":[]},{"name":"fs","total_count":1,"children":[]},{"name":"path","total_count":1,"children":[]}]},{"name":"check_firebase_stats.cjs","total_count":5,"children":[{"name":"BACKUP_DIR","total_count":1,"children":[]},{"name":"check()","total_count":1,"children":[]},{"name":"fs","total_count":1,"children":[]},{"name":"parseDateString()","total_count":1,"children":[]},{"name":"path","total_count":1,"children":[]}]},{"name":"check_forecasts.cjs","total_count":3,"children":[{"name":"check()","total_count":1,"children":[]},{"name":"supabase","total_count":1,"children":[]},{"name":"{ createClient }","total_count":1,"children":[]}]},{"name":"check_funnel.cjs","total_count":3,"children":[{"name":"check()","total_count":1,"children":[]},{"name":"supabase","total_count":1,"children":[]},{"name":"{ createClient }","total_count":1,"children":[]}]},{"name":"check_funnel_schema.cjs","total_count":3,"children":[{"name":"check()","total_count":1,"children":[]},{"name":"supabase","total_count":1,"children":[]},{"name":"{ createClient }","total_count":1,"children":[]}]},{"name":"check_id_length.cjs","total_count":3,"children":[{"name":"check()","total_count":1,"children":[]},{"name":"supabase","total_count":1,"children":[]},{"name":"{ createClient }","total_count":1,"children":[]}]},{"name":"check_lead.cjs","total_count":3,"children":[{"name":"check()","total_count":1,"children":[]},{"name":"supabase","total_count":1,"children":[]},{"name":"{ createClient }","total_count":1,"children":[]}]},{"name":"check_lead_funnel.cjs","total_count":4,"children":[{"name":"backupDir","total_count":1,"children":[]},{"name":"files","total_count":1,"children":[]},{"name":"fs","total_count":1,"children":[]},{"name":"path","total_count":1,"children":[]}]},{"name":"check_limit.cjs","total_count":3,"children":[{"name":"check()","total_count":1,"children":[]},{"name":"supabase","total_count":1,"children":[]},{"name":"{ createClient }","total_count":1,"children":[]}]},{"name":"check_logic_2.cjs","total_count":5,"children":[{"name":"BACKUP_DIR","total_count":1,"children":[]},{"name":"check()","total_count":1,"children":[]},{"name":"fs","total_count":1,"children":[]},{"name":"parseDate()","total_count":1,"children":[]},{"name":"path","total_count":1,"children":[]}]},{"name":"check_logic_3.cjs","total_count":5,"children":[{"name":"BACKUP_DIR","total_count":1,"children":[]},{"name":"check()","total_count":1,"children":[]},{"name":"fs","total_count":1,"children":[]},{"name":"parseDateCorrectly()","total_count":1,"children":[]},{"name":"path","total_count":1,"children":[]}]},{"name":"check_logic_4.cjs","total_count":5,"children":[{"name":"BACKUP_DIR","total_count":1,"children":[]},{"name":"check()","total_count":1,"children":[]},{"name":"fs","total_count":1,"children":[]},{"name":"parseDateCorrectly()","total_count":1,"children":[]},{"name":"path","total_count":1,"children":[]}]},{"name":"check_logic_5.cjs","total_count":5,"children":[{"name":"BACKUP_DIR","total_count":1,"children":[]},{"name":"check()","total_count":1,"children":[]},{"name":"fs","total_count":1,"children":[]},{"name":"parseDateCorrectly()","total_count":1,"children":[]},{"name":"path","total_count":1,"children":[]}]},{"name":"check_notes.cjs","total_count":3,"children":[{"name":"check()","total_count":1,"children":[]},{"name":"supabase","total_count":1,"children":[]},{"name":"{ createClient }","total_count":1,"children":[]}]},{"name":"check_notes_schema.cjs","total_count":3,"children":[{"name":"check()","total_count":1,"children":[]},{"name":"supabase","total_count":1,"children":[]},{"name":"{ createClient }","total_count":1,"children":[]}]},{"name":"check_rls.cjs","total_count":3,"children":[{"name":"check()","total_count":1,"children":[]},{"name":"supabase","total_count":1,"children":[]},{"name":"{ createClient }","total_count":1,"children":[]}]},{"name":"check_rls_all.cjs","total_count":3,"children":[{"name":"check()","total_count":1,"children":[]},{"name":"supabase","total_count":1,"children":[]},{"name":"{ createClient }","total_count":1,"children":[]}]},{"name":"check_rls_pg.cjs","total_count":2,"children":[{"name":"check()","total_count":1,"children":[]},{"name":"{ Client }","total_count":1,"children":[]}]},{"name":"check_rls_pg_2.cjs","total_count":2,"children":[{"name":"check()","total_count":1,"children":[]},{"name":"{ Client }","total_count":1,"children":[]}]},{"name":"check_rls_real.cjs","total_count":2,"children":[{"name":"check()","total_count":1,"children":[]},{"name":"{ Client }","total_count":1,"children":[]}]},{"name":"check_siti.cjs","total_count":3,"children":[{"name":"check()","total_count":1,"children":[]},{"name":"supabase","total_count":1,"children":[]},{"name":"{ createClient }","total_count":1,"children":[]}]},{"name":"check_siti_2.cjs","total_count":3,"children":[{"name":"check()","total_count":1,"children":[]},{"name":"supabase","total_count":1,"children":[]},{"name":"{ createClient }","total_count":1,"children":[]}]},{"name":"check_stats.cjs","total_count":3,"children":[{"name":"check()","total_count":1,"children":[]},{"name":"supabase","total_count":1,"children":[]},{"name":"{ createClient }","total_count":1,"children":[]}]},{"name":"check_status_all.cjs","total_count":4,"children":[{"name":"BACKUP_DIR","total_count":1,"children":[]},{"name":"check()","total_count":1,"children":[]},{"name":"fs","total_count":1,"children":[]},{"name":"path","total_count":1,"children":[]}]},{"name":"check_string.cjs","total_count":4,"children":[{"name":"BACKUP_DIR","total_count":1,"children":[]},{"name":"check()","total_count":1,"children":[]},{"name":"fs","total_count":1,"children":[]},{"name":"path","total_count":1,"children":[]}]},{"name":"check_unknown_brands.cjs","total_count":2,"children":[{"name":"check()","total_count":1,"children":[]},{"name":"{ Client }","total_count":1,"children":[]}]},{"name":"compare_latest.cjs","total_count":5,"children":[{"name":"checkLatest()","total_count":1,"children":[]},{"name":"fs","total_count":1,"children":[]},{"name":"path","total_count":1,"children":[]},{"name":"supabase","total_count":1,"children":[]},{"name":"{ createClient }","total_count":1,"children":[]}]},{"name":"count_chated_total.cjs","total_count":3,"children":[{"name":"check()","total_count":1,"children":[]},{"name":"supabase","total_count":1,"children":[]},{"name":"{ createClient }","total_count":1,"children":[]}]},{"name":"count_dates.cjs","total_count":3,"children":[{"name":"check()","total_count":1,"children":[]},{"name":"supabase","total_count":1,"children":[]},{"name":"{ createClient }","total_count":1,"children":[]}]},{"name":"count_future_dates.cjs","total_count":3,"children":[{"name":"check()","total_count":1,"children":[]},{"name":"supabase","total_count":1,"children":[]},{"name":"{ createClient }","total_count":1,"children":[]}]},{"name":"extract.cjs","total_count":4,"children":[{"name":"content","total_count":1,"children":[]},{"name":"fs","total_count":1,"children":[]},{"name":"lines","total_count":1,"children":[]},{"name":"startIndex","total_count":1,"children":[]}]},{"name":"extract2.cjs","total_count":4,"children":[{"name":"content","total_count":1,"children":[]},{"name":"fs","total_count":1,"children":[]},{"name":"lines","total_count":1,"children":[]},{"name":"startIndex","total_count":1,"children":[]}]},{"name":"find_missing.cjs","total_count":5,"children":[{"name":"findMissing()","total_count":1,"children":[]},{"name":"fs","total_count":1,"children":[]},{"name":"path","total_count":1,"children":[]},{"name":"supabase","total_count":1,"children":[]},{"name":"{ createClient }","total_count":1,"children":[]}]},{"name":"find_missing2.cjs","total_count":5,"children":[{"name":"findMissing()","total_count":1,"children":[]},{"name":"fs","total_count":1,"children":[]},{"name":"path","total_count":1,"children":[]},{"name":"supabase","total_count":1,"children":[]},{"name":"{ createClient }","total_count":1,"children":[]}]},{"name":"find_string.cjs","total_count":3,"children":[{"name":"check()","total_count":1,"children":[]},{"name":"supabase","total_count":1,"children":[]},{"name":"{ createClient }","total_count":1,"children":[]}]},{"name":"fix_all_ts.cjs","total_count":10,"children":[{"name":"bulk","total_count":1,"children":[]},{"name":"bulkPath","total_count":1,"children":[]},{"name":"fs","total_count":1,"children":[]},{"name":"leadsClient","total_count":1,"children":[]},{"name":"leadsClientPath","total_count":1,"children":[]},{"name":"leadsPage","total_count":1,"children":[]},{"name":"leadsPagePath","total_count":1,"children":[]},{"name":"page","total_count":1,"children":[]},{"name":"pagePath","total_count":1,"children":[]},{"name":"path","total_count":1,"children":[]}]},{"name":"fix_bulk_modal.cjs","total_count":4,"children":[{"name":"content","total_count":1,"children":[]},{"name":"file","total_count":1,"children":[]},{"name":"fs","total_count":1,"children":[]},{"name":"path","total_count":1,"children":[]}]},{"name":"fix_future_dates.cjs","total_count":3,"children":[{"name":"run()","total_count":1,"children":[]},{"name":"supabase","total_count":1,"children":[]},{"name":"{ createClient }","total_count":1,"children":[]}]},{"name":"fix_import_modal.cjs","total_count":4,"children":[{"name":"content","total_count":1,"children":[]},{"name":"filePath","total_count":1,"children":[]},{"name":"fs","total_count":1,"children":[]},{"name":"path","total_count":1,"children":[]}]},{"name":"fix_migration.cjs","total_count":8,"children":[{"name":"db","total_count":1,"children":[]},{"name":"fix()","total_count":1,"children":[]},{"name":"parseDate()","total_count":1,"children":[]},{"name":"serviceAccount","total_count":1,"children":[]},{"name":"supabase","total_count":1,"children":[]},{"name":"{ createClient }","total_count":1,"children":[]},{"name":"{ getFirestore }","total_count":1,"children":[]},{"name":"{ initializeApp, cert }","total_count":1,"children":[]}]},{"name":"fix_modals_logic.cjs","total_count":9,"children":[{"name":"fs","total_count":1,"children":[]},{"name":"leadCode","total_count":1,"children":[]},{"name":"leadPath","total_count":1,"children":[]},{"name":"notesCode","total_count":1,"children":[]},{"name":"notesPath","total_count":1,"children":[]},{"name":"path","total_count":1,"children":[]},{"name":"srcDir","total_count":1,"children":[]},{"name":"statusCode","total_count":1,"children":[]},{"name":"statusPath","total_count":1,"children":[]}]},{"name":"fix_modals_logic2.cjs","total_count":5,"children":[{"name":"fs","total_count":1,"children":[]},{"name":"path","total_count":1,"children":[]},{"name":"srcDir","total_count":1,"children":[]},{"name":"statusCode","total_count":1,"children":[]},{"name":"statusPath","total_count":1,"children":[]}]},{"name":"fix_modals_logic3.cjs","total_count":7,"children":[{"name":"fs","total_count":1,"children":[]},{"name":"leadCode","total_count":1,"children":[]},{"name":"leadPath","total_count":1,"children":[]},{"name":"notesCode","total_count":1,"children":[]},{"name":"notesPath","total_count":1,"children":[]},{"name":"path","total_count":1,"children":[]},{"name":"srcDir","total_count":1,"children":[]}]},{"name":"fix_rls.cjs","total_count":2,"children":[{"name":"fixRls()","total_count":1,"children":[]},{"name":"{ Client }","total_count":1,"children":[]}]},{"name":"fix_tasks_ts.cjs","total_count":12,"children":[{"name":"confirmModalContent","total_count":1,"children":[]},{"name":"destConfirmModal","total_count":1,"children":[]},{"name":"destTaskModal","total_count":1,"children":[]},{"name":"destTasksClient","total_count":1,"children":[]},{"name":"fs","total_count":1,"children":[]},{"name":"pageContent","total_count":1,"children":[]},{"name":"pagePath","total_count":1,"children":[]},{"name":"path","total_count":1,"children":[]},{"name":"srcLegacyConfirmModal","total_count":1,"children":[]},{"name":"srcLegacyTaskModal","total_count":1,"children":[]},{"name":"taskModalContent","total_count":1,"children":[]},{"name":"tasksContent","total_count":1,"children":[]}]},{"name":"fix_tasks_ts_2.cjs","total_count":8,"children":[{"name":"fs","total_count":1,"children":[]},{"name":"pageContent","total_count":1,"children":[]},{"name":"pagePath","total_count":1,"children":[]},{"name":"path","total_count":1,"children":[]},{"name":"taskModalContent","total_count":1,"children":[]},{"name":"taskModalPath","total_count":1,"children":[]},{"name":"tasksClientPath","total_count":1,"children":[]},{"name":"tasksContent","total_count":1,"children":[]}]},{"name":"fix_ts_final.cjs","total_count":6,"children":[{"name":"bulk","total_count":1,"children":[]},{"name":"bulkPath","total_count":1,"children":[]},{"name":"fs","total_count":1,"children":[]},{"name":"leadsClient","total_count":1,"children":[]},{"name":"leadsClientPath","total_count":1,"children":[]},{"name":"path","total_count":1,"children":[]}]},{"name":"force_fix_navigate.cjs","total_count":4,"children":[{"name":"content","total_count":1,"children":[]},{"name":"file","total_count":1,"children":[]},{"name":"fs","total_count":1,"children":[]},{"name":"path","total_count":1,"children":[]}]},{"name":"get_rpc_def.cjs","total_count":3,"children":[{"name":"check()","total_count":1,"children":[]},{"name":"supabase","total_count":1,"children":[]},{"name":"{ createClient }","total_count":1,"children":[]}]},{"name":"get_rpc_src.cjs","total_count":3,"children":[{"name":"check()","total_count":1,"children":[]},{"name":"supabase","total_count":1,"children":[]},{"name":"{ createClient }","total_count":1,"children":[]}]},{"name":"get_rpc_src_db.cjs","total_count":2,"children":[{"name":"run()","total_count":1,"children":[]},{"name":"{ Client }","total_count":1,"children":[]}]},{"name":"import_missing.cjs","total_count":7,"children":[{"name":"fs","total_count":1,"children":[]},{"name":"parseDateCorrectly()","total_count":1,"children":[]},{"name":"path","total_count":1,"children":[]},{"name":"run()","total_count":1,"children":[]},{"name":"supabase","total_count":1,"children":[]},{"name":"{ createClient }","total_count":1,"children":[]},{"name":"{ v4: uuidv4 }","total_count":1,"children":[]}]},{"name":"init_schema.cjs","total_count":4,"children":[{"name":"fs","total_count":1,"children":[]},{"name":"initSchema()","total_count":1,"children":[]},{"name":"path","total_count":1,"children":[]},{"name":"{ Client }","total_count":1,"children":[]}]},{"name":"migrate.cjs","total_count":8,"children":[{"name":"db","total_count":1,"children":[]},{"name":"migrateData()","total_count":1,"children":[]},{"name":"parseDate()","total_count":1,"children":[]},{"name":"serviceAccount","total_count":1,"children":[]},{"name":"supabase","total_count":1,"children":[]},{"name":"{ createClient }","total_count":1,"children":[]},{"name":"{ getFirestore }","total_count":1,"children":[]},{"name":"{ initializeApp, cert }","total_count":1,"children":[]}]},{"name":"migrate_from_local.cjs","total_count":10,"children":[{"name":"BACKUP_DIR","total_count":1,"children":[]},{"name":"crypto","total_count":1,"children":[]},{"name":"fs","total_count":1,"children":[]},{"name":"migrateLeadsParts()","total_count":1,"children":[]},{"name":"migrateOIForecasts()","total_count":1,"children":[]},{"name":"parseFirebaseDate()","total_count":1,"children":[]},{"name":"path","total_count":1,"children":[]},{"name":"run()","total_count":1,"children":[]},{"name":"supabase","total_count":1,"children":[]},{"name":"{ createClient }","total_count":1,"children":[]}]},{"name":"migrate_remaining.cjs","total_count":8,"children":[{"name":"db","total_count":1,"children":[]},{"name":"parseDate()","total_count":1,"children":[]},{"name":"run()","total_count":1,"children":[]},{"name":"serviceAccount","total_count":1,"children":[]},{"name":"supabase","total_count":1,"children":[]},{"name":"{ createClient }","total_count":1,"children":[]},{"name":"{ getFirestore }","total_count":1,"children":[]},{"name":"{ initializeApp, cert }","total_count":1,"children":[]}]},{"name":"patch_dates.cjs","total_count":7,"children":[{"name":"BACKUP_DIR","total_count":1,"children":[]},{"name":"fs","total_count":1,"children":[]},{"name":"parseDateCorrectly()","total_count":1,"children":[]},{"name":"patch()","total_count":1,"children":[]},{"name":"path","total_count":1,"children":[]},{"name":"supabase","total_count":1,"children":[]},{"name":"{ createClient }","total_count":1,"children":[]}]},{"name":"patch_oi_forecasts.cjs","total_count":8,"children":[{"name":"db","total_count":1,"children":[]},{"name":"parseDate()","total_count":1,"children":[]},{"name":"run()","total_count":1,"children":[]},{"name":"serviceAccount","total_count":1,"children":[]},{"name":"supabase","total_count":1,"children":[]},{"name":"{ createClient }","total_count":1,"children":[]},{"name":"{ getFirestore }","total_count":1,"children":[]},{"name":"{ initializeApp, cert }","total_count":1,"children":[]}]},{"name":"port_admin_approvals.cjs","total_count":6,"children":[{"name":"content","total_count":1,"children":[]},{"name":"destClient","total_count":1,"children":[]},{"name":"destPage","total_count":1,"children":[]},{"name":"fs","total_count":1,"children":[]},{"name":"path","total_count":1,"children":[]},{"name":"srcLegacy","total_count":1,"children":[]}]},{"name":"port_admin_targets.cjs","total_count":6,"children":[{"name":"content","total_count":1,"children":[]},{"name":"destClient","total_count":1,"children":[]},{"name":"destPage","total_count":1,"children":[]},{"name":"fs","total_count":1,"children":[]},{"name":"path","total_count":1,"children":[]},{"name":"srcLegacy","total_count":1,"children":[]}]},{"name":"port_admin_users.cjs","total_count":6,"children":[{"name":"content","total_count":1,"children":[]},{"name":"destClient","total_count":1,"children":[]},{"name":"destPage","total_count":1,"children":[]},{"name":"fs","total_count":1,"children":[]},{"name":"path","total_count":1,"children":[]},{"name":"srcLegacy","total_count":1,"children":[]}]},{"name":"port_import_modal.cjs","total_count":5,"children":[{"name":"content","total_count":1,"children":[]},{"name":"destClient","total_count":1,"children":[]},{"name":"fs","total_count":1,"children":[]},{"name":"path","total_count":1,"children":[]},{"name":"srcLegacy","total_count":1,"children":[]}]},{"name":"port_lead_detail.cjs","total_count":5,"children":[{"name":"code","total_count":1,"children":[]},{"name":"destFile","total_count":1,"children":[]},{"name":"fs","total_count":1,"children":[]},{"name":"path","total_count":1,"children":[]},{"name":"srcFile","total_count":1,"children":[]}]},{"name":"port_tasks.cjs","total_count":9,"children":[{"name":"destPage","total_count":1,"children":[]},{"name":"destTaskModal","total_count":1,"children":[]},{"name":"destTasksClient","total_count":1,"children":[]},{"name":"fs","total_count":1,"children":[]},{"name":"path","total_count":1,"children":[]},{"name":"srcLegacyTaskModal","total_count":1,"children":[]},{"name":"srcLegacyTasks","total_count":1,"children":[]},{"name":"taskModalContent","total_count":1,"children":[]},{"name":"tasksContent","total_count":1,"children":[]}]},{"name":"refactor_dashboard.cjs","total_count":5,"children":[{"name":"code","total_count":1,"children":[]},{"name":"dashboardPath","total_count":1,"children":[]},{"name":"fs","total_count":1,"children":[]},{"name":"path","total_count":1,"children":[]},{"name":"srcDir","total_count":1,"children":[]}]},{"name":"refactor_firebase.cjs","total_count":3,"children":[{"name":"files","total_count":1,"children":[]},{"name":"fs","total_count":1,"children":[]},{"name":"path","total_count":1,"children":[]}]},{"name":"refactor_leads.cjs","total_count":4,"children":[{"name":"content","total_count":1,"children":[]},{"name":"filePath","total_count":1,"children":[]},{"name":"fs","total_count":1,"children":[]},{"name":"path","total_count":1,"children":[]}]},{"name":"run_fix_rls.cjs","total_count":2,"children":[{"name":"fixRls()","total_count":1,"children":[]},{"name":"{ Client }","total_count":1,"children":[]}]},{"name":"run_sql.cjs","total_count":3,"children":[{"name":"check()","total_count":1,"children":[]},{"name":"supabase","total_count":1,"children":[]},{"name":"{ createClient }","total_count":1,"children":[]}]},{"name":"run_sql_5432.cjs","total_count":2,"children":[{"name":"fixRls()","total_count":1,"children":[]},{"name":"{ Client }","total_count":1,"children":[]}]},{"name":"run_sql_pooler.cjs","total_count":2,"children":[{"name":"fixRls()","total_count":1,"children":[]},{"name":"{ Client }","total_count":1,"children":[]}]},{"name":"sync_new_history_notes.cjs","total_count":7,"children":[{"name":"fs","total_count":1,"children":[]},{"name":"parseDateCorrectly()","total_count":1,"children":[]},{"name":"path","total_count":1,"children":[]},{"name":"run()","total_count":1,"children":[]},{"name":"supabase","total_count":1,"children":[]},{"name":"{ createClient }","total_count":1,"children":[]},{"name":"{ v4: uuidv4 }","total_count":1,"children":[]}]},{"name":"test_client_logic.cjs","total_count":3,"children":[{"name":"supabase","total_count":1,"children":[]},{"name":"test()","total_count":1,"children":[]},{"name":"{ createClient }","total_count":1,"children":[]}]},{"name":"test_rls_as_user.cjs","total_count":3,"children":[{"name":"supabase","total_count":1,"children":[]},{"name":"test()","total_count":1,"children":[]},{"name":"{ createClient }","total_count":1,"children":[]}]},{"name":"test_server_query.cjs","total_count":3,"children":[{"name":"check()","total_count":1,"children":[]},{"name":"supabase","total_count":1,"children":[]},{"name":"{ createClient }","total_count":1,"children":[]}]},{"name":"update_schema.cjs","total_count":4,"children":[{"name":"fs","total_count":1,"children":[]},{"name":"path","total_count":1,"children":[]},{"name":"updateSchema()","total_count":1,"children":[]},{"name":"{ Client }","total_count":1,"children":[]}]}]},{"name":"src","total_count":102,"children":[{"name":"App.tsx","total_count":3,"children":[{"name":"App()","total_count":1,"children":[]},{"name":"AppContent()","total_count":1,"children":[]},{"name":"SUPER_ADMIN_EMAILS","total_count":1,"children":[]}]},{"name":"components","total_count":67,"children":[{"name":"AdminApprovals.tsx","total_count":2,"children":[{"name":"AdminApprovals()","total_count":1,"children":[]},{"name":"AdminApprovalsProps","total_count":1,"children":[]}]},{"name":"AdminTargets.tsx","total_count":2,"children":[{"name":"AdminTargets()","total_count":1,"children":[]},{"name":"AdminTargetsProps","total_count":1,"children":[]}]},{"name":"AdminUsers.tsx","total_count":2,"children":[{"name":"AdminUsers()","total_count":1,"children":[]},{"name":"AdminUsersProps","total_count":1,"children":[]}]},{"name":"BulkStatusModal.tsx","total_count":3,"children":[{"name":"BulkStatusModal()","total_count":1,"children":[]},{"name":"BulkStatusModalProps","total_count":1,"children":[]},{"name":"STAGES","total_count":1,"children":[]}]},{"name":"common","total_count":2,"children":[{"name":"CurrencyInput.tsx","total_count":2,"children":[{"name":"CurrencyInput()","total_count":1,"children":[]},{"name":"CurrencyInputProps","total_count":1,"children":[]}]}]},{"name":"ConfirmModal.tsx","total_count":2,"children":[{"name":"ConfirmModal()","total_count":1,"children":[]},{"name":"ConfirmModalProps","total_count":1,"children":[]}]},{"name":"Dashboard.tsx","total_count":5,"children":[{"name":"Dashboard()","total_count":1,"children":[]},{"name":"DashboardProps","total_count":1,"children":[]},{"name":"getStatusColor()","total_count":1,"children":[]},{"name":"RateCard()","total_count":1,"children":[]},{"name":"StatCard()","total_count":1,"children":[]}]},{"name":"ImportModal.tsx","total_count":5,"children":[{"name":"ImportModal()","total_count":1,"children":[]},{"name":"ImportModalProps","total_count":1,"children":[]},{"name":"parseDate()","total_count":1,"children":[]},{"name":"REP_NAMES","total_count":1,"children":[]},{"name":"STAGES","total_count":1,"children":[]}]},{"name":"LeadDetail.tsx","total_count":6,"children":[{"name":"InfoItem()","total_count":1,"children":[]},{"name":"LeadDetail()","total_count":1,"children":[]},{"name":"LeadDetailProps","total_count":1,"children":[]},{"name":"MilestoneItem()","total_count":1,"children":[]},{"name":"StatCard()","total_count":1,"children":[]},{"name":"TabButton()","total_count":1,"children":[]}]},{"name":"LeadModal.tsx","total_count":2,"children":[{"name":"LeadModal()","total_count":1,"children":[]},{"name":"LeadModalProps","total_count":1,"children":[]}]},{"name":"LeadsTable.tsx","total_count":4,"children":[{"name":"getStatusColor()","total_count":1,"children":[]},{"name":"InterestBadge()","total_count":1,"children":[]},{"name":"LeadsTable()","total_count":1,"children":[]},{"name":"LeadsTableProps","total_count":1,"children":[]}]},{"name":"NotesModal.tsx","total_count":3,"children":[{"name":"NotesModal()","total_count":1,"children":[]},{"name":"NotesModalProps","total_count":1,"children":[]},{"name":"STAGES","total_count":1,"children":[]}]},{"name":"OIForecast","total_count":13,"children":[{"name":"OIForecastPage.tsx","total_count":2,"children":[{"name":"OIForecastPage()","total_count":1,"children":[]},{"name":"OIForecastPageProps","total_count":1,"children":[]}]},{"name":"OIGrid.tsx","total_count":4,"children":[{"name":"formatIDDate()","total_count":1,"children":[]},{"name":"formatMoney()","total_count":1,"children":[]},{"name":"OIGrid()","total_count":1,"children":[]},{"name":"OIGridProps","total_count":1,"children":[]}]},{"name":"OIMilestone.tsx","total_count":4,"children":[{"name":"formatMoney()","total_count":1,"children":[]},{"name":"MONTH_NAMES","total_count":1,"children":[]},{"name":"OIMilestone()","total_count":1,"children":[]},{"name":"OIMilestoneProps","total_count":1,"children":[]}]},{"name":"OISummaryCards.tsx","total_count":3,"children":[{"name":"formatMoney()","total_count":1,"children":[]},{"name":"OISummaryCards()","total_count":1,"children":[]},{"name":"OISummaryCardsProps","total_count":1,"children":[]}]}]},{"name":"PermissionSettings.tsx","total_count":4,"children":[{"name":"CATEGORIES","total_count":1,"children":[]},{"name":"PERMISSION_LABELS","total_count":1,"children":[]},{"name":"PermissionSettings()","total_count":1,"children":[]},{"name":"PermissionSettingsProps","total_count":1,"children":[]}]},{"name":"Sidebar.tsx","total_count":3,"children":[{"name":"NavItem()","total_count":1,"children":[]},{"name":"Sidebar()","total_count":1,"children":[]},{"name":"SidebarProps","total_count":1,"children":[]}]},{"name":"StatusModal.tsx","total_count":3,"children":[{"name":"STAGES","total_count":1,"children":[]},{"name":"StatusModal()","total_count":1,"children":[]},{"name":"StatusModalProps","total_count":1,"children":[]}]},{"name":"TaskModal.tsx","total_count":2,"children":[{"name":"TaskModal()","total_count":1,"children":[]},{"name":"TaskModalProps","total_count":1,"children":[]}]},{"name":"Tasks.tsx","total_count":4,"children":[{"name":"TaskCard()","total_count":1,"children":[]},{"name":"TaskCardProps","total_count":1,"children":[]},{"name":"Tasks()","total_count":1,"children":[]},{"name":"TasksProps","total_count":1,"children":[]}]}]},{"name":"firebase.ts","total_count":3,"children":[{"name":"app","total_count":1,"children":[]},{"name":"auth","total_count":1,"children":[]},{"name":"db","total_count":1,"children":[]}]},{"name":"hooks","total_count":3,"children":[{"name":"useCategories.ts","total_count":3,"children":[{"name":"FALLBACK_CATEGORIES","total_count":1,"children":[]},{"name":"SETTINGS_DOC","total_count":1,"children":[]},{"name":"useCategories()","total_count":1,"children":[]}]}]},{"name":"lib","total_count":1,"children":[{"name":"utils.ts","total_count":1,"children":[{"name":"cn()","total_count":1,"children":[]}]}]},{"name":"types.ts","total_count":24,"children":[{"name":"AuditLog","total_count":1,"children":[]},{"name":"DEFAULT_PERMISSIONS","total_count":1,"children":[]},{"name":"EditRequest","total_count":1,"children":[]},{"name":"ForecastStatus","total_count":1,"children":[]},{"name":"FunnelHistory","total_count":1,"children":[]},{"name":"GlobalTarget","total_count":1,"children":[]},{"name":"IndividualTarget","total_count":1,"children":[]},{"name":"InterestLevel","total_count":1,"children":[]},{"name":"Lead","total_count":1,"children":[]},{"name":"LEAD_SOURCES","total_count":1,"children":[]},{"name":"LeadSource","total_count":1,"children":[]},{"name":"LeadStatus","total_count":1,"children":[]},{"name":"LORD_PERMISSIONS","total_count":1,"children":[]},{"name":"Note","total_count":1,"children":[]},{"name":"OIForecast","total_count":1,"children":[]},{"name":"OITarget","total_count":1,"children":[]},{"name":"PermissionSet","total_count":1,"children":[]},{"name":"ProductOffered","total_count":1,"children":[]},{"name":"RolePermissions","total_count":1,"children":[]},{"name":"Task","total_count":1,"children":[]},{"name":"TaskPriority","total_count":1,"children":[]},{"name":"TaskStatus","total_count":1,"children":[]},{"name":"UserProfile","total_count":1,"children":[]},{"name":"UserRole","total_count":1,"children":[]}]},{"name":"main.tsx","total_count":1,"children":[]}]},{"name":"supabase","total_count":40,"children":[{"name":"migrations","total_count":40,"children":[{"name":"00000000000000_initial_schema.sql","total_count":16,"children":[{"name":"edit_requests","total_count":1,"children":[]},{"name":"funnel_history","total_count":1,"children":[]},{"name":"global_audit_logs","total_count":1,"children":[]},{"name":"global_targets","total_count":1,"children":[]},{"name":"individual_targets","total_count":1,"children":[]},{"name":"lead_notes","total_count":1,"children":[]},{"name":"leads","total_count":1,"children":[]},{"name":"oi_forecasts","total_count":1,"children":[]},{"name":"role_permissions","total_count":1,"children":[]},{"name":"tasks","total_count":1,"children":[]},{"name":"update_leads_modtime","total_count":1,"children":[]},{"name":"update_modified_column()","total_count":1,"children":[]},{"name":"update_oi_forecasts_modtime","total_count":1,"children":[]},{"name":"update_tasks_modtime","total_count":1,"children":[]},{"name":"update_users_modtime","total_count":1,"children":[]},{"name":"users","total_count":1,"children":[]}]},{"name":"00000000000001_add_missing_tables.sql","total_count":2,"children":[{"name":"app_settings","total_count":1,"children":[]},{"name":"oi_targets","total_count":1,"children":[]}]},{"name":"00000000000002_recreate_schema_text.sql","total_count":17,"children":[{"name":"app_settings","total_count":1,"children":[]},{"name":"edit_requests","total_count":1,"children":[]},{"name":"funnel_history","total_count":1,"children":[]},{"name":"global_audit_logs","total_count":1,"children":[]},{"name":"global_targets","total_count":1,"children":[]},{"name":"individual_targets","total_count":1,"children":[]},{"name":"lead_notes","total_count":1,"children":[]},{"name":"leads","total_count":1,"children":[]},{"name":"oi_forecasts","total_count":1,"children":[]},{"name":"oi_targets","total_count":1,"children":[]},{"name":"role_permissions","total_count":1,"children":[]},{"name":"tasks","total_count":1,"children":[]},{"name":"update_leads_modtime","total_count":1,"children":[]},{"name":"update_oi_forecasts_modtime","total_count":1,"children":[]},{"name":"update_tasks_modtime","total_count":1,"children":[]},{"name":"update_users_modtime","total_count":1,"children":[]},{"name":"users","total_count":1,"children":[]}]},{"name":"00000000000003_auth_linking.sql","total_count":2,"children":[{"name":"on_auth_user_created","total_count":1,"children":[]},{"name":"public.handle_new_user()","total_count":1,"children":[]}]},{"name":"20240819000000_dashboard_rpcs.sql","total_count":3,"children":[{"name":"get_dashboard_stats()","total_count":1,"children":[]},{"name":"get_ghosted_leads()","total_count":1,"children":[]},{"name":"get_individual_contributions()","total_count":1,"children":[]}]}]}]},{"name":"test_date.cjs","total_count":1,"children":[{"name":"parseDate()","total_count":1,"children":[]}]},{"name":"test_supa.cjs","total_count":3,"children":[{"name":"checkAuth()","total_count":1,"children":[]},{"name":"supabase","total_count":1,"children":[]},{"name":"{ createClient }","total_count":1,"children":[]}]},{"name":"tsconfig.json","total_count":15,"children":[{"name":"allowImportingTsExtensions","total_count":1,"children":[]},{"name":"allowJs","total_count":1,"children":[]},{"name":"compilerOptions","total_count":1,"children":[]},{"name":"experimentalDecorators","total_count":1,"children":[]},{"name":"isolatedModules","total_count":1,"children":[]},{"name":"jsx","total_count":1,"children":[]},{"name":"lib","total_count":1,"children":[]},{"name":"module","total_count":1,"children":[]},{"name":"moduleDetection","total_count":1,"children":[]},{"name":"moduleResolution","total_count":1,"children":[]},{"name":"noEmit","total_count":1,"children":[]},{"name":"paths","total_count":1,"children":[]},{"name":"skipLibCheck","total_count":1,"children":[]},{"name":"target","total_count":1,"children":[]},{"name":"useDefineForClassFields","total_count":1,"children":[]}]},{"name":"vite.config.ts","total_count":1,"children":[]}]};
+
+    function transformData(jsonData) {
+        // Helper function to recursively build the children structure
+        function processNode(node, parentL1StageName) {
+            let displayName = node.name;
+            // Append total_count if it exists and is not already in the name
+            if (node.total_count !== undefined) {
+                if (!/\(Total Count: \d+\)$/.test(displayName)) {
+                    displayName += ` (Total Count: ${node.total_count})`;
+                }
+            }
+
+            const newNode = { name: displayName };
+
+            if (parentL1StageName === "Root") {
+                 newNode.originalStageName = node.name;
+            } else {
+                newNode.originalStageName = parentL1StageName;
+            }
+
+            if (node.children && node.children.length > 0) {
+                const stageNameToPass = (parentL1StageName === "Root") ? node.name : parentL1StageName;
+                newNode.children = node.children.map(child => processNode(child, stageNameToPass));
+            }
+
+            return newNode;
+        }
+
+        let rootDisplayName = jsonData.name;
+        if (jsonData.total_count !== undefined && !/\(Total Count: \d+\)$/.test(rootDisplayName)) {
+            rootDisplayName += ` (Total Count: ${jsonData.total_count})`;
+        }
+
+        return {
+            name: rootDisplayName,
+            originalStageName: "Root",
+            children: (jsonData.children || []).map(child => processNode(child, "Root"))
+        };
+    }
+
+    const treeData = transformData(initialJsonData);
+
+    // Auto-populated phaseColors: every depth-1 child of the root gets
+    // a stable colour from a bigger palette so all top-level dirs are
+    // distinguishable.
+    const PALETTE = [
+      ["#3498DB","#2980B9","#AED6F1"], ["#2ECC71","#27AE60","#A9DFBF"],
+      ["#E74C3C","#C0392B","#F5B7B1"], ["#9B59B6","#8E44AD","#D7BDE2"],
+      ["#F39C12","#D68910","#FAD7A0"], ["#1ABC9C","#117864","#A2D9CE"],
+      ["#34495E","#1B2631","#ABB2B9"], ["#E67E22","#BA4A00","#F5CBA7"],
+      ["#16A085","#0E6655","#A2D9CE"], ["#D35400","#A04000","#EDBB99"],
+      ["#7F8C8D","#566573","#D5DBDB"], ["#C0392B","#7B241C","#F5B7B1"],
+      ["#2E86C1","#1B4F72","#A9CCE3"], ["#28B463","#196F3D","#A9DFBF"],
+      ["#AF7AC5","#6C3483","#D2B4DE"],
+    ];
+    const phaseColors = { "Root": { fill: "#4A4A4A", stroke: "#333333", collapsedFill: "#6C757D" },
+                          "Default": { fill: "#BDC3C7", stroke: "#95A5A6", collapsedFill: "#ECF0F1" } };
+    (initialJsonData.children || []).forEach((c, i) => {
+      const pal = PALETTE[i % PALETTE.length];
+      phaseColors[c.name] = { fill: pal[0], stroke: pal[1], collapsedFill: pal[2] };
+    });
+
+    const levelSpecificPalettes = {
+      0: { fill: "#4A4A4A", stroke: "#333333", collapsedFill: "#6C757D" },
+      2: { fill: "#6ab04c", stroke: "#508a38", collapsedFill: "#a3d391" },
+      3: { fill: "#f0932b", stroke: "#d0730f", collapsedFill: "#f6c07e" },
+      4: { fill: "#be2edd", stroke: "#a01cb3", collapsedFill: "#e08bf2" },
+      5: { fill: "#00a8ff", stroke: "#007ac1", collapsedFill: "#74d2ff" },
+      6: { fill: "#e55039", stroke: "#c23620", collapsedFill: "#f09a8d" },
+      default: { fill: "#747d8c", stroke: "#57606f", collapsedFill: "#a4b0be" }
+    };
+
+    const svgElement = d3.select("#tree-svg");
+    const initialSvgWidth = +svgElement.attr("width");
+    const initialSvgHeight = +svgElement.attr("height");
+    const margin = { top: 40, right: 120, bottom: 80, left: 450 };
+    let width = initialSvgWidth - margin.left - margin.right;
+    let height = initialSvgHeight - margin.top - margin.bottom;
+    const duration = 500;
+    let nodeCounter = 0;
+    const g = svgElement.append("g").attr("transform", `translate(${margin.left},${margin.top})`);
+    const treemap = d3.tree().nodeSize([40, 0]);
+    let rootNode = d3.hierarchy(treeData, d => d.children);
+    rootNode.x0 = 0;
+    rootNode.y0 = 0;
+
+    if (rootNode.children) {
+      rootNode.children.forEach(d_child => {
+        if (d_child.children) { collapseBranch(d_child); }
+      });
+    }
+    updateTree(rootNode);
+
+    function collapseBranch(d) { if (d.children) { d._children = d.children; d._children.forEach(collapseBranch); d.children = null; } }
+    function expandBranch(d) { if (d._children) { d.children = d._children; d._children = null; } if (d.children) { d.children.forEach(expandBranch); } }
+    window.expandAll = () => { expandBranch(rootNode); updateTree(rootNode); };
+    window.collapseAll = () => { if (rootNode.children) { rootNode.children.forEach(collapseBranch); } updateTree(rootNode); };
+    window.resetView = () => { if (rootNode.children) { rootNode.children.forEach(d_child => { if (d_child.children || d_child._children) { collapseBranch(d_child); } }); } if (rootNode._children && !rootNode.children) { rootNode.children = rootNode._children; rootNode._children = null; } updateTree(rootNode); };
+
+    function updateTree(source) {
+      const treeLayoutData = treemap(rootNode);
+      let nodes = treeLayoutData.descendants();
+      let links = treeLayoutData.descendants().slice(1);
+
+      let minX = 0;
+      let maxX = 0;
+      if (nodes.length > 0) {
+        minX = d3.min(nodes, d => d.x);
+        maxX = d3.max(nodes, d => d.x);
+      }
+
+      let neededHeight = Math.max(initialSvgHeight, maxX - minX + margin.top + margin.bottom + 100);
+      svgElement.transition().duration(duration / 2).attr("height", neededHeight);
+      g.transition().duration(duration / 2).attr("transform", `translate(${margin.left},${margin.top - minX + 40})`);
+
+      nodes.forEach(d => { d.y = d.depth * 400; }); // Adjust horizontal separation if needed
+
+      const node = g.selectAll('g.node').data(nodes, d => d.id || (d.id = ++nodeCounter));
+      const nodeEnter = node.enter().append('g')
+        .attr('class', d => "node" + (d.children || d._children ? " node--internal" : " node--leaf") + (d._children ? " _children" : ""))
+        .attr('transform', d => `translate(${source.y0},${source.x0})`)
+        .on('click', (event, d) => { if (d.children) { d._children = d.children; d.children = null; } else if (d._children) { d.children = d._children; d._children = null; } updateTree(d); })
+        .style('cursor', d => (d.children || d._children) ? 'pointer' : 'default');
+
+      nodeEnter.append('circle').attr('r', 1e-6);
+
+      nodeEnter.append('text')
+        .attr('dy', '.35em')
+        .attr('x', d => d.children || d._children ? -14 : 14)
+        .attr('text-anchor', d => d.children || d._children ? 'end' : 'start')
+        .style("fill-opacity", 1e-6)
+        .call(wrapText, 380);
+
+      const nodeUpdate = nodeEnter.merge(node);
+      nodeUpdate.transition().duration(duration)
+        .attr('transform', d => `translate(${d.y},${d.x})`)
+        .attr('class', d => "node" + (d.children ? " node--internal" : " node--leaf") + (d._children ? " node--internal _children" : ""));
+
+      nodeUpdate.select('circle').attr('r', 8.5)
+        .style('fill', d => {
+            let palette;
+            if (d.depth === 0) {
+                palette = levelSpecificPalettes[0];
+            } else if (d.depth === 1) {
+                palette = phaseColors[d.data.originalStageName] || phaseColors.Default;
+            } else {
+                palette = levelSpecificPalettes[d.depth] || levelSpecificPalettes.default;
+            }
+            if (d._children) return palette.collapsedFill;
+            if (d.children) return palette.fill;
+            return "#fff";
+        })
+        .style('stroke', d => {
+            let palette;
+            if (d.depth === 0) {
+                palette = levelSpecificPalettes[0];
+            } else if (d.depth === 1) {
+                palette = phaseColors[d.data.originalStageName] || phaseColors.Default;
+            } else {
+                palette = levelSpecificPalettes[d.depth] || levelSpecificPalettes.default;
+            }
+            return palette.stroke;
+        });
+      nodeUpdate.select('text').style("fill-opacity", 1).call(wrapText, 380);
+
+      const nodeExit = node.exit().transition().duration(duration).attr('transform', d => `translate(${source.y},${source.x})`).remove();
+      nodeExit.select('circle').attr('r', 1e-6);
+      nodeExit.select('text').style('fill-opacity', 1e-6);
+
+      const link = g.selectAll('path.link').data(links, d => d.id);
+      const linkEnter = link.enter().insert('path', "g").attr('class', 'link').attr('d', d => { const o = { x: source.x0, y: source.y0 }; return diagonal(o, o); });
+
+      linkEnter.merge(link).transition().duration(duration).attr('d', d => diagonal(d, d.parent))
+        .style('stroke', d => {
+            const sourceNode = d.parent;
+            if (!sourceNode) return phaseColors.Default.stroke;
+            const l1AncestorName = sourceNode.data.originalStageName;
+            const colorPalette = phaseColors[l1AncestorName] || phaseColors.Default;
+            return colorPalette.stroke;
+        });
+      link.exit().transition().duration(duration).attr('d', d => { const o = { x: source.x, y: source.y }; return diagonal(o, o); }).remove();
+      nodes.forEach(d => { d.x0 = d.x; d.y0 = d.y; });
+    }
+
+    function diagonal(s, d) { return `M ${s.y} ${s.x} C ${(s.y + d.y) / 2} ${s.x}, ${(s.y + d.y) / 2} ${d.x}, ${d.y} ${d.x}`; }
+
+    function wrapText(textElements, maxWidth) {
+        const textPartColors = {
+            name: '#343a40',
+            count: '#0056b3'
+        };
+        const countRegex = /(\s\(Total Count: \d+\))$/;
+
+        textElements.each(function () {
+            const textD3 = d3.select(this);
+            const originalNodeText = textD3.datum().data.name;
+            const x = parseFloat(textD3.attr("x") || 0);
+            const initialDy = textD3.attr("dy");
+            const textAnchor = textD3.attr("text-anchor");
+            const lineHeight = 1.1;
+
+            textD3.text(null);
+
+            let namePart = originalNodeText;
+            let countPartText = "";
+
+            const countMatch = originalNodeText.match(countRegex);
+            if (countMatch && originalNodeText.endsWith(countMatch[0])) {
+                namePart = originalNodeText.substring(0, originalNodeText.length - countMatch[0].length).trim();
+                countPartText = countMatch[0].trim();
+            }
+
+            const tokens = [];
+            namePart.split(/\s+/).filter(Boolean).forEach(word => {
+                tokens.push({ text: word, type: 'name' });
+            });
+            if (countPartText) {
+                tokens.push({ text: countPartText, type: 'count' });
+            }
+
+            if (tokens.length === 0 && originalNodeText) {
+                tokens.push({ text: originalNodeText, type: 'name' });
+            }
+
+            let currentTspan = textD3.append("tspan").attr("x", x).attr("dy", initialDy);
+            if (textAnchor === "end") currentTspan.attr("text-anchor", "end");
+
+            let lineTokens = [];
+
+            for (let i = 0; i < tokens.length; i++) {
+                const tokenObj = tokens[i];
+
+                lineTokens.push(tokenObj);
+                currentTspan.text(lineTokens.map(t => t.text).join(" "));
+
+                if (currentTspan.node().getComputedTextLength() > maxWidth && lineTokens.length > 1) {
+                    lineTokens.pop();
+
+                    currentTspan.text(null);
+                    lineTokens.forEach((prevToken, idx) => {
+                        currentTspan.append("tspan")
+                            .text((idx > 0 ? " " : "") + prevToken.text)
+                            .style("fill", textPartColors[prevToken.type] || textPartColors.name)
+                            .style("font-weight", prevToken.type === 'count' ? "bold" : "normal");
+                    });
+
+                    lineTokens = [tokenObj];
+                    currentTspan = textD3.append("tspan").attr("x", x).attr("dy", lineHeight + "em");
+                    if (textAnchor === "end") currentTspan.attr("text-anchor", "end");
+                }
+            }
+
+            currentTspan.text(null);
+            lineTokens.forEach((token, idx) => {
+                currentTspan.append("tspan")
+                    .text((idx > 0 ? " " : "") + token.text)
+                    .style("fill", textPartColors[token.type] || textPartColors.name)
+                    .style("font-weight", token.type === 'count' ? "bold" : "normal");
+            });
+
+            if (textD3.selectAll("tspan > tspan").empty() && textD3.select("tspan").text().length === 0 && originalNodeText) {
+                let t = textD3.select("tspan");
+                let displayText = originalNodeText;
+                t.text(displayText).style("fill", textPartColors.name);
+                if (t.node() && t.node().getComputedTextLength() > maxWidth && displayText.length > 20) {
+                    let estimatedChars = Math.floor(maxWidth / (t.node().getComputedTextLength()/displayText.length) );
+                    displayText = displayText.substring(0, Math.max(0, estimatedChars - 3)) + "...";
+                    t.text(displayText);
+                }
+            }
+        });
+    }
+  </script>
+</body>
+</html>

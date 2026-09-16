@@ -1,0 +1,43 @@
+# Next.js CRM Core UI & Workflows (Community 2)
+
+**Node Count:** 36
+**Cohesion:** 0.10476190476190476
+
+## Member Nodes
+
+- `auth_users`
+- `supabase_migrations_00000000000000_initial_schema`
+- `supabase_migrations_00000000000000_initial_schema_edit_requests`
+- `supabase_migrations_00000000000000_initial_schema_funnel_history`
+- `supabase_migrations_00000000000000_initial_schema_global_audit_logs`
+- `supabase_migrations_00000000000000_initial_schema_global_targets`
+- `supabase_migrations_00000000000000_initial_schema_individual_targets`
+- `supabase_migrations_00000000000000_initial_schema_lead_notes`
+- `supabase_migrations_00000000000000_initial_schema_leads`
+- `supabase_migrations_00000000000000_initial_schema_oi_forecasts`
+- `supabase_migrations_00000000000000_initial_schema_role_permissions`
+- `supabase_migrations_00000000000000_initial_schema_tasks`
+- `supabase_migrations_00000000000000_initial_schema_update_leads_modtime`
+- `supabase_migrations_00000000000000_initial_schema_update_modified_column`
+- `supabase_migrations_00000000000000_initial_schema_update_oi_forecasts_modtime`
+- `supabase_migrations_00000000000000_initial_schema_update_tasks_modtime`
+- `supabase_migrations_00000000000000_initial_schema_update_users_modtime`
+- `supabase_migrations_00000000000000_initial_schema_users`
+- `supabase_migrations_00000000000002_recreate_schema_text`
+- `supabase_migrations_00000000000002_recreate_schema_text_app_settings`
+- `supabase_migrations_00000000000002_recreate_schema_text_edit_requests`
+- `supabase_migrations_00000000000002_recreate_schema_text_funnel_history`
+- `supabase_migrations_00000000000002_recreate_schema_text_global_audit_logs`
+- `supabase_migrations_00000000000002_recreate_schema_text_global_targets`
+- `supabase_migrations_00000000000002_recreate_schema_text_individual_targets`
+- `supabase_migrations_00000000000002_recreate_schema_text_lead_notes`
+- `supabase_migrations_00000000000002_recreate_schema_text_leads`
+- `supabase_migrations_00000000000002_recreate_schema_text_oi_forecasts`
+- `supabase_migrations_00000000000002_recreate_schema_text_oi_targets`
+- `supabase_migrations_00000000000002_recreate_schema_text_role_permissions`
+- `supabase_migrations_00000000000002_recreate_schema_text_tasks`
+- `supabase_migrations_00000000000002_recreate_schema_text_update_leads_modtime`
+- `supabase_migrations_00000000000002_recreate_schema_text_update_oi_forecasts_modtime`
+- `supabase_migrations_00000000000002_recreate_schema_text_update_tasks_modtime`
+- `supabase_migrations_00000000000002_recreate_schema_text_update_users_modtime`
+- `supabase_migrations_00000000000002_recreate_schema_text_users`
