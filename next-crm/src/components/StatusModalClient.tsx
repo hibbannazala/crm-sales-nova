@@ -88,6 +88,20 @@ export default function StatusModalClient({ isOpen, onClose, lead, user, users =
       return;
     }
 
+    // Chronological order sanity check for retroactive dates
+    if (showMissingChated && showMissingResponsed && missingChatedDate > missingResponsedDate) {
+      toast.error("Tanggal Chated tidak boleh lebih baru dari Tanggal Responsed!");
+      return;
+    }
+    if (showMissingResponsed && showMissingSetMeeting && missingResponsedDate > missingSetMeetingDate) {
+      toast.error("Tanggal Responsed tidak boleh lebih baru dari Tanggal Set Meeting!");
+      return;
+    }
+    if (showMissingSetMeeting && date && missingSetMeetingDate > date) {
+      toast.error("Tanggal Set Meeting tidak boleh lebih baru dari Tanggal Closing!");
+      return;
+    }
+
     if (status !== 'Leads' && !date) {
       toast.error("Pilih tanggal pelaksanaan!");
       return;

@@ -55,11 +55,11 @@ export default function OIGrid({ forecasts, selectedMonthYear, activeTab, leads,
     }
 
     const lead = leads.find(l => l.id === selectedLeadId);
-    if (!lead) return;
+    const nextCampaignNumber = (lead.funnelHistory?.filter((h: any) => h.stage === 'Close Win').length || 0) + 1;
 
-    // Check if already exists
-    if (forecasts.some(f => f.leadId === selectedLeadId)) {
-      toast.error("Brand ini sudah ada di forecast bulan ini produk ini.");
+    // Check if already exists for the exact same lead and campaign number in this month and product
+    if (forecasts.some(f => f.leadId === selectedLeadId && Number(f.campaignNumber || 1) === nextCampaignNumber)) {
+      toast.error(`Brand ini sudah ada di forecast bulan ini untuk Campaign Ke-${nextCampaignNumber}.`);
       return;
     }
 
@@ -68,7 +68,7 @@ export default function OIGrid({ forecasts, selectedMonthYear, activeTab, leads,
       monthYear: selectedMonthYear,
       product: activeTab,
       value: lead.dealValue || 0,
-      campaignNumber: (lead.funnelHistory?.filter((h: any) => h.stage === 'Close Win').length || 0) + 1,
+      campaignNumber: nextCampaignNumber,
       budgetAds: 0,
       budgetCreator: 0,
       grossMargin: lead.dealValue || 0,
