@@ -55,6 +55,8 @@ export default function OIGrid({ forecasts, selectedMonthYear, activeTab, leads,
     }
 
     const lead = leads.find(l => l.id === selectedLeadId);
+    if (!lead) return;
+
     const nextCampaignNumber = (lead.funnelHistory?.filter((h: any) => h.stage === 'Close Win').length || 0) + 1;
 
     // Check if already exists for the exact same lead and campaign number in this month and product
