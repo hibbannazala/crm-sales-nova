@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useRef } from 'react';
 import { Lead, UserProfile, ProductOffered, LEAD_SOURCES } from '@/types';
 import { X, Info } from 'lucide-react';
 import { cn } from '@/lib/utils';
@@ -9,7 +9,6 @@ import ConfirmModal from './ConfirmModal';
 import CurrencyInput from './common/CurrencyInput';
 import { useCategories } from '@/hooks/useCategories';
 
-
 interface LeadModalProps {
   isOpen: boolean;
   onClose: () => void;
@@ -19,6 +18,80 @@ interface LeadModalProps {
   users?: UserProfile[];
 }
 
+function FunnelDateField({
+  label,
+  name,
+  value,
+  onChange,
+  onClear,
+}: {
+  label: string;
+  name: string;
+  value: string;
+  onChange: (e: React.ChangeEvent<HTMLInputElement>) => void;
+  onClear: () => void;
+}) {
+  const [isFocused, setIsFocused] = useState(false);
+  const inputRef = useRef<HTMLInputElement>(null);
+
+  // When value is empty and not focused, render type="text" with placeholder="dd/mm/yyyy"
+  // This completely stops Safari on macOS/iOS from rendering a phantom current date!
+  const isDateType = isFocused || Boolean(value);
+
+  return (
+    <div>
+      <div className="flex justify-between items-center mb-1">
+        <label className="block text-[10px] font-bold text-slate-600 uppercase tracking-wider">
+          {label}
+        </label>
+        {value ? (
+          <button
+            type="button"
+            onClick={onClear}
+            className="text-[9px] font-bold text-rose-500 hover:text-rose-700 hover:underline flex items-center gap-0.5"
+            title="Kosongkan tanggal"
+          >
+            <X className="w-2.5 h-2.5" /> Reset
+          </button>
+        ) : null}
+      </div>
+      <div className="relative">
+        <input
+          ref={inputRef}
+          type={isDateType ? "date" : "text"}
+          name={name}
+          value={value}
+          placeholder="dd/mm/yyyy"
+          autoComplete="off"
+          onFocus={() => {
+            setIsFocused(true);
+            setTimeout(() => {
+              try {
+                inputRef.current?.showPicker?.();
+              } catch {}
+            }, 30);
+          }}
+          onBlur={() => {
+            setIsFocused(false);
+          }}
+          onChange={onChange}
+          className="w-full px-3 py-2 border border-slate-300 rounded-lg focus:ring-2 focus:ring-indigo-500 text-sm font-medium bg-white"
+        />
+        {value ? (
+          <button
+            type="button"
+            onClick={onClear}
+            className="absolute right-2 top-1/2 -translate-y-1/2 w-5 h-5 rounded-full bg-slate-100 hover:bg-rose-50 text-slate-400 hover:text-rose-600 flex items-center justify-center transition-colors text-xs font-bold"
+            tabIndex={-1}
+            title="Hapus tanggal"
+          >
+            ×
+          </button>
+        ) : null}
+      </div>
+    </div>
+  );
+}
 
 export default function LeadModalClient({ isOpen, onClose, lead, user, leads = [], users = [] }: LeadModalProps) {
   const { categories: CATEGORIES, addCategory } = useCategories();
@@ -174,6 +247,36 @@ export default function LeadModalClient({ isOpen, onClose, lead, user, leads = [
     
     setFormData(prev => ({ ...prev, [name]: value }));
     validateField(name, value);
+  };
+
+  const handleClearDate = (fieldName: string) => {
+    setFormData(prev => {
+      const updated: any = { ...prev, [fieldName]: '' };
+      if (fieldName === 'dateClosed') {
+        updated.dealValue = 0;
+      }
+      return updated;
+    });
+    setErrors(prev => ({ ...prev, [fieldName]: '' }));
+  };
+
+  const handleClearAllFunnel = () => {
+    setFormData(prev => ({
+      ...prev,
+      dateChated: '',
+      dateResponsed: '',
+      dateSetMeeting: '',
+      dateClosed: '',
+      dealValue: 0
+    }));
+    setErrors(prev => ({
+      ...prev,
+      dateChated: '',
+      dateResponsed: '',
+      dateSetMeeting: '',
+      dateClosed: ''
+    }));
+    toast.info("Seluruh jejak funnel dikosongkan");
   };
 
   const validateForm = () => {
@@ -700,52 +803,53 @@ export default function LeadModalClient({ isOpen, onClose, lead, user, leads = [
 
                 {!internalLead ? (
                   <div className="mb-5 p-4 bg-indigo-50/50 border border-indigo-100 rounded-xl">
-                    <h4 className="text-[11px] font-black text-indigo-800 uppercase tracking-widest mb-3 border-b border-indigo-100 pb-2">Jejak Funnel (Opsional)</h4>
+                    <div className="flex justify-between items-center mb-3 border-b border-indigo-100 pb-2">
+                      <h4 className="text-[11px] font-black text-indigo-800 uppercase tracking-widest">
+                        Jejak Funnel (Opsional)
+                      </h4>
+                      {(formData.dateChated || formData.dateResponsed || formData.dateSetMeeting || formData.dateClosed) && (
+                        <button
+                          type="button"
+                          onClick={handleClearAllFunnel}
+                          className="text-[9px] font-black text-rose-500 hover:text-rose-700 bg-rose-50 hover:bg-rose-100 px-2 py-0.5 rounded transition flex items-center gap-1"
+                        >
+                          <X className="w-3 h-3" /> Kosongkan Semua
+                        </button>
+                      )}
+                    </div>
                     <p className="text-[9px] font-bold text-slate-500 mb-4 leading-relaxed">
-                      Jika Anda langsung menginput data yang sudah di follow-up sebelumnya, silakan isi tanggal-tanggal di bawah secara berurutan.
+                      Jika Anda langsung menginput data yang sudah di follow-up sebelumnya, silakan isi tanggal-tanggal di bawah secara berurutan. Biarkan kosong jika lead baru masuk.
                     </p>
                     
                     <div className="grid grid-cols-2 gap-4">
-                      <div>
-                        <label className="block text-[10px] font-bold text-slate-600 uppercase tracking-wider mb-1">Tgl Chated</label>
-                        <input 
-                          type="date" 
-                          name="dateChated"
-                          value={formData.dateChated}
-                          onChange={handleInputChange}
-                          className="w-full px-3 py-2 border border-slate-300 rounded-lg focus:ring-2 focus:ring-indigo-500 text-sm font-medium" 
-                        />
-                      </div>
-                      <div>
-                        <label className="block text-[10px] font-bold text-slate-600 uppercase tracking-wider mb-1">Tgl Responsed</label>
-                        <input 
-                          type="date" 
-                          name="dateResponsed"
-                          value={formData.dateResponsed}
-                          onChange={handleInputChange}
-                          className="w-full px-3 py-2 border border-slate-300 rounded-lg focus:ring-2 focus:ring-indigo-500 text-sm font-medium" 
-                        />
-                      </div>
-                      <div>
-                        <label className="block text-[10px] font-bold text-slate-600 uppercase tracking-wider mb-1">Tgl Set Meeting</label>
-                        <input 
-                          type="date" 
-                          name="dateSetMeeting"
-                          value={formData.dateSetMeeting}
-                          onChange={handleInputChange}
-                          className="w-full px-3 py-2 border border-slate-300 rounded-lg focus:ring-2 focus:ring-indigo-500 text-sm font-medium" 
-                        />
-                      </div>
-                      <div>
-                        <label className="block text-[10px] font-bold text-slate-600 uppercase tracking-wider mb-1">Tgl Close Win</label>
-                        <input 
-                          type="date" 
-                          name="dateClosed"
-                          value={formData.dateClosed}
-                          onChange={handleInputChange}
-                          className="w-full px-3 py-2 border border-slate-300 rounded-lg focus:ring-2 focus:ring-indigo-500 text-sm font-medium" 
-                        />
-                      </div>
+                      <FunnelDateField
+                        label="Tgl Chated"
+                        name="dateChated"
+                        value={formData.dateChated}
+                        onChange={handleInputChange}
+                        onClear={() => handleClearDate('dateChated')}
+                      />
+                      <FunnelDateField
+                        label="Tgl Responsed"
+                        name="dateResponsed"
+                        value={formData.dateResponsed}
+                        onChange={handleInputChange}
+                        onClear={() => handleClearDate('dateResponsed')}
+                      />
+                      <FunnelDateField
+                        label="Tgl Set Meeting"
+                        name="dateSetMeeting"
+                        value={formData.dateSetMeeting}
+                        onChange={handleInputChange}
+                        onClear={() => handleClearDate('dateSetMeeting')}
+                      />
+                      <FunnelDateField
+                        label="Tgl Close Win"
+                        name="dateClosed"
+                        value={formData.dateClosed}
+                        onChange={handleInputChange}
+                        onClear={() => handleClearDate('dateClosed')}
+                      />
                     </div>
                     
                     {formData.dateClosed && (

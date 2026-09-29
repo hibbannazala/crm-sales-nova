@@ -465,19 +465,43 @@ export default function StatusModalClient({ isOpen, onClose, lead, user, users =
                     {(status === 'Responsed' || status === 'Set Meeting' || status === 'Close Win') && !hasChated && (
                       <div>
                         <label className="block text-[10px] font-bold text-amber-700 uppercase mb-1">Tgl Chated (Retroaktif) *</label>
-                        <input type="date" value={missingChatedDate} onChange={e => setMissingChatedDate(e.target.value)} className="w-full px-3 py-2 border border-amber-300 rounded-lg font-bold text-gray-800 bg-white focus:ring-2 focus:ring-amber-500 outline-none" />
+                        <input 
+                          type={missingChatedDate ? "date" : "text"} 
+                          placeholder="dd/mm/yyyy"
+                          value={missingChatedDate} 
+                          onFocus={e => { e.currentTarget.type = 'date'; try { e.currentTarget.showPicker?.(); } catch {} }}
+                          onBlur={e => { if (!e.currentTarget.value) e.currentTarget.type = 'text'; }}
+                          onChange={e => setMissingChatedDate(e.target.value)} 
+                          className="w-full px-3 py-2 border border-amber-300 rounded-lg font-bold text-gray-800 bg-white focus:ring-2 focus:ring-amber-500 outline-none" 
+                        />
                       </div>
                     )}
                     {(status === 'Set Meeting' || status === 'Close Win') && !hasResponsed && (
                       <div>
                         <label className="block text-[10px] font-bold text-amber-700 uppercase mb-1">Tgl Responsed (Retroaktif) *</label>
-                        <input type="date" value={missingResponsedDate} onChange={e => setMissingResponsedDate(e.target.value)} className="w-full px-3 py-2 border border-amber-300 rounded-lg font-bold text-gray-800 bg-white focus:ring-2 focus:ring-amber-500 outline-none" />
+                        <input 
+                          type={missingResponsedDate ? "date" : "text"} 
+                          placeholder="dd/mm/yyyy"
+                          value={missingResponsedDate} 
+                          onFocus={e => { e.currentTarget.type = 'date'; try { e.currentTarget.showPicker?.(); } catch {} }}
+                          onBlur={e => { if (!e.currentTarget.value) e.currentTarget.type = 'text'; }}
+                          onChange={e => setMissingResponsedDate(e.target.value)} 
+                          className="w-full px-3 py-2 border border-amber-300 rounded-lg font-bold text-gray-800 bg-white focus:ring-2 focus:ring-amber-500 outline-none" 
+                        />
                       </div>
                     )}
                     {status === 'Close Win' && !hasSetMeeting && (
                       <div>
                         <label className="block text-[10px] font-bold text-amber-700 uppercase mb-1">Tgl Set Meeting (Retroaktif) *</label>
-                        <input type="date" value={missingSetMeetingDate} onChange={e => setMissingSetMeetingDate(e.target.value)} className="w-full px-3 py-2 border border-amber-300 rounded-lg font-bold text-gray-800 bg-white focus:ring-2 focus:ring-amber-500 outline-none" />
+                        <input 
+                          type={missingSetMeetingDate ? "date" : "text"} 
+                          placeholder="dd/mm/yyyy"
+                          value={missingSetMeetingDate} 
+                          onFocus={e => { e.currentTarget.type = 'date'; try { e.currentTarget.showPicker?.(); } catch {} }}
+                          onBlur={e => { if (!e.currentTarget.value) e.currentTarget.type = 'text'; }}
+                          onChange={e => setMissingSetMeetingDate(e.target.value)} 
+                          className="w-full px-3 py-2 border border-amber-300 rounded-lg font-bold text-gray-800 bg-white focus:ring-2 focus:ring-amber-500 outline-none" 
+                        />
                       </div>
                     )}
                   </div>
