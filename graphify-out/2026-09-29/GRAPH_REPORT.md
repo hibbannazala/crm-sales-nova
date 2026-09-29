@@ -1,15 +1,17 @@
-# Graph Report - crm-sales-tnt-v2  (2026-09-29)
+# Graph Report - crm-sales-tnt-v2  (2026-09-23)
 
 ## Corpus Check
-- cluster-only mode — file stats not available
+- 202 files · ~221,537 words
+- Verdict: corpus is large enough that graph structure adds value.
+- Unclassified: 9 file(s) not represented in the graph (top: (none) 4, .css 2, .example 1)
 
 ## Summary
-- 1125 nodes · 1726 edges · 125 communities (76 shown, 49 thin omitted)
+- 1135 nodes · 1707 edges · 127 communities (76 shown, 51 thin omitted)
 - Extraction: 100% EXTRACTED · 0% INFERRED · 0% AMBIGUOUS
 - Token cost: 0 input · 0 output
 
 ## Graph Freshness
-- Built from commit: `bc318c2e`
+- Built from commit: `813c38d4`
 - Run `git rev-parse HEAD` and compare to check if the graph is stale.
 - Run `graphify update .` after code changes (no API cost).
 
@@ -18,39 +20,35 @@
 - pg
 - 00000000000002_recreate_schema_text.sql
 - createClient
-- UserProfile
-- Proposed Changes
-- DOKUMENTASI SISTEM & ARSITEKTUR LENGKAP
-- DashboardClient.tsx
-- next-crm/src/components/OIForecast/OIGrid.tsx
-- createClient
-- next-crm/src/types.ts
-- package.json
-- dependencies
 - next-crm/package.json
-- cn
-- compilerOptions
+- package.json
+- OIForecastClient.tsx
+- TasksClient.tsx
+- createClient
 - dependencies
 - compilerOptions
-- Enhancing CRM Analytics: Targets & Deal Revenue
+- dependencies
+- LeadsClient.tsx
+- LeadDetailClient.tsx
+- compilerOptions
 - backup_incremental.cjs
-- @supabase/supabase-js
 - fix_tasks_ts.cjs
+- cn
 - fix_all_ts.cjs
 - migrate_from_local.cjs
+- next-crm/src/types.ts
 - devDependencies
+- UserProfile
 - backup_firestore.cjs
 - fix_modals_logic.cjs
 - port_tasks.cjs
-- Tahapan Implementasi (Migration Strategy)
 - PermissionSettingsClient.tsx
-- devDependencies
+- @supabase/ssr
 - fix_migration.cjs
 - fix_tasks_ts_2.cjs
 - migrate.cjs
 - migrate_remaining.cjs
 - patch_oi_forecasts.cjs
-- Proposed Changes
 - fix_modals_logic3.cjs
 - import_missing.cjs
 - patch_dates.cjs
@@ -61,7 +59,7 @@
 - port_admin_users.cjs
 - funnel_history
 - inspect_fb.cjs
-- scripts
+- test_dash.js
 - check_firebase_raw.cjs
 - check_firebase_stats.cjs
 - check_logic_2.cjs
@@ -88,8 +86,8 @@
 - fix_import_modal.cjs
 - force_fix_navigate.cjs
 - refactor_leads.cjs
-- next-crm/README.md
 - 00000000000003_auth_linking.sql
+- test_lead.js
 - analyze.ts
 - check_08hx.cjs
 - check_august.cjs
@@ -123,16 +121,22 @@
 - test_rls_as_user.cjs
 - test_server_query.cjs
 - test_supa.cjs
-- next
-- Run and deploy your AI Studio app
-- firebase-admin
+- test_map.js
 - 00000000000001_add_missing_tables.sql
-- AGENTS.md
 - eslint.config.mjs
 - postcss.config.mjs
+- public.users
+- Proposed Changes
+- DOKUMENTASI SISTEM & ARSITEKTUR LENGKAP
+- Enhancing CRM Analytics: Targets & Deal Revenue
+- Tahapan Implementasi (Migration Strategy)
+- Proposed Changes
+- next-crm/README.md
+- layout.tsx
+- Run and deploy your AI Studio app
+- AGENTS.md
 - task.md
 - task10010426.md
-- public.users
 
 ## God Nodes (most connected - your core abstractions)
 1. `createClient()` - 41 edges
@@ -149,19 +153,19 @@
 ## Surprising Connections (you probably didn't know these)
 - `users` --references--> `auth`  [EXTRACTED]
   supabase/migrations/00000000000000_initial_schema.sql → src/firebase.ts
-- `TasksProps` --references--> `UserProfile`  [EXTRACTED]
-  next-crm/src/components/TasksClient.tsx → next-crm/src/types.ts
-- `AdminUsersProps` --references--> `UserProfile`  [EXTRACTED]
-  next-crm/src/components/AdminUsersClient.tsx → next-crm/src/types.ts
 - `ImportModalProps` --references--> `UserProfile`  [EXTRACTED]
   next-crm/src/components/ImportModalClient.tsx → next-crm/src/types.ts
-- `TaskCard()` --calls--> `cn()`  [EXTRACTED]
-  next-crm/src/components/TasksClient.tsx → next-crm/src/lib/utils.ts
+- `TabButton()` --calls--> `cn()`  [EXTRACTED]
+  next-crm/src/components/LeadDetailClient.tsx → next-crm/src/lib/utils.ts
+- `MilestoneItem()` --calls--> `cn()`  [EXTRACTED]
+  next-crm/src/components/LeadDetailClient.tsx → next-crm/src/lib/utils.ts
+- `PendingScreen()` --calls--> `createClient()`  [EXTRACTED]
+  next-crm/src/components/PendingScreen.tsx → next-crm/src/utils/supabase/client.ts
 
 ## Import Cycles
 - None detected.
 
-## Communities (125 total, 49 thin omitted)
+## Communities (127 total, 51 thin omitted)
 
 ### Community 0 - "src/types.ts"
 Cohesion: 0.05
@@ -176,315 +180,315 @@ Cohesion: 0.10
 Nodes (34): auth.users, edit_requests, funnel_history, global_audit_logs, global_targets, individual_targets, lead_notes, leads (+26 more)
 
 ### Community 3 - "createClient"
-Cohesion: 0.13
-Nodes (19): metadata, RootLayout(), LoginPage(), AppLayout(), BulkStatusModal(), ImportModalClient(), ImportModalProps, REP_NAMES (+11 more)
+Cohesion: 0.27
+Nodes (9): LoginPage(), ImportModalClient(), ImportModalProps, REP_NAMES, STAGES, LeadModalClient(), FALLBACK_CATEGORIES, useCategories() (+1 more)
 
-### Community 4 - "UserProfile"
-Cohesion: 0.15
-Nodes (21): AdminApprovalsProps, BulkStatusModalProps, STAGES, LeadDetailProps, LeadModalProps, getStatusColor(), LeadsClient(), LeadsTableProps (+13 more)
+### Community 4 - "next-crm/package.json"
+Cohesion: 0.07
+Nodes (26): clsx, date-fns, lucide-react, motion, papaparse, react, react-dom, sonner (+18 more)
 
-### Community 5 - "Proposed Changes"
-Cohesion: 0.08
-Nodes (24): All Components — Permission Checks, Core App, Data Model — Firestore `settings/permissions`, Fitur 1: Dynamic Permission Management (Lord), Fitur 2: Legacy Master Database v2 Import, Format CSV (dari gambar), Implementasi, Implementasi (+16 more)
+### Community 5 - "package.json"
+Cohesion: 0.04
+Nodes (45): devDependencies, autoprefixer, firebase-admin, tailwindcss, tsx, @types/express, @types/node, typescript (+37 more)
 
-### Community 6 - "DOKUMENTASI SISTEM & ARSITEKTUR LENGKAP"
-Cohesion: 0.09
-Nodes (22): 1. Dual `node_modules` & Kode Legacy (Menyita ~850 MB), 1. RINGKASAN ARSITEKTUR PROYEK, 2. File Sampah & Backup Database di Repositori Git (Menyita ~15 MB), 2. SKEMA BASIS DATA & RELASI DATA (SUPABASE POSTGRESQL), 3. ALUR KERJA PENGGUNA (END-TO-END WORKFLOWS), 3. Optimasi Ukuran Bundle & Kecepatan Build Next.js, 4. KATALOG TOMBOL, MODAL, DAN SISTEM INPUT UI, 4. Kebersihan Kredensial & Keamanan (+14 more)
+### Community 6 - "OIForecastClient.tsx"
+Cohesion: 0.23
+Nodes (15): formatIDDate(), formatMoney(), OIGrid(), OIGridProps, formatMoney(), MONTH_NAMES, OIMilestone(), OIMilestoneProps (+7 more)
 
-### Community 7 - "DashboardClient.tsx"
-Cohesion: 0.15
-Nodes (14): AdminTargetsClient(), AdminTargetsProps, DashboardClient(), DashboardProps, getStatusColor(), RateCard(), StatCard(), OIForecastPage() (+6 more)
+### Community 7 - "TasksClient.tsx"
+Cohesion: 0.27
+Nodes (9): TaskModal(), TaskModalProps, TaskCard(), TaskCardProps, TasksClient(), TasksProps, Task, TaskPriority (+1 more)
 
-### Community 8 - "next-crm/src/components/OIForecast/OIGrid.tsx"
+### Community 8 - "createClient"
 Cohesion: 0.19
-Nodes (17): CurrencyInput(), CurrencyInputProps, formatIDDate(), formatMoney(), OIGrid(), OIGridProps, formatMoney(), MONTH_NAMES (+9 more)
+Nodes (11): processImport(), NOTE: Ini adalah abstraksi dari logika 1400 baris lama., bulkDeleteLeads(), importLeadsBatch(), ApprovalsPage(), TargetsPage(), UsersPage(), GET() (+3 more)
 
-### Community 9 - "createClient"
-Cohesion: 0.18
-Nodes (12): processImport(), NOTE: Ini adalah abstraksi dari logika 1400 baris lama., bulkDeleteLeads(), importLeadsBatch(), ApprovalsPage(), TargetsPage(), UsersPage(), GET() (+4 more)
-
-### Community 10 - "next-crm/src/types.ts"
-Cohesion: 0.14
-Nodes (18): TaskModal(), TaskModalProps, TaskCard(), TaskCardProps, TasksClient(), TasksProps, DEFAULT_PERMISSIONS, ForecastStatus (+10 more)
-
-### Community 11 - "package.json"
-Cohesion: 0.10
-Nodes (19): clsx, motion, papaparse, react, sonner, name, private, type (+11 more)
-
-### Community 12 - "dependencies"
+### Community 9 - "dependencies"
 Cohesion: 0.10
 Nodes (21): dependencies, clsx, date-fns, dotenv, express, firebase, @google/genai, lucide-react (+13 more)
 
-### Community 13 - "next-crm/package.json"
-Cohesion: 0.10
-Nodes (19): name, private, version, react-dom, tailwind-merge, tailwindcss, @types/node, @types/papaparse (+11 more)
-
-### Community 14 - "cn"
-Cohesion: 0.19
-Nodes (12): AdminUsersClient(), AdminUsersProps, ConfirmModal(), ConfirmModalProps, LeadDetailClient(), MilestoneItem(), TabButton(), MarkdownRenderer() (+4 more)
-
-### Community 15 - "compilerOptions"
+### Community 10 - "compilerOptions"
 Cohesion: 0.11
 Nodes (18): compilerOptions, allowJs, esModuleInterop, incremental, isolatedModules, jsx, lib, module (+10 more)
 
-### Community 16 - "dependencies"
+### Community 11 - "dependencies"
 Cohesion: 0.12
 Nodes (17): dependencies, clsx, date-fns, lucide-react, motion, next, papaparse, react (+9 more)
 
-### Community 17 - "compilerOptions"
+### Community 12 - "LeadsClient.tsx"
+Cohesion: 0.23
+Nodes (10): BulkStatusModal(), STAGES, CurrencyInput(), CurrencyInputProps, getStatusColor(), LeadsClient(), STAGES, StatusModalProps (+2 more)
+
+### Community 13 - "LeadDetailClient.tsx"
+Cohesion: 0.15
+Nodes (11): LeadDetailClient(), LeadDetailProps, MilestoneItem(), TabButton(), MarkdownEditor(), MarkdownEditorProps, MarkdownRenderer(), NotesModalClient() (+3 more)
+
+### Community 14 - "compilerOptions"
 Cohesion: 0.12
 Nodes (15): compilerOptions, allowImportingTsExtensions, allowJs, experimentalDecorators, isolatedModules, jsx, lib, module (+7 more)
 
-### Community 18 - "Enhancing CRM Analytics: Targets & Deal Revenue"
-Cohesion: 0.13
-Nodes (14): 1. Data Models (`src/types.ts`), 2. Modul Core (Status Update & Blueprint), 3. Analytics Dashboard (`src/components/Dashboard.tsx`), Enhancing CRM Analytics: Targets & Deal Revenue, Manual Verification, [MODIFY] `firebase-blueprint.json`, [MODIFY] `src/components/Dashboard.tsx`, [MODIFY] `src/components/LeadModal.tsx` (+6 more)
-
-### Community 19 - "backup_incremental.cjs"
+### Community 15 - "backup_incremental.cjs"
 Cohesion: 0.18
 Nodes (13): BACKUP_DIR, crypto, db, fs, { getFirestore }, getSubCollectionsData(), hashData(), { initializeApp, cert } (+5 more)
 
-### Community 20 - "@supabase/supabase-js"
-Cohesion: 0.15
-Nodes (7): { createClient }, supabase, { createClient }, supabase, { createClient }, supabase, @supabase/supabase-js
-
-### Community 21 - "fix_tasks_ts.cjs"
+### Community 16 - "fix_tasks_ts.cjs"
 Cohesion: 0.15
 Nodes (12): confirmModalContent, destConfirmModal, destTaskModal, destTasksClient, fs, pageContent, pagePath, path (+4 more)
 
-### Community 22 - "fix_all_ts.cjs"
+### Community 17 - "cn"
+Cohesion: 0.21
+Nodes (11): AdminUsersClient(), ConfirmModal(), ConfirmModalProps, DashboardClient(), getStatusColor(), RateCard(), StatCard(), NavItem() (+3 more)
+
+### Community 18 - "fix_all_ts.cjs"
 Cohesion: 0.18
 Nodes (10): bulk, bulkPath, fs, leadsClient, leadsClientPath, leadsPage, leadsPagePath, page (+2 more)
 
-### Community 23 - "migrate_from_local.cjs"
+### Community 19 - "migrate_from_local.cjs"
 Cohesion: 0.25
 Nodes (10): BACKUP_DIR, { createClient }, crypto, fs, migrateLeadsParts(), migrateOIForecasts(), parseFirebaseDate(), path (+2 more)
 
-### Community 24 - "devDependencies"
+### Community 20 - "next-crm/src/types.ts"
+Cohesion: 0.18
+Nodes (14): AdminTargetsClient(), AdminTargetsProps, DashboardProps, AuditLog, DEFAULT_PERMISSIONS, ForecastStatus, GlobalTarget, IndividualTarget (+6 more)
+
+### Community 21 - "devDependencies"
 Cohesion: 0.20
 Nodes (10): devDependencies, eslint, eslint-config-next, tailwindcss, @tailwindcss/postcss, @types/node, @types/papaparse, @types/react (+2 more)
 
-### Community 25 - "backup_firestore.cjs"
+### Community 22 - "UserProfile"
+Cohesion: 0.29
+Nodes (11): AdminApprovalsClient(), AdminApprovalsProps, AdminUsersProps, BulkStatusModalProps, LeadModalProps, LeadsTableProps, NotesModalProps, OIForecastPageProps (+3 more)
+
+### Community 23 - "backup_firestore.cjs"
 Cohesion: 0.22
 Nodes (9): BACKUP_DIR, backupCollection(), db, fs, { getFirestore }, { initializeApp, cert }, path, runBackup() (+1 more)
 
-### Community 26 - "fix_modals_logic.cjs"
+### Community 24 - "fix_modals_logic.cjs"
 Cohesion: 0.20
 Nodes (9): fs, leadCode, leadPath, notesCode, notesPath, path, srcDir, statusCode (+1 more)
 
-### Community 27 - "port_tasks.cjs"
+### Community 25 - "port_tasks.cjs"
 Cohesion: 0.20
 Nodes (9): destPage, destTaskModal, destTasksClient, fs, path, srcLegacyTaskModal, srcLegacyTasks, taskModalContent (+1 more)
 
-### Community 28 - "Tahapan Implementasi (Migration Strategy)"
-Cohesion: 0.22
-Nodes (8): Blueprint Migrasi: CoreDesk CRM TNT V2 -> Next.js & Supabase, Daftar Fitur yang Dijamin Tidak Akan Hilang (Feature Parity Guarantee), Fase 1: Desain Skema Database Relasional (Supabase), Fase 2: Setup Next.js & Server Actions, Fase 3: Migrasi Antarmuka (User Interface), Fase 4: Export-Import Data Asli (Cut-Over), Tahapan Implementasi (Migration Strategy), User Review Required
-
-### Community 29 - "PermissionSettingsClient.tsx"
+### Community 26 - "PermissionSettingsClient.tsx"
 Cohesion: 0.25
 Nodes (6): CATEGORIES, DEFAULT_PERMISSIONS, PERMISSION_LABELS, PermissionSet, PermissionSettingsClient(), RolePermissions
 
-### Community 30 - "devDependencies"
-Cohesion: 0.22
-Nodes (9): devDependencies, autoprefixer, firebase-admin, tailwindcss, tsx, @types/express, @types/node, typescript (+1 more)
-
-### Community 31 - "fix_migration.cjs"
+### Community 28 - "fix_migration.cjs"
 Cohesion: 0.25
 Nodes (8): { createClient }, db, fix(), { getFirestore }, { initializeApp, cert }, parseDate(), serviceAccount, supabase
 
-### Community 32 - "fix_tasks_ts_2.cjs"
+### Community 29 - "fix_tasks_ts_2.cjs"
 Cohesion: 0.22
 Nodes (8): fs, pageContent, pagePath, path, taskModalContent, taskModalPath, tasksClientPath, tasksContent
 
-### Community 33 - "migrate.cjs"
+### Community 30 - "migrate.cjs"
 Cohesion: 0.25
 Nodes (8): { createClient }, db, { getFirestore }, { initializeApp, cert }, migrateData(), parseDate(), serviceAccount, supabase
 
-### Community 34 - "migrate_remaining.cjs"
+### Community 31 - "migrate_remaining.cjs"
 Cohesion: 0.25
 Nodes (8): { createClient }, db, { getFirestore }, { initializeApp, cert }, parseDate(), run(), serviceAccount, supabase
 
-### Community 35 - "patch_oi_forecasts.cjs"
+### Community 32 - "patch_oi_forecasts.cjs"
 Cohesion: 0.25
 Nodes (8): { createClient }, db, { getFirestore }, { initializeApp, cert }, parseDate(), run(), serviceAccount, supabase
 
-### Community 36 - "Proposed Changes"
-Cohesion: 0.25
-Nodes (7): 1. `src/components/ImportModal.tsx`, 2. `src/components/LeadModal.tsx` (Tambah Lead Manual), 3. `src/types.ts` & `firebase-blueprint.json`, Open Questions, Proposed Changes, Rencana Peningkatan Sistem Anti-Duplikat & Import Individu, User Review Required
-
-### Community 37 - "fix_modals_logic3.cjs"
+### Community 33 - "fix_modals_logic3.cjs"
 Cohesion: 0.25
 Nodes (7): fs, leadCode, leadPath, notesCode, notesPath, path, srcDir
 
-### Community 38 - "import_missing.cjs"
+### Community 34 - "import_missing.cjs"
 Cohesion: 0.29
 Nodes (7): { createClient }, fs, parseDateCorrectly(), path, run(), supabase, { v4: uuidv4 }
 
-### Community 39 - "patch_dates.cjs"
+### Community 35 - "patch_dates.cjs"
 Cohesion: 0.29
 Nodes (7): BACKUP_DIR, { createClient }, fs, parseDateCorrectly(), patch(), path, supabase
 
-### Community 40 - "sync_new_history_notes.cjs"
+### Community 36 - "sync_new_history_notes.cjs"
 Cohesion: 0.29
 Nodes (7): { createClient }, fs, parseDateCorrectly(), path, run(), supabase, { v4: uuidv4 }
 
-### Community 41 - "fix_ts_final.cjs"
+### Community 37 - "fix_ts_final.cjs"
 Cohesion: 0.29
 Nodes (6): bulk, bulkPath, fs, leadsClient, leadsClientPath, path
 
-### Community 42 - "port_admin_approvals.cjs"
+### Community 38 - "port_admin_approvals.cjs"
 Cohesion: 0.29
 Nodes (6): content, destClient, destPage, fs, path, srcLegacy
 
-### Community 43 - "port_admin_targets.cjs"
+### Community 39 - "port_admin_targets.cjs"
 Cohesion: 0.29
 Nodes (6): content, destClient, destPage, fs, path, srcLegacy
 
-### Community 44 - "port_admin_users.cjs"
+### Community 40 - "port_admin_users.cjs"
 Cohesion: 0.29
 Nodes (6): content, destClient, destPage, fs, path, srcLegacy
 
-### Community 45 - "funnel_history"
+### Community 41 - "funnel_history"
 Cohesion: 0.60
 Nodes (5): funnel_history, leads, get_dashboard_stats(), get_ghosted_leads(), get_individual_contributions()
 
-### Community 46 - "inspect_fb.cjs"
+### Community 42 - "inspect_fb.cjs"
 Cohesion: 0.33
 Nodes (4): db, { getFirestore }, { initializeApp, cert }, serviceAccount
 
-### Community 47 - "scripts"
-Cohesion: 0.33
-Nodes (6): scripts, build, clean, dev, lint, preview
-
-### Community 48 - "check_firebase_raw.cjs"
+### Community 44 - "check_firebase_raw.cjs"
 Cohesion: 0.33
 Nodes (5): BACKUP_DIR, data, file, fs, path
 
-### Community 49 - "check_firebase_stats.cjs"
+### Community 45 - "check_firebase_stats.cjs"
 Cohesion: 0.40
 Nodes (5): BACKUP_DIR, check(), fs, parseDateString(), path
 
-### Community 50 - "check_logic_2.cjs"
+### Community 46 - "check_logic_2.cjs"
 Cohesion: 0.40
 Nodes (5): BACKUP_DIR, check(), fs, parseDate(), path
 
-### Community 51 - "check_logic_3.cjs"
+### Community 47 - "check_logic_3.cjs"
 Cohesion: 0.40
 Nodes (5): BACKUP_DIR, check(), fs, parseDateCorrectly(), path
 
-### Community 52 - "check_logic_4.cjs"
+### Community 48 - "check_logic_4.cjs"
 Cohesion: 0.40
 Nodes (5): BACKUP_DIR, check(), fs, parseDateCorrectly(), path
 
-### Community 53 - "check_logic_5.cjs"
+### Community 49 - "check_logic_5.cjs"
 Cohesion: 0.40
 Nodes (5): BACKUP_DIR, check(), fs, parseDateCorrectly(), path
 
-### Community 54 - "compare_latest.cjs"
+### Community 50 - "compare_latest.cjs"
 Cohesion: 0.33
 Nodes (4): { createClient }, fs, path, supabase
 
-### Community 55 - "find_missing.cjs"
+### Community 51 - "find_missing.cjs"
 Cohesion: 0.33
 Nodes (4): { createClient }, fs, path, supabase
 
-### Community 56 - "find_missing2.cjs"
+### Community 52 - "find_missing2.cjs"
 Cohesion: 0.33
 Nodes (4): { createClient }, fs, path, supabase
 
-### Community 57 - "fix_modals_logic2.cjs"
+### Community 53 - "fix_modals_logic2.cjs"
 Cohesion: 0.33
 Nodes (5): fs, path, srcDir, statusCode, statusPath
 
-### Community 58 - "port_import_modal.cjs"
+### Community 54 - "port_import_modal.cjs"
 Cohesion: 0.33
 Nodes (5): content, destClient, fs, path, srcLegacy
 
-### Community 59 - "port_lead_detail.cjs"
+### Community 55 - "port_lead_detail.cjs"
 Cohesion: 0.33
 Nodes (5): code, destFile, fs, path, srcFile
 
-### Community 60 - "refactor_dashboard.cjs"
+### Community 56 - "refactor_dashboard.cjs"
 Cohesion: 0.33
 Nodes (5): code, dashboardPath, fs, path, srcDir
 
-### Community 61 - "scripts"
+### Community 57 - "scripts"
 Cohesion: 0.40
 Nodes (5): scripts, build, dev, lint, start
 
-### Community 62 - "src/middleware.ts"
+### Community 58 - "src/middleware.ts"
 Cohesion: 0.60
 Nodes (3): config, middleware(), updateSession()
 
-### Community 63 - "check_all_datechated.cjs"
+### Community 59 - "check_all_datechated.cjs"
 Cohesion: 0.40
 Nodes (3): BACKUP_DIR, fs, path
 
-### Community 64 - "check_all_time.cjs"
+### Community 60 - "check_all_time.cjs"
 Cohesion: 0.40
 Nodes (3): BACKUP_DIR, fs, path
 
-### Community 65 - "check_lead_funnel.cjs"
+### Community 61 - "check_lead_funnel.cjs"
 Cohesion: 0.40
 Nodes (4): backupDir, files, fs, path
 
-### Community 66 - "check_status_all.cjs"
+### Community 62 - "check_status_all.cjs"
 Cohesion: 0.40
 Nodes (3): BACKUP_DIR, fs, path
 
-### Community 67 - "check_string.cjs"
+### Community 63 - "check_string.cjs"
 Cohesion: 0.40
 Nodes (3): BACKUP_DIR, fs, path
 
-### Community 68 - "extract.cjs"
+### Community 64 - "extract.cjs"
 Cohesion: 0.40
 Nodes (4): content, fs, lines, startIndex
 
-### Community 69 - "extract2.cjs"
+### Community 65 - "extract2.cjs"
 Cohesion: 0.40
 Nodes (4): content, fs, lines, startIndex
 
-### Community 70 - "fix_bulk_modal.cjs"
+### Community 66 - "fix_bulk_modal.cjs"
 Cohesion: 0.40
 Nodes (4): content, file, fs, path
 
-### Community 71 - "fix_import_modal.cjs"
+### Community 67 - "fix_import_modal.cjs"
 Cohesion: 0.40
 Nodes (4): content, filePath, fs, path
 
-### Community 72 - "force_fix_navigate.cjs"
+### Community 68 - "force_fix_navigate.cjs"
 Cohesion: 0.40
 Nodes (4): content, file, fs, path
 
-### Community 73 - "refactor_leads.cjs"
+### Community 69 - "refactor_leads.cjs"
 Cohesion: 0.40
 Nodes (4): content, filePath, fs, path
 
-### Community 74 - "next-crm/README.md"
-Cohesion: 0.50
-Nodes (3): Deploy on Vercel, Getting Started, Learn More
-
-### Community 103 - "refactor_firebase.cjs"
+### Community 99 - "refactor_firebase.cjs"
 Cohesion: 0.50
 Nodes (3): files, fs, path
 
+### Community 114 - "Proposed Changes"
+Cohesion: 0.08
+Nodes (24): All Components — Permission Checks, Core App, Data Model — Firestore `settings/permissions`, Fitur 1: Dynamic Permission Management (Lord), Fitur 2: Legacy Master Database v2 Import, Format CSV (dari gambar), Implementasi, Implementasi (+16 more)
+
+### Community 115 - "DOKUMENTASI SISTEM & ARSITEKTUR LENGKAP"
+Cohesion: 0.09
+Nodes (22): 1. Dual `node_modules` & Kode Legacy (Menyita ~850 MB), 1. RINGKASAN ARSITEKTUR PROYEK, 2. File Sampah & Backup Database di Repositori Git (Menyita ~15 MB), 2. SKEMA BASIS DATA & RELASI DATA (SUPABASE POSTGRESQL), 3. ALUR KERJA PENGGUNA (END-TO-END WORKFLOWS), 3. Optimasi Ukuran Bundle & Kecepatan Build Next.js, 4. KATALOG TOMBOL, MODAL, DAN SISTEM INPUT UI, 4. Kebersihan Kredensial & Keamanan (+14 more)
+
+### Community 116 - "Enhancing CRM Analytics: Targets & Deal Revenue"
+Cohesion: 0.13
+Nodes (14): 1. Data Models (`src/types.ts`), 2. Modul Core (Status Update & Blueprint), 3. Analytics Dashboard (`src/components/Dashboard.tsx`), Enhancing CRM Analytics: Targets & Deal Revenue, Manual Verification, [MODIFY] `firebase-blueprint.json`, [MODIFY] `src/components/Dashboard.tsx`, [MODIFY] `src/components/LeadModal.tsx` (+6 more)
+
+### Community 118 - "Tahapan Implementasi (Migration Strategy)"
+Cohesion: 0.22
+Nodes (8): Blueprint Migrasi: CoreDesk CRM TNT V2 -> Next.js & Supabase, Daftar Fitur yang Dijamin Tidak Akan Hilang (Feature Parity Guarantee), Fase 1: Desain Skema Database Relasional (Supabase), Fase 2: Setup Next.js & Server Actions, Fase 3: Migrasi Antarmuka (User Interface), Fase 4: Export-Import Data Asli (Cut-Over), Tahapan Implementasi (Migration Strategy), User Review Required
+
+### Community 119 - "Proposed Changes"
+Cohesion: 0.25
+Nodes (7): 1. `src/components/ImportModal.tsx`, 2. `src/components/LeadModal.tsx` (Tambah Lead Manual), 3. `src/types.ts` & `firebase-blueprint.json`, Open Questions, Proposed Changes, Rencana Peningkatan Sistem Anti-Duplikat & Import Individu, User Review Required
+
+### Community 126 - "next-crm/README.md"
+Cohesion: 0.50
+Nodes (3): Deploy on Vercel, Getting Started, Learn More
+
+### Community 129 - "layout.tsx"
+Cohesion: 0.24
+Nodes (6): nextConfig, metadata, RootLayout(), AppLayout(), PendingScreen(), next
+
 ## Knowledge Gaps
-- **557 isolated node(s):** `CurrencyInputProps`, `ConfirmModalProps`, `ForecastStatus`, `LeadSource`, `UserRole` (+552 more)
-  These have ≤1 connection - possible missing edges or undocumented components. (Counts symbols only; 652 node(s) total have ≤1 connection when file, concept and rationale nodes are included.)
-- **49 thin communities (<3 nodes) omitted from report** — run `graphify query` to explore isolated nodes.
+- **578 isolated node(s):** `{ initializeApp, cert }`, `{ getFirestore }`, `serviceAccount`, `db`, `eslintConfig` (+573 more)
+  These have ≤1 connection - possible missing edges or undocumented components. (Counts symbols only; 673 node(s) total have ≤1 connection when file, concept and rationale nodes are included.)
+- **51 thin communities (<3 nodes) omitted from report** — run `graphify query` to explore isolated nodes.
 
 ## Suggested Questions
 _Questions this graph is uniquely positioned to answer:_
 
 - **Why does `react-router-dom` connect `src/types.ts` to `package.json`?**
-  _High betweenness centrality (0.086) - this node is a cross-community bridge._
-- **Why does `lucide-react` connect `createClient` to `UserProfile`, `DashboardClient.tsx`, `next-crm/src/components/OIForecast/OIGrid.tsx`, `package.json`, `next-crm/package.json`, `cn`?**
-  _High betweenness centrality (0.068) - this node is a cross-community bridge._
+  _High betweenness centrality (0.029) - this node is a cross-community bridge._
 - **Why does `pg` connect `pg` to `package.json`?**
-  _High betweenness centrality (0.038) - this node is a cross-community bridge._
-- **What connects `CurrencyInputProps`, `ConfirmModalProps`, `ForecastStatus` to the rest of the system?**
-  _557 weakly-connected nodes found - possible documentation gaps or missing edges._
+  _High betweenness centrality (0.017) - this node is a cross-community bridge._
+- **Why does `@supabase/ssr` connect `@supabase/ssr` to `layout.tsx`, `createClient`, `next-crm/package.json`, `createClient`, `cn`, `src/middleware.ts`?**
+  _High betweenness centrality (0.016) - this node is a cross-community bridge._
+- **What connects `{ initializeApp, cert }`, `{ getFirestore }`, `serviceAccount` to the rest of the system?**
+  _578 weakly-connected nodes found - possible documentation gaps or missing edges._
 - **Should `src/types.ts` be split into smaller, more focused modules?**
-  _Cohesion score 0.05123546511627907 - nodes in this community are weakly interconnected._
+  _Cohesion score 0.05092426952892069 - nodes in this community are weakly interconnected._
 - **Should `pg` be split into smaller, more focused modules?**
   _Cohesion score 0.043478260869565216 - nodes in this community are weakly interconnected._
 - **Should `00000000000002_recreate_schema_text.sql` be split into smaller, more focused modules?**

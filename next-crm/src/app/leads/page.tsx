@@ -80,7 +80,7 @@ export default async function LeadsPage() {
 
   // Fetch targets
   const { data: globalTargets } = await supabase.from('global_targets').select('*');
-  const { data: individualTargets } = await supabase.from('oi_targets').select('*');
+  const { data: individualTargets } = await supabase.from('individual_targets').select('*');
 
   // We need to map Supabase columns (snake_case) back to Firebase properties (camelCase) 
   // if LeadsClient still uses camelCase.

@@ -64,6 +64,8 @@ export default function AdminTargetsClient({ targets, individualTargets = [], au
 
     setLoading(true);
     try {
+      const updaterId = (user as any).id || (user as any).uid;
+
       if (mode === 'global') {
         const payload = {
           id: selectedMonth,
@@ -72,9 +74,10 @@ export default function AdminTargetsClient({ targets, individualTargets = [], au
           target_meeting: Number(formData.targetMeeting),
           target_revenue: Number(formData.targetRevenue),
           updated_at: new Date().toISOString(),
-          updated_by: user.name
+          updated_by: updaterId
         };
-        await supabase.from('global_targets').upsert(payload);
+        const { error: gError } = await supabase.from('global_targets').upsert(payload);
+        if (gError) throw gError;
         toast.success("Target global berhasil disimpan");
         router.refresh();
       } else {
@@ -84,15 +87,15 @@ export default function AdminTargetsClient({ targets, individualTargets = [], au
         const payload = {
           id: targetId,
           user_id: targetUser,
-          user_name: selectedUserName,
           month_year: selectedMonth,
           target_chat: Number(formData.targetChat),
           target_meeting: Number(formData.targetMeeting),
           target_revenue: Number(formData.targetRevenue),
           updated_at: new Date().toISOString(),
-          updated_by: user.name
+          updated_by: updaterId
         };
-        await supabase.from('oi_targets').upsert(payload);
+        const { error: iError } = await supabase.from('individual_targets').upsert(payload);
+        if (iError) throw iError;
         toast.success(`Target untuk ${selectedUserName} berhasil disimpan`);
         router.refresh();
       }

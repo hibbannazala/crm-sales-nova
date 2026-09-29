@@ -9,6 +9,7 @@ import BulkStatusModal from './BulkStatusModal';
 import { useRouter } from 'next/navigation';
 import { createClient } from '@/utils/supabase/client';
 import { toast } from 'sonner';
+import { useCategories } from '@/hooks/useCategories';
 
 interface DashboardProps {
   leads: Lead[];
@@ -86,18 +87,73 @@ export default function DashboardClient({ leads, user, users, targets = [], indi
       });
       setIndividualStats(indStats || []);
 
-      // Fetch Ghosted Leads
-      const { data: ghosted } = await supabase.rpc('get_ghosted_leads', {
-        p_admin, p_category, p_products
-      });
-      setGhostedAlerts(ghosted || []);
+      // Fetch Ghosted Leads via direct query (avoids broken RPC and stays fast & reliable)
+      let ghostedQuery = supabase
+        .from('leads')
+        .select(`
+          id,
+          brand_name,
+          category,
+          status,
+          product_offered,
+          funnelHistory:funnel_history(
+            stage,
+            date_occurred,
+            by_user_name
+          )
+        `)
+        .eq('is_deleted', false)
+        .in('status', ['Hold', 'Chated', 'Responsed', 'Set Meeting'])
+        .order('updated_at', { ascending: true })
+        .limit(100);
 
-      // Fetch Paginated Table Leads
+      if (filterCategory !== 'ALL') ghostedQuery = ghostedQuery.eq('category', filterCategory);
+      if (filterProduct.length > 0) ghostedQuery = ghostedQuery.contains('product_offered', filterProduct);
+
+      const { data: ghostedData } = await ghostedQuery;
+      if (ghostedData) {
+        const now = Date.now();
+        const MS_PER_DAY = 1000 * 60 * 60 * 24;
+        const stagnant: any[] = [];
+
+        ghostedData.forEach(l => {
+          const historyList = (l.funnelHistory || []).sort(
+            (a: any, b: any) => new Date(a.date_occurred).getTime() - new Date(b.date_occurred).getTime()
+          );
+          const lastHistory = historyList[historyList.length - 1];
+          const adminName = lastHistory?.by_user_name || '-';
+          
+          if (p_admin !== 'ALL' && adminName !== p_admin) return;
+
+          const lastDate = lastHistory ? new Date(lastHistory.date_occurred).getTime() : 0;
+          if (!lastDate) return;
+
+          const days = Math.floor((now - lastDate) / MS_PER_DAY);
+          if (days >= 10) {
+            stagnant.push({
+              lead: {
+                id: l.id,
+                brandName: l.brand_name,
+                category: l.category,
+                status: l.status
+              },
+              days,
+              adminName,
+              lastStage: lastHistory?.stage || l.status,
+              msg: `Tertahan di ${lastHistory?.stage || l.status} selama ${days} hari tanpa pergerakan.`
+            });
+          }
+        });
+        stagnant.sort((a, b) => b.days - a.days);
+        setGhostedAlerts(stagnant);
+      }
+
+      // Fetch Paginated Table Leads (omitting notes:lead_notes(*) to reduce network payload and optimize rendering)
       const needsInnerFilter = (filterStart && filterEnd) || p_admin !== 'ALL' || filterStatus !== 'ALL';
-      let selectString = '*, funnelHistory:funnel_history(*), notes:lead_notes(*)';
+      let selectString = '*, funnelHistory:funnel_history(*)';
       
       if (needsInnerFilter) {
-        selectString = '*, filtered:funnel_history!inner(*), funnelHistory:funnel_history(*), notes:lead_notes(*)';
+        selectString = '*, filtered:funnel_history!inner(*), funnelHistory:funnel_history(*)';
       }
 
       let query = supabase.from('leads').select(selectString, { count: 'exact' }).eq('is_deleted', false);
@@ -117,7 +173,7 @@ export default function DashboardClient({ leads, user, users, targets = [], indi
       if (filterCategory !== 'ALL') query = query.eq('category', filterCategory);
       if (filterProduct.length > 0) query = query.contains('product_offered', filterProduct);
       if (search) {
-        query = query.or(`brand_name.ilike.%${search}%,pic_name.ilike.%${search}%,contact.ilike.%${search}%`);
+        query = query.or(`brand_name.ilike.%${search}%,contact.ilike.%${search}%`);
       }
 
       // Pagination
@@ -240,11 +296,13 @@ export default function DashboardClient({ leads, user, users, targets = [], indi
     setCurrentPage(1);
   }, [filterAdmin, filterCategory, filterProduct, filterStatus, filterStart, filterEnd, search]);
 
+  const { categories: hookCategories } = useCategories();
   const categories = useMemo(() => {
+    if (hookCategories && hookCategories.length > 0) return hookCategories;
     const cats = new Set<string>();
     leads.forEach(l => cats.add(l.category));
     return Array.from(cats).sort();
-  }, [leads]);
+  }, [hookCategories, leads]);
 
   const admins = useMemo(() => {
     return users
@@ -357,12 +415,19 @@ export default function DashboardClient({ leads, user, users, targets = [], indi
   // paginatedTableLeads removed, handled by state
 
   const rates = useMemo(() => {
+    const chated = dashboardStats.totalChated || stats.chated;
+    const responsed = dashboardStats.totalResponsed || stats.responsed;
+    const meeting = dashboardStats.totalSetMeeting || stats.meeting;
+    const win = dashboardStats.dealsWon || stats.win;
+    const total = dashboardStats.totalLeads || stats.total;
+
     return {
-      response: stats.chated ? ((stats.responsed / stats.chated) * 100).toFixed(1) + '%' : '0%',
-      interest: stats.responsed ? ((stats.meeting / stats.responsed) * 100).toFixed(1) + '%' : '0%',
-      conversion: stats.responsed ? ((stats.win / stats.responsed) * 100).toFixed(1) + '%' : '0%'
+      response: chated > 0 ? ((responsed / chated) * 100).toFixed(1) + '%' : '0%',
+      interest: responsed > 0 ? ((meeting / responsed) * 100).toFixed(1) + '%' : '0%',
+      conversion: responsed > 0 ? ((win / responsed) * 100).toFixed(1) + '%' : '0%',
+      global: total > 0 ? ((win / total) * 100).toFixed(1) + '%' : '0%'
     };
-  }, [stats]);
+  }, [dashboardStats, stats]);
 
   const stagnantLeads = useMemo(() => {
     const alerts: any[] = [];
@@ -578,10 +643,10 @@ export default function DashboardClient({ leads, user, users, targets = [], indi
 
       <div className="flex-1 overflow-auto p-4 md:p-8 space-y-6 md:space-y-8 custom-scrollbar">
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
-          <StatCard label="TOTAL LEADS" value={stats.total} icon={<Database className="w-5 h-5" />} color="slate" />
-          <StatCard label="CHATED OUT" value={stats.chated} icon={<Send className="w-5 h-5" />} color="indigo" />
-          <StatCard label="RESPONSES" value={stats.responsed} icon={<ReplyAll className="w-5 h-5" />} color="purple" />
-          <StatCard label="MEETINGS SET" value={stats.meeting} icon={<Handshake className="w-5 h-5" />} color="amber" />
+          <StatCard label="TOTAL LEADS" value={dashboardStats.totalLeads || stats.total} icon={<Database className="w-5 h-5" />} color="slate" />
+          <StatCard label="CHATED OUT" value={dashboardStats.totalChated || stats.chated} icon={<Send className="w-5 h-5" />} color="indigo" />
+          <StatCard label="RESPONSES" value={dashboardStats.totalResponsed || stats.responsed} icon={<ReplyAll className="w-5 h-5" />} color="purple" />
+          <StatCard label="MEETINGS SET" value={dashboardStats.totalSetMeeting || stats.meeting} icon={<Handshake className="w-5 h-5" />} color="amber" />
         </div>
 
 
@@ -602,14 +667,14 @@ export default function DashboardClient({ leads, user, users, targets = [], indi
 
                 <div className="mb-8">
                   <h3 className="text-5xl font-black tracking-tighter mb-1 flex items-baseline gap-3">
-                    {stats.win} <span className="text-xl text-slate-400 font-bold tracking-tight">Deals Wan</span>
+                    {dashboardStats.dealsWon || stats.win} <span className="text-xl text-slate-400 font-bold tracking-tight">Deals Won</span>
                   </h3>
                 </div>
 
                 <div className="space-y-2">
                   <p className="text-[10px] font-black uppercase tracking-widest text-emerald-500">Total Nominal Revenue</p>
                   <div className="text-4xl lg:text-5xl font-black text-emerald-400 tracking-tighter truncate">
-                    {new Intl.NumberFormat('id-ID', { style: 'currency', currency: 'IDR', maximumFractionDigits: 0 }).format(stats.revenue)}
+                    {new Intl.NumberFormat('id-ID', { style: 'currency', currency: 'IDR', maximumFractionDigits: 0 }).format(dashboardStats.totalRevenue || stats.revenue)}
                   </div>
                 </div>
               </div>
@@ -617,17 +682,17 @@ export default function DashboardClient({ leads, user, users, targets = [], indi
               <div className="relative z-10 mt-6 md:mt-10 pt-4 md:pt-6 border-t border-slate-800 flex items-center justify-between gap-4">
                 <div className="flex flex-col group/rate relative tooltip-container">
                   <div className="flex items-center gap-2">
-                    <span className="text-2xl font-black text-indigo-400">{rates.conversion}</span>
+                    <span className="text-2xl font-black text-indigo-400">{rates.global}</span>
                     <Info className="w-3 h-3 text-slate-500" />
                   </div>
                   <span className="text-[9px] font-black text-slate-500 uppercase tracking-widest">Global Rate</span>
                   <div className="absolute invisible group-hover/rate:visible opacity-0 group-hover/rate:opacity-100 transition bottom-full left-0 mb-2 w-48 bg-slate-800 text-white text-[10px] p-2 rounded-lg z-50 shadow-xl font-medium">
-                    Efficiency Rate = (Total Deals Won ÷ Total Responses) × 100%. Mengukur efektivitas konversi dari leads yang sudah memberikan respon.
+                    Global Rate = (Total Deals Won ÷ Total Leads) × 100%. Mengukur konversi akhir dari seluruh lead yang masuk.
                   </div>
                 </div>
                 <div className="w-px h-8 bg-slate-800"></div>
                 <div className="flex flex-col text-right">
-                  <span className="text-2xl font-black text-red-400">{stats.lost}</span>
+                  <span className="text-2xl font-black text-red-400">{dashboardStats.lostDeals || stats.lost}</span>
                   <span className="text-[9px] font-black text-slate-500 uppercase tracking-widest">Lost Deals</span>
                 </div>
               </div>
@@ -660,7 +725,7 @@ export default function DashboardClient({ leads, user, users, targets = [], indi
 
                   let pChat = 0, pMeet = 0, pRev = 0;
                   const adminRef = users.find(u => u.name === admin);
-                  const personalTarget = adminRef ? (individualTargets || []).find(it => it.userId === adminRef.uid && it.monthYear === currentTargetMonth) : null;
+                  const personalTarget = adminRef ? (individualTargets || []).find(it => (it.userId === adminRef.uid || it.userId === (adminRef as any).id) && it.monthYear === currentTargetMonth) : null;
 
                   if (filterStart && filterEnd) {
                     const tChat = personalTarget?.targetChat || 0;
@@ -1021,7 +1086,7 @@ export default function DashboardClient({ leads, user, users, targets = [], indi
             </h4>
 
             <div className="space-y-4 overflow-y-auto flex-1 pr-2 custom-scrollbar z-10">
-              {stagnantLeads.length === 0 ? (
+              {ghostedAlerts.length === 0 ? (
                 <div className="flex flex-col items-center justify-center h-full text-center opacity-70">
                   <div className="w-12 h-12 bg-emerald-50 text-emerald-500 rounded-full flex items-center justify-center mb-3">
                     <Check className="w-6 h-6" />
@@ -1030,7 +1095,7 @@ export default function DashboardClient({ leads, user, users, targets = [], indi
                   <p className="text-[10px] text-slate-400 mt-1">Seluruh lead masih terpantau segar.</p>
                 </div>
               ) : (
-                stagnantLeads.slice(0, 50).map((alert, idx) => (
+                ghostedAlerts.slice(0, 50).map((alert, idx) => (
                   <div key={idx} className={cn("p-4 rounded-2xl border transition hover:shadow-md cursor-pointer", alert.days >= 30 ? "bg-rose-50 border-rose-200" : "bg-amber-50 border-amber-200")} onClick={() => router.push(`/lead/${alert.lead.id}`)}>
                     <div className="flex justify-between items-start mb-2 border-b border-black/5 pb-2">
                         <span className="text-xs font-black text-slate-900 line-clamp-1 flex-1 pr-2">{alert.lead.brandName}</span>
@@ -1096,10 +1161,13 @@ export default function DashboardClient({ leads, user, users, targets = [], indi
           <BulkStatusModal
             isOpen={isBulkModalOpen}
             onClose={() => setIsBulkModalOpen(false)}
-            selectedLeads={leads.filter(l => selectedLeadIds.includes(l.id))}
+            selectedLeads={paginatedTableLeads.filter(l => selectedLeadIds.includes(l.id))}
             user={user}
             users={users}
-            onSuccess={() => setSelectedLeadIds([])}
+            onSuccess={() => {
+              setSelectedLeadIds([]);
+              fetchDashboardData();
+            }}
           />
         )}
       </AnimatePresence>

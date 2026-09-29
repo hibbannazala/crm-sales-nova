@@ -36,16 +36,16 @@
     "semantic_hash": "dfa1f5f6a7037bf39dc510f30b180002"
   },
   "next-crm/next.config.ts": {
-    "mtime": 1790158837.648451,
-    "seen": 1790656629.589733,
-    "ast_hash": "3589035168fbbe1e604c096fa5284cab",
-    "semantic_hash": "3589035168fbbe1e604c096fa5284cab"
+    "mtime": 1789534459.041515,
+    "seen": 1789540504.1687415,
+    "ast_hash": "67e84cf4f0fd9b5bf45c3e13af59bcb0",
+    "semantic_hash": ""
   },
   "next-crm/package.json": {
-    "mtime": 1790158837.648451,
-    "seen": 1790656629.589733,
-    "ast_hash": "b2c5f6c99c874f24945b3641c6e118f4",
-    "semantic_hash": "b2c5f6c99c874f24945b3641c6e118f4"
+    "mtime": 1789534186.6797273,
+    "seen": 1789540504.1687415,
+    "ast_hash": "c1c73da6346634f8a5af7e89ce74c1f5",
+    "semantic_hash": ""
   },
   "next-crm/postcss.config.mjs": {
     "mtime": 1786702893.2147396,
@@ -72,10 +72,10 @@
     "semantic_hash": "fab44eaf325fd37ce9dc78372acfd5f4"
   },
   "next-crm/src/app/admin/targets/page.tsx": {
-    "mtime": 1790656439.1531606,
-    "seen": 1790656629.589733,
-    "ast_hash": "97b3dde8dcd07edd58b3cc57d01d76ef",
-    "semantic_hash": "97b3dde8dcd07edd58b3cc57d01d76ef"
+    "mtime": 1787052832.8347898,
+    "seen": 1789533550.658404,
+    "ast_hash": "d02beb0256f9b603a8f8ccf9e822c7c1",
+    "semantic_hash": "d02beb0256f9b603a8f8ccf9e822c7c1"
   },
   "next-crm/src/app/admin/users/page.tsx": {
     "mtime": 1787052695.4637392,
@@ -102,10 +102,10 @@
     "semantic_hash": "5c13e9f488b64b0c0464f233abfb1a18"
   },
   "next-crm/src/app/leads/page.tsx": {
-    "mtime": 1790656471.7630806,
-    "seen": 1790656629.589733,
-    "ast_hash": "387612205dd0b5833bc689b6a5b6de2e",
-    "semantic_hash": "387612205dd0b5833bc689b6a5b6de2e"
+    "mtime": 1789534409.3774037,
+    "seen": 1789540504.1687415,
+    "ast_hash": "231c1f886ed801c949a67587685944cc",
+    "semantic_hash": ""
   },
   "next-crm/src/app/loading.tsx": {
     "mtime": 1787287780.6547754,
@@ -120,16 +120,16 @@
     "semantic_hash": "63df1108a4822cd225451ac68ca82bd1"
   },
   "next-crm/src/app/oi_forecast/page.tsx": {
-    "mtime": 1790158837.648451,
-    "seen": 1790656629.589733,
-    "ast_hash": "9474a249e69201fafe84beb5b6cbd505",
-    "semantic_hash": "9474a249e69201fafe84beb5b6cbd505"
+    "mtime": 1789544628.2758105,
+    "seen": 1789544670.028408,
+    "ast_hash": "5a7d0eb1fde3ae3643ccf4c52647c0c3",
+    "semantic_hash": ""
   },
   "next-crm/src/app/page.tsx": {
-    "mtime": 1790656457.647888,
-    "seen": 1790656629.589733,
-    "ast_hash": "a76603c529304d5ae01df8b6389daa3e",
-    "semantic_hash": "a76603c529304d5ae01df8b6389daa3e"
+    "mtime": 1789534245.0933993,
+    "seen": 1789540504.1687415,
+    "ast_hash": "4cb2ab32776a70b93e75e34fa70b49d6",
+    "semantic_hash": ""
   },
   "next-crm/src/app/permissions/page.tsx": {
     "mtime": 1787020957.1042776,
@@ -150,10 +150,10 @@
     "semantic_hash": "40161f7bf558842d56488120d7179cdd"
   },
   "next-crm/src/components/AdminTargetsClient.tsx": {
-    "mtime": 1790656448.9967444,
-    "seen": 1790656629.589733,
-    "ast_hash": "78f5c022a04183cb6c87808f5a1e867d",
-    "semantic_hash": "78f5c022a04183cb6c87808f5a1e867d"
+    "mtime": 1787052870.487381,
+    "seen": 1789533550.658404,
+    "ast_hash": "5c8ad6a2f179992d187440b4920808ec",
+    "semantic_hash": "5c8ad6a2f179992d187440b4920808ec"
   },
   "next-crm/src/components/AdminUsersClient.tsx": {
     "mtime": 1787052695.4627333,
@@ -180,34 +180,34 @@
     "semantic_hash": "f386328cac1757351c8fe2ad2fa799f5"
   },
   "next-crm/src/components/DashboardClient.tsx": {
-    "mtime": 1790656559.2439525,
-    "seen": 1790656629.5907354,
-    "ast_hash": "4967def44b6a3b6f66b9e6cc73bf206f",
-    "semantic_hash": "4967def44b6a3b6f66b9e6cc73bf206f"
+    "mtime": 1789540443.4226184,
+    "seen": 1789540504.1687415,
+    "ast_hash": "7fed0e6111095dc3689c5907b167e182",
+    "semantic_hash": ""
   },
   "next-crm/src/components/ImportModalClient.tsx": {
-    "mtime": 1790158837.6501453,
-    "seen": 1790656629.5907354,
-    "ast_hash": "0c761dd58c53c9368463128b57ce0c42",
-    "semantic_hash": "0c761dd58c53c9368463128b57ce0c42"
+    "mtime": 1789540225.1452587,
+    "seen": 1789540504.1687415,
+    "ast_hash": "ba27199c300a6489f668bd11e64ee083",
+    "semantic_hash": ""
   },
   "next-crm/src/components/LeadDetailClient.tsx": {
-    "mtime": 1790158837.6501453,
-    "seen": 1790656629.5907354,
-    "ast_hash": "cfdd0882e87c3eadb0355a1713575075",
-    "semantic_hash": "cfdd0882e87c3eadb0355a1713575075"
+    "mtime": 1789540448.4184873,
+    "seen": 1789540504.1687415,
+    "ast_hash": "c08bce7aaa945fb4b2501dfa2f240c2b",
+    "semantic_hash": ""
   },
   "next-crm/src/components/LeadModalClient.tsx": {
-    "mtime": 1790158837.6511536,
-    "seen": 1790656629.5907354,
+    "mtime": 1789540176.5669255,
+    "seen": 1789540504.1687415,
     "ast_hash": "4401024f7b7eb00746b2f54f4c507874",
-    "semantic_hash": "4401024f7b7eb00746b2f54f4c507874"
+    "semantic_hash": ""
   },
   "next-crm/src/components/LeadsClient.tsx": {
-    "mtime": 1790158837.6511536,
-    "seen": 1790656629.5907354,
-    "ast_hash": "e5a7f7511fef6cee91bedb44283224ed",
-    "semantic_hash": "e5a7f7511fef6cee91bedb44283224ed"
+    "mtime": 1789540453.028263,
+    "seen": 1789540504.1687415,
+    "ast_hash": "a5231fa499f80247b1e00a2d54e9cef5",
+    "semantic_hash": ""
   },
   "next-crm/src/components/MarkdownEditor.tsx": {
     "mtime": 1787824329.5117385,
@@ -228,16 +228,16 @@
     "semantic_hash": "68edacabf3fe23e60841f694fd74de0b"
   },
   "next-crm/src/components/OIForecastClient.tsx": {
-    "mtime": 1790158837.6521566,
-    "seen": 1790656629.5907354,
-    "ast_hash": "b18902e0c07ddfd9ccee39fc1d56ed06",
-    "semantic_hash": "b18902e0c07ddfd9ccee39fc1d56ed06"
+    "mtime": 1789540037.951718,
+    "seen": 1789540504.1687415,
+    "ast_hash": "98f62b5ac65d471ef6ba42176d1ccc4c",
+    "semantic_hash": ""
   },
   "next-crm/src/components/OIForecast/OIGrid.tsx": {
-    "mtime": 1790160823.5120852,
-    "seen": 1790656629.5907354,
-    "ast_hash": "8dc66ecf6931f224e49103183e625d18",
-    "semantic_hash": "8dc66ecf6931f224e49103183e625d18"
+    "mtime": 1789544657.1852708,
+    "seen": 1789544670.028408,
+    "ast_hash": "385daccf18d679cf9e78aa07db1fded5",
+    "semantic_hash": ""
   },
   "next-crm/src/components/OIForecast/OIMilestone.tsx": {
     "mtime": 1787390906.5898035,
@@ -264,16 +264,16 @@
     "semantic_hash": "bf7d73e033db4eab6eaca89dd6e2ca7e"
   },
   "next-crm/src/components/Sidebar.tsx": {
-    "mtime": 1790158837.6521566,
-    "seen": 1790656629.5907354,
-    "ast_hash": "6734f5fa6e171a1db3e98083a85acf43",
-    "semantic_hash": "6734f5fa6e171a1db3e98083a85acf43"
+    "mtime": 1789534441.1028895,
+    "seen": 1789540504.1687415,
+    "ast_hash": "b73b93e724208ae11f44f6870c7422f4",
+    "semantic_hash": ""
   },
   "next-crm/src/components/StatusModalClient.tsx": {
-    "mtime": 1790160779.5726042,
-    "seen": 1790656629.5907354,
-    "ast_hash": "7240318f5703c1ae4ca7cafd8fc66ba7",
-    "semantic_hash": "7240318f5703c1ae4ca7cafd8fc66ba7"
+    "mtime": 1789544648.0596352,
+    "seen": 1789544670.028408,
+    "ast_hash": "ef6ab7e094a2d08a87e7727e42b129c8",
+    "semantic_hash": ""
   },
   "next-crm/src/components/TaskModal.tsx": {
     "mtime": 1787391670.867664,
@@ -312,10 +312,10 @@
     "semantic_hash": "df320520c73ab12cb1a47e2e8f14938c"
   },
   "next-crm/src/types.ts": {
-    "mtime": 1790158837.6521566,
-    "seen": 1790656629.5907354,
-    "ast_hash": "0c0ad90115d3011b22f9d53f529673ae",
-    "semantic_hash": "0c0ad90115d3011b22f9d53f529673ae"
+    "mtime": 1789540011.5042295,
+    "seen": 1789540504.1687415,
+    "ast_hash": "77678c2cafe12c0dd9a3d6ce51c27c77",
+    "semantic_hash": ""
   },
   "next-crm/src/utils/supabase/client.ts": {
     "mtime": 1786703423.1967602,
@@ -1121,11 +1121,83 @@
     "ast_hash": "60785666fc59d0906be7385d87a7e2c1",
     "semantic_hash": "60785666fc59d0906be7385d87a7e2c1"
   },
+  "scripts/sync_rename_basemen_to_mcn.cjs": {
+    "mtime": 1789540482.0830085,
+    "seen": 1789540504.1687415,
+    "ast_hash": "97d29feb2ec5b56889853c6888a82bb9",
+    "semantic_hash": ""
+  },
   "supabase/migrations/20260916000000_rename_basemen_to_mcn.sql": {
-    "mtime": 1790158837.6532261,
-    "seen": 1790656629.5982714,
-    "ast_hash": "d4732457818660ea5a50ab2063250f81",
-    "semantic_hash": "d4732457818660ea5a50ab2063250f81"
+    "mtime": 1789540235.5799408,
+    "seen": 1789540504.1687415,
+    "ast_hash": "e80f240509f9470d1ff7192c8e95a4b1",
+    "semantic_hash": ""
+  },
+  ".agents/rules/graphify.md": {
+    "mtime": 1789532948.0726962,
+    "seen": 1789540504.1687415,
+    "ast_hash": "a0e4d192b9e2e17256124dbfc8e24e6a",
+    "semantic_hash": ""
+  },
+  ".agents/skills/graphify/SKILL.md": {
+    "mtime": 1789532948.0516984,
+    "seen": 1789540504.1687415,
+    "ast_hash": "1656a8a8e4a05bbe69f32cd15de81e87",
+    "semantic_hash": ""
+  },
+  ".agents/skills/graphify/references/add-watch.md": {
+    "mtime": 1789466478.099727,
+    "seen": 1789540504.1687415,
+    "ast_hash": "d59d027fe449f06aa03905a01184e779",
+    "semantic_hash": ""
+  },
+  ".agents/skills/graphify/references/exports.md": {
+    "mtime": 1789466478.099727,
+    "seen": 1789540504.1687415,
+    "ast_hash": "9da2a2152e60a22f07f05fed5158f287",
+    "semantic_hash": ""
+  },
+  ".agents/skills/graphify/references/extraction-spec.md": {
+    "mtime": 1789466478.099727,
+    "seen": 1789540504.1687415,
+    "ast_hash": "42fef56a01698118f7fd722acdadea34",
+    "semantic_hash": ""
+  },
+  ".agents/skills/graphify/references/github-and-merge.md": {
+    "mtime": 1789466478.099727,
+    "seen": 1789540504.1687415,
+    "ast_hash": "cde13df085e4c492aeb7ba298a996d0d",
+    "semantic_hash": ""
+  },
+  ".agents/skills/graphify/references/hooks.md": {
+    "mtime": 1789466478.100727,
+    "seen": 1789540504.1687415,
+    "ast_hash": "3f545db6ce646650bb9de588f5512a27",
+    "semantic_hash": ""
+  },
+  ".agents/skills/graphify/references/query.md": {
+    "mtime": 1789466478.100727,
+    "seen": 1789540504.1687415,
+    "ast_hash": "3c46f8ad006874260614ed8657d02307",
+    "semantic_hash": ""
+  },
+  ".agents/skills/graphify/references/transcribe.md": {
+    "mtime": 1789466478.100727,
+    "seen": 1789540504.1687415,
+    "ast_hash": "67b6a5fa6c0974e18f60db9f8932fbd8",
+    "semantic_hash": ""
+  },
+  ".agents/skills/graphify/references/update.md": {
+    "mtime": 1789466478.100727,
+    "seen": 1789540504.1687415,
+    "ast_hash": "9378bd03d56baaf78bd738ab3848f142",
+    "semantic_hash": ""
+  },
+  ".agents/workflows/graphify.md": {
+    "mtime": 1789532948.0736976,
+    "seen": 1789540504.1687415,
+    "ast_hash": "a831cf3669f1e6ab85d8a80ebe655f99",
+    "semantic_hash": ""
   },
   "README.md": {
     "mtime": 1774930524.0,
@@ -1134,9 +1206,9 @@
     "semantic_hash": ""
   },
   "SYSTEM_DOCUMENTATION.md": {
-    "mtime": 1790158837.6091828,
-    "seen": 1790158881.7714179,
-    "ast_hash": "349768c6b271f6011a7b8fee724ba803",
+    "mtime": 1789533705.1385467,
+    "seen": 1789540504.1687415,
+    "ast_hash": "49979c3c945c843a7673c5ed4520f30b",
     "semantic_hash": ""
   },
   "implementation_plan - Blueprint Migrasi CoreDesk CRM TNT V2 - Nextjs Supabase.md": {
@@ -1275,42 +1347,6 @@
     "mtime": 1775027407.573926,
     "seen": 1789540504.1687415,
     "ast_hash": "cbebd2d27deb342f270bacb641b3fa45",
-    "semantic_hash": ""
-  },
-  "next-crm/test_dash.js": {
-    "mtime": 1787888121.6798825,
-    "seen": 1790656629.5917418,
-    "ast_hash": "f890fe12a507cb2dea809805564c270e",
-    "semantic_hash": "f890fe12a507cb2dea809805564c270e"
-  },
-  "next-crm/test_lead.js": {
-    "mtime": 1787887031.6831405,
-    "seen": 1790656629.5917418,
-    "ast_hash": "4633648a5f5ca35665aaa58056f8f8b3",
-    "semantic_hash": "4633648a5f5ca35665aaa58056f8f8b3"
-  },
-  "next-crm/test_map.js": {
-    "mtime": 1787888048.571782,
-    "seen": 1790656629.5917418,
-    "ast_hash": "d1a2b3d65ec93e8d689b4b8c07914b8f",
-    "semantic_hash": "d1a2b3d65ec93e8d689b4b8c07914b8f"
-  },
-  "next-crm/grep_chated.txt": {
-    "mtime": 1787293552.9641342,
-    "seen": 1790158881.7725189,
-    "ast_hash": "ae32e06419e617105dfc73b3d1140e29",
-    "semantic_hash": ""
-  },
-  "next-crm/old_dashboard.txt": {
-    "mtime": 1787293355.7939534,
-    "seen": 1790158881.7725189,
-    "ast_hash": "9761bf19627cb4c7f46842a0ae1e25d4",
-    "semantic_hash": ""
-  },
-  "next-crm/old_leads_client.txt": {
-    "mtime": 1787293578.7953439,
-    "seen": 1790158881.7725189,
-    "ast_hash": "fe388b47394e7370f84601f03a002de7",
     "semantic_hash": ""
   }
 }

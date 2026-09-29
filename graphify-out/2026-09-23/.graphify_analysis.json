@@ -1,6 +1,7 @@
 {
   "communities": {
     "0": [
+      "firestore",
       "ref_react_router_dom",
       "src_app",
       "src_app_app",
@@ -218,14 +219,17 @@
       "supabase_migrations_00000000000002_recreate_schema_text_users"
     ],
     "3": [
-      "next_crm_src_app_layout",
-      "next_crm_src_app_layout_metadata",
-      "next_crm_src_app_layout_rootlayout",
+      "next_crm_src_app_leads_page",
+      "next_crm_src_app_leads_page_leadspage",
       "next_crm_src_app_login_page",
       "next_crm_src_app_login_page_loginpage",
-      "next_crm_src_components_applayout",
-      "next_crm_src_components_applayout_applayout",
+      "next_crm_src_components_adminusersclient",
+      "next_crm_src_components_adminusersclient_adminusersclient",
+      "next_crm_src_components_adminusersclient_adminusersprops",
       "next_crm_src_components_bulkstatusmodal_bulkstatusmodal",
+      "next_crm_src_components_confirmmodal",
+      "next_crm_src_components_confirmmodal_confirmmodal",
+      "next_crm_src_components_confirmmodal_confirmmodalprops",
       "next_crm_src_components_importmodalclient",
       "next_crm_src_components_importmodalclient_importmodalclient",
       "next_crm_src_components_importmodalclient_importmodalprops",
@@ -234,130 +238,78 @@
       "next_crm_src_components_importmodalclient_stages",
       "next_crm_src_components_leadmodalclient",
       "next_crm_src_components_leadmodalclient_leadmodalclient",
-      "next_crm_src_components_pendingscreen",
-      "next_crm_src_components_pendingscreen_pendingscreen",
-      "next_crm_src_components_sidebar",
-      "next_crm_src_components_sidebar_navitem",
-      "next_crm_src_components_sidebar_sidebar",
-      "next_crm_src_components_sidebar_sidebarprops",
-      "next_crm_src_hooks_usecategories",
-      "next_crm_src_hooks_usecategories_fallback_categories",
-      "next_crm_src_hooks_usecategories_usecategories",
-      "next_crm_src_types_lead_sources",
-      "next_crm_src_utils_supabase_client",
-      "next_crm_src_utils_supabase_client_createclient",
-      "package_json_ref_lucide_react"
-    ],
-    "4": [
-      "next_crm_src_components_adminapprovalsclient",
-      "next_crm_src_components_adminapprovalsclient_adminapprovalsprops",
-      "next_crm_src_components_bulkstatusmodal",
-      "next_crm_src_components_bulkstatusmodal_bulkstatusmodalprops",
-      "next_crm_src_components_bulkstatusmodal_stages",
-      "next_crm_src_components_leaddetailclient_leaddetailprops",
-      "next_crm_src_components_leadmodalclient_leadmodalprops",
       "next_crm_src_components_leadsclient",
       "next_crm_src_components_leadsclient_getstatuscolor",
       "next_crm_src_components_leadsclient_interestbadge",
       "next_crm_src_components_leadsclient_leadsclient",
-      "next_crm_src_components_leadsclient_leadstableprops",
-      "next_crm_src_components_markdowneditor",
-      "next_crm_src_components_markdowneditor_markdowneditor",
-      "next_crm_src_components_markdowneditor_markdowneditorprops",
-      "next_crm_src_components_notesmodalclient",
       "next_crm_src_components_notesmodalclient_notesmodalclient",
-      "next_crm_src_components_notesmodalclient_notesmodalprops",
-      "next_crm_src_components_notesmodalclient_stages",
-      "next_crm_src_components_oiforecastclient_oiforecastpageprops",
-      "next_crm_src_components_statusmodalclient",
-      "next_crm_src_components_statusmodalclient_stages",
-      "next_crm_src_components_statusmodalclient_statusmodalprops",
-      "next_crm_src_types_editrequest",
-      "next_crm_src_types_interestlevel",
-      "next_crm_src_types_lead",
-      "next_crm_src_types_leadstatus",
-      "next_crm_src_types_userprofile"
-    ],
-    "5": [
-      "implementation_plan_check",
-      "implementation_plan_check_all_components_permission_checks",
-      "implementation_plan_check_core_app",
-      "implementation_plan_check_data_model_firestore_settings_permissions",
-      "implementation_plan_check_fitur_1_dynamic_permission_management_lord",
-      "implementation_plan_check_fitur_2_legacy_master_database_v2_import",
-      "implementation_plan_check_format_csv_dari_gambar",
-      "implementation_plan_check_implementasi",
-      "implementation_plan_check_implementasi_84",
-      "implementation_plan_check_import_modal",
-      "implementation_plan_check_konsep",
-      "implementation_plan_check_logic_import",
-      "implementation_plan_check_modify_app_tsx_file_d_crm_sales_tnt_src_app_tsx",
-      "implementation_plan_check_modify_importmodal_tsx_file_d_crm_sales_tnt_src_components_importmodal_tsx",
-      "implementation_plan_check_modify_multiple_files",
-      "implementation_plan_check_modify_sidebar_tsx_file_d_crm_sales_tnt_src_components_sidebar_tsx",
-      "implementation_plan_check_new_permission_types_di_types_ts_file_d_crm_sales_tnt_src_types_ts",
-      "implementation_plan_check_new_permissionsettings_tsx_file_d_crm_sales_tnt_src_components_permissionsettings_tsx",
-      "implementation_plan_check_open_questions",
-      "implementation_plan_check_permission_settings_baru",
-      "implementation_plan_check_plan_dynamic_permissions_legacy_v2_import",
-      "implementation_plan_check_proposed_changes",
-      "implementation_plan_check_sidebar",
-      "implementation_plan_check_types_data",
-      "implementation_plan_check_ui_halaman_baru_permission_settings"
-    ],
-    "6": [
-      "system_documentation",
-      "system_documentation_1_dual_node_modules_kode_legacy_menyita_850_mb",
-      "system_documentation_1_ringkasan_arsitektur_proyek",
-      "system_documentation_2_file_sampah_backup_database_di_repositori_git_menyita_15_mb",
-      "system_documentation_2_skema_basis_data_relasi_data_supabase_postgresql",
-      "system_documentation_3_alur_kerja_pengguna_end_to_end_workflows",
-      "system_documentation_3_optimasi_ukuran_bundle_kecepatan_build_next_js",
-      "system_documentation_4_katalog_tombol_modal_dan_sistem_input_ui",
-      "system_documentation_4_kebersihan_kredensial_keamanan",
-      "system_documentation_5_god_nodes_terbesar_pusat_ketergantungan_kode",
-      "system_documentation_5_hasil_analisis_graphify",
-      "system_documentation_6_audit_masalah_dan_rekomendasi_efisiensi_build_ukuran",
-      "system_documentation_alur_1_pendaftaran_akses_pengguna_baru",
-      "system_documentation_alur_2_input_pengelolaan_database_leads",
-      "system_documentation_alur_3_leads_pipeline_dashboard_manajemen_funnel",
-      "system_documentation_alur_4_profil_brand_jejak_funnel_rich_text_notes",
-      "system_documentation_alur_5_operational_income_oi_forecast_repeat_order",
-      "system_documentation_coredesk_crm_sales_tnt_v2_next_js_supabase",
-      "system_documentation_daftar_isi",
-      "system_documentation_dokumentasi_sistem_arsitektur_lengkap",
-      "system_documentation_koneksi_kunci_antar_modul",
-      "system_documentation_stored_procedures_database_rpcs_kinerja_tinggi",
-      "system_documentation_struktur_direktori_inti_next_crm"
-    ],
-    "7": [
-      "next_crm_src_app_leads_page",
-      "next_crm_src_app_leads_page_leadspage",
-      "next_crm_src_app_oi_forecast_page",
-      "next_crm_src_app_oi_forecast_page_oiforecastpage",
-      "next_crm_src_app_page",
-      "next_crm_src_app_page_dashboardpage",
-      "next_crm_src_components_admintargetsclient",
-      "next_crm_src_components_admintargetsclient_admintargetsclient",
-      "next_crm_src_components_admintargetsclient_admintargetsprops",
-      "next_crm_src_components_dashboardclient",
-      "next_crm_src_components_dashboardclient_dashboardclient",
-      "next_crm_src_components_dashboardclient_dashboardprops",
-      "next_crm_src_components_dashboardclient_getstatuscolor",
-      "next_crm_src_components_dashboardclient_ratecard",
-      "next_crm_src_components_dashboardclient_statcard",
-      "next_crm_src_components_oiforecastclient_oiforecastpage",
-      "next_crm_src_types_auditlog",
-      "next_crm_src_types_globaltarget",
-      "next_crm_src_types_individualtarget",
-      "package_json_ref_date_fns",
-      "ref_react",
+      "next_crm_src_hooks_usecategories",
+      "next_crm_src_hooks_usecategories_fallback_categories",
+      "next_crm_src_hooks_usecategories_usecategories",
+      "next_crm_src_utils_supabase_client",
+      "next_crm_src_utils_supabase_client_createclient",
       "ref_supabase_ssr"
     ],
-    "8": [
-      "next_crm_src_components_common_currencyinput",
-      "next_crm_src_components_common_currencyinput_currencyinput",
-      "next_crm_src_components_common_currencyinput_currencyinputprops",
+    "4": [
+      "next_crm_package",
+      "next_crm_package_json_ref_clsx",
+      "next_crm_package_json_ref_date_fns",
+      "next_crm_package_json_ref_lucide_react",
+      "next_crm_package_json_ref_motion",
+      "next_crm_package_json_ref_papaparse",
+      "next_crm_package_json_ref_react",
+      "next_crm_package_json_ref_react_dom",
+      "next_crm_package_json_ref_sonner",
+      "next_crm_package_json_ref_supabase_supabase_js",
+      "next_crm_package_json_ref_tailwind_merge",
+      "next_crm_package_json_ref_tailwindcss",
+      "next_crm_package_json_ref_types_node",
+      "next_crm_package_json_ref_types_papaparse",
+      "next_crm_package_json_ref_typescript",
+      "next_crm_package_name",
+      "next_crm_package_private",
+      "next_crm_package_version",
+      "ref_eslint",
+      "ref_eslint_config_next",
+      "ref_react_markdown",
+      "ref_remark_gfm",
+      "ref_tailwindcss_postcss",
+      "ref_tailwindcss_typography",
+      "ref_types_react",
+      "ref_types_react_dom",
+      "ref_zustand"
+    ],
+    "5": [
+      "package",
+      "package_json_ref_clsx",
+      "package_json_ref_date_fns",
+      "package_json_ref_lucide_react",
+      "package_json_ref_motion",
+      "package_json_ref_papaparse",
+      "package_json_ref_react",
+      "package_json_ref_react_dom",
+      "package_json_ref_sonner",
+      "package_json_ref_supabase_supabase_js",
+      "package_json_ref_tailwind_merge",
+      "package_json_ref_tailwindcss",
+      "package_json_ref_types_node",
+      "package_json_ref_types_papaparse",
+      "package_json_ref_typescript",
+      "package_name",
+      "package_private",
+      "package_type",
+      "package_version",
+      "ref_autoprefixer",
+      "ref_dotenv",
+      "ref_express",
+      "ref_firebase",
+      "ref_google_genai",
+      "ref_tsx",
+      "ref_types_express"
+    ],
+    "6": [
+      "next_crm_src_app_oi_forecast_page",
+      "next_crm_src_app_oi_forecast_page_oiforecastpage",
       "next_crm_src_components_oiforecast_oigrid",
       "next_crm_src_components_oiforecast_oigrid_formatiddate",
       "next_crm_src_components_oiforecast_oigrid_formatmoney",
@@ -373,12 +325,37 @@
       "next_crm_src_components_oiforecast_oisummarycards_oisummarycards",
       "next_crm_src_components_oiforecast_oisummarycards_oisummarycardsprops",
       "next_crm_src_components_oiforecastclient",
+      "next_crm_src_components_oiforecastclient_oiforecastpage",
+      "next_crm_src_components_oiforecastclient_oiforecastpageprops",
       "next_crm_src_types_oiforecast",
       "next_crm_src_types_oitarget",
-      "next_crm_src_types_productoffered",
-      "ref_sonner"
+      "next_crm_src_types_productoffered"
     ],
-    "9": [
+    "7": [
+      "next_crm_src_components_taskmodal",
+      "next_crm_src_components_taskmodal_taskmodal",
+      "next_crm_src_components_taskmodal_taskmodalprops",
+      "next_crm_src_components_tasksclient",
+      "next_crm_src_components_tasksclient_taskcard",
+      "next_crm_src_components_tasksclient_taskcardprops",
+      "next_crm_src_components_tasksclient_tasksclient",
+      "next_crm_src_components_tasksclient_tasksprops",
+      "next_crm_src_types",
+      "next_crm_src_types_default_permissions",
+      "next_crm_src_types_forecaststatus",
+      "next_crm_src_types_funnelhistory",
+      "next_crm_src_types_lead_sources",
+      "next_crm_src_types_leadsource",
+      "next_crm_src_types_lord_permissions",
+      "next_crm_src_types_note",
+      "next_crm_src_types_permissionset",
+      "next_crm_src_types_rolepermissions",
+      "next_crm_src_types_task",
+      "next_crm_src_types_taskpriority",
+      "next_crm_src_types_taskstatus",
+      "next_crm_src_types_userrole"
+    ],
+    "8": [
       "next_crm_src_app_actions_importactions",
       "next_crm_src_app_actions_importactions_processimport",
       "next_crm_src_app_actions_importactions_rationale_15",
@@ -401,53 +378,7 @@
       "next_crm_src_utils_supabase_server",
       "next_crm_src_utils_supabase_server_createclient"
     ],
-    "10": [
-      "next_crm_src_components_taskmodal",
-      "next_crm_src_components_taskmodal_taskmodal",
-      "next_crm_src_components_taskmodal_taskmodalprops",
-      "next_crm_src_components_tasksclient",
-      "next_crm_src_components_tasksclient_taskcard",
-      "next_crm_src_components_tasksclient_taskcardprops",
-      "next_crm_src_components_tasksclient_tasksclient",
-      "next_crm_src_components_tasksclient_tasksprops",
-      "next_crm_src_types",
-      "next_crm_src_types_default_permissions",
-      "next_crm_src_types_forecaststatus",
-      "next_crm_src_types_funnelhistory",
-      "next_crm_src_types_leadsource",
-      "next_crm_src_types_lord_permissions",
-      "next_crm_src_types_note",
-      "next_crm_src_types_permissionset",
-      "next_crm_src_types_rolepermissions",
-      "next_crm_src_types_task",
-      "next_crm_src_types_taskpriority",
-      "next_crm_src_types_taskstatus",
-      "next_crm_src_types_userrole"
-    ],
-    "11": [
-      "package",
-      "package_json_ref_clsx",
-      "package_json_ref_motion",
-      "package_json_ref_papaparse",
-      "package_json_ref_react",
-      "package_json_ref_sonner",
-      "package_name",
-      "package_private",
-      "package_type",
-      "package_version",
-      "ref_autoprefixer",
-      "ref_dotenv",
-      "ref_express",
-      "ref_firebase",
-      "ref_google_genai",
-      "ref_tailwindcss_vite",
-      "ref_tsx",
-      "ref_types_express",
-      "ref_vite",
-      "ref_vitejs_plugin_react",
-      "vite_config"
-    ],
-    "12": [
+    "9": [
       "package_dependencies",
       "package_dependencies_clsx",
       "package_dependencies_date_fns",
@@ -470,50 +401,7 @@
       "package_dependencies_vite",
       "package_dependencies_vitejs_plugin_react"
     ],
-    "13": [
-      "next_crm_package",
-      "next_crm_package_name",
-      "next_crm_package_private",
-      "next_crm_package_version",
-      "package_json_ref_react_dom",
-      "package_json_ref_tailwind_merge",
-      "package_json_ref_tailwindcss",
-      "package_json_ref_types_node",
-      "package_json_ref_types_papaparse",
-      "package_json_ref_typescript",
-      "ref_clsx",
-      "ref_eslint",
-      "ref_eslint_config_next",
-      "ref_motion",
-      "ref_papaparse",
-      "ref_tailwindcss_postcss",
-      "ref_tailwindcss_typography",
-      "ref_types_react",
-      "ref_types_react_dom",
-      "ref_zustand"
-    ],
-    "14": [
-      "next_crm_src_components_adminusersclient",
-      "next_crm_src_components_adminusersclient_adminusersclient",
-      "next_crm_src_components_adminusersclient_adminusersprops",
-      "next_crm_src_components_confirmmodal",
-      "next_crm_src_components_confirmmodal_confirmmodal",
-      "next_crm_src_components_confirmmodal_confirmmodalprops",
-      "next_crm_src_components_leaddetailclient",
-      "next_crm_src_components_leaddetailclient_infoitem",
-      "next_crm_src_components_leaddetailclient_leaddetailclient",
-      "next_crm_src_components_leaddetailclient_milestoneitem",
-      "next_crm_src_components_leaddetailclient_statcard",
-      "next_crm_src_components_leaddetailclient_tabbutton",
-      "next_crm_src_components_markdownrenderer",
-      "next_crm_src_components_markdownrenderer_markdownrenderer",
-      "next_crm_src_components_statusmodalclient_statusmodalclient",
-      "next_crm_src_lib_utils",
-      "next_crm_src_lib_utils_cn",
-      "ref_react_markdown",
-      "ref_remark_gfm"
-    ],
-    "15": [
+    "10": [
       "next_crm_tsconfig",
       "next_crm_tsconfig_compileroptions",
       "next_crm_tsconfig_compileroptions_allowjs",
@@ -534,7 +422,7 @@
       "next_crm_tsconfig_exclude",
       "next_crm_tsconfig_include"
     ],
-    "16": [
+    "11": [
       "next_crm_package_dependencies",
       "next_crm_package_dependencies_clsx",
       "next_crm_package_dependencies_date_fns",
@@ -553,7 +441,44 @@
       "next_crm_package_dependencies_tailwindcss_typography",
       "next_crm_package_dependencies_zustand"
     ],
-    "17": [
+    "12": [
+      "next_crm_src_components_bulkstatusmodal",
+      "next_crm_src_components_bulkstatusmodal_bulkstatusmodalprops",
+      "next_crm_src_components_bulkstatusmodal_stages",
+      "next_crm_src_components_common_currencyinput",
+      "next_crm_src_components_common_currencyinput_currencyinput",
+      "next_crm_src_components_common_currencyinput_currencyinputprops",
+      "next_crm_src_components_leaddetailclient",
+      "next_crm_src_components_leaddetailclient_infoitem",
+      "next_crm_src_components_leaddetailclient_statcard",
+      "next_crm_src_components_markdowneditor",
+      "next_crm_src_components_markdowneditor_markdowneditor",
+      "next_crm_src_components_markdowneditor_markdowneditorprops",
+      "next_crm_src_components_statusmodalclient",
+      "next_crm_src_components_statusmodalclient_stages",
+      "next_crm_src_components_statusmodalclient_statusmodalclient",
+      "next_crm_src_types_interestlevel",
+      "next_crm_src_types_leadstatus"
+    ],
+    "13": [
+      "next_crm_src_components_admintargetsclient_admintargetsclient",
+      "next_crm_src_components_dashboardclient_ratecard",
+      "next_crm_src_components_dashboardclient_statcard",
+      "next_crm_src_components_leaddetailclient_leaddetailclient",
+      "next_crm_src_components_leaddetailclient_milestoneitem",
+      "next_crm_src_components_leaddetailclient_tabbutton",
+      "next_crm_src_components_markdownrenderer",
+      "next_crm_src_components_markdownrenderer_markdownrenderer",
+      "next_crm_src_components_notesmodalclient",
+      "next_crm_src_components_notesmodalclient_stages",
+      "next_crm_src_components_sidebar",
+      "next_crm_src_components_sidebar_navitem",
+      "next_crm_src_components_sidebar_sidebar",
+      "next_crm_src_components_sidebar_sidebarprops",
+      "next_crm_src_lib_utils",
+      "next_crm_src_lib_utils_cn"
+    ],
+    "14": [
       "tsconfig",
       "tsconfig_compileroptions",
       "tsconfig_compileroptions_allowimportingtsextensions",
@@ -571,24 +496,7 @@
       "tsconfig_compileroptions_target",
       "tsconfig_compileroptions_usedefineforclassfields"
     ],
-    "18": [
-      "implementation_plan",
-      "implementation_plan_1_data_models_src_types_ts",
-      "implementation_plan_2_modul_core_status_update_blueprint",
-      "implementation_plan_3_analytics_dashboard_src_components_dashboard_tsx",
-      "implementation_plan_enhancing_crm_analytics_targets_deal_revenue",
-      "implementation_plan_manual_verification",
-      "implementation_plan_modify_firebase_blueprint_json",
-      "implementation_plan_modify_src_components_dashboard_tsx",
-      "implementation_plan_modify_src_components_leadmodal_tsx",
-      "implementation_plan_modify_src_components_statusmodal_tsx",
-      "implementation_plan_modify_src_types_ts",
-      "implementation_plan_open_questions",
-      "implementation_plan_proposed_changes",
-      "implementation_plan_user_review_required",
-      "implementation_plan_verification_plan"
-    ],
-    "19": [
+    "15": [
       "scripts_backup_incremental",
       "scripts_backup_incremental_backup_dir",
       "scripts_backup_incremental_crypto",
@@ -604,22 +512,7 @@
       "scripts_backup_incremental_runbackup",
       "scripts_backup_incremental_serviceaccount"
     ],
-    "20": [
-      "next_crm_test_dash",
-      "next_crm_test_dash_createclient",
-      "next_crm_test_dash_main",
-      "next_crm_test_dash_supabase",
-      "next_crm_test_lead",
-      "next_crm_test_lead_createclient",
-      "next_crm_test_lead_main",
-      "next_crm_test_lead_supabase",
-      "next_crm_test_map",
-      "next_crm_test_map_createclient",
-      "next_crm_test_map_main",
-      "next_crm_test_map_supabase",
-      "package_json_ref_supabase_supabase_js"
-    ],
-    "21": [
+    "16": [
       "scripts_fix_tasks_ts",
       "scripts_fix_tasks_ts_confirmmodalcontent",
       "scripts_fix_tasks_ts_destconfirmmodal",
@@ -634,7 +527,20 @@
       "scripts_fix_tasks_ts_taskmodalcontent",
       "scripts_fix_tasks_ts_taskscontent"
     ],
-    "22": [
+    "17": [
+      "next_crm_src_app_page",
+      "next_crm_src_app_page_dashboardpage",
+      "next_crm_src_components_admintargetsclient",
+      "next_crm_src_components_admintargetsclient_admintargetsprops",
+      "next_crm_src_components_dashboardclient",
+      "next_crm_src_components_dashboardclient_dashboardclient",
+      "next_crm_src_components_dashboardclient_dashboardprops",
+      "next_crm_src_components_dashboardclient_getstatuscolor",
+      "next_crm_src_types_auditlog",
+      "next_crm_src_types_globaltarget",
+      "next_crm_src_types_individualtarget"
+    ],
+    "18": [
       "scripts_fix_all_ts",
       "scripts_fix_all_ts_bulk",
       "scripts_fix_all_ts_bulkpath",
@@ -647,7 +553,7 @@
       "scripts_fix_all_ts_pagepath",
       "scripts_fix_all_ts_path"
     ],
-    "23": [
+    "19": [
       "scripts_migrate_from_local",
       "scripts_migrate_from_local_backup_dir",
       "scripts_migrate_from_local_createclient",
@@ -660,7 +566,19 @@
       "scripts_migrate_from_local_run",
       "scripts_migrate_from_local_supabase"
     ],
-    "24": [
+    "20": [
+      "next_crm_next_config",
+      "next_crm_next_config_nextconfig",
+      "next_crm_src_app_layout",
+      "next_crm_src_app_layout_metadata",
+      "next_crm_src_app_layout_rootlayout",
+      "next_crm_src_components_applayout",
+      "next_crm_src_components_applayout_applayout",
+      "next_crm_src_components_pendingscreen",
+      "next_crm_src_components_pendingscreen_pendingscreen",
+      "ref_next"
+    ],
+    "21": [
       "next_crm_package_devdependencies",
       "next_crm_package_devdependencies_eslint",
       "next_crm_package_devdependencies_eslint_config_next",
@@ -672,7 +590,19 @@
       "next_crm_package_devdependencies_types_react_dom",
       "next_crm_package_devdependencies_typescript"
     ],
-    "25": [
+    "22": [
+      "next_crm_src_components_adminapprovalsclient",
+      "next_crm_src_components_adminapprovalsclient_adminapprovalsprops",
+      "next_crm_src_components_leaddetailclient_leaddetailprops",
+      "next_crm_src_components_leadmodalclient_leadmodalprops",
+      "next_crm_src_components_leadsclient_leadstableprops",
+      "next_crm_src_components_notesmodalclient_notesmodalprops",
+      "next_crm_src_components_statusmodalclient_statusmodalprops",
+      "next_crm_src_types_editrequest",
+      "next_crm_src_types_lead",
+      "next_crm_src_types_userprofile"
+    ],
+    "23": [
       "scripts_backup_firestore",
       "scripts_backup_firestore_backup_dir",
       "scripts_backup_firestore_backupcollection",
@@ -684,7 +614,7 @@
       "scripts_backup_firestore_runbackup",
       "scripts_backup_firestore_serviceaccount"
     ],
-    "26": [
+    "24": [
       "scripts_fix_modals_logic",
       "scripts_fix_modals_logic_fs",
       "scripts_fix_modals_logic_leadcode",
@@ -696,7 +626,7 @@
       "scripts_fix_modals_logic_statuscode",
       "scripts_fix_modals_logic_statuspath"
     ],
-    "27": [
+    "25": [
       "scripts_port_tasks",
       "scripts_port_tasks_destpage",
       "scripts_port_tasks_desttaskmodal",
@@ -708,18 +638,7 @@
       "scripts_port_tasks_taskmodalcontent",
       "scripts_port_tasks_taskscontent"
     ],
-    "28": [
-      "implementation_plan_blueprint_migrasi_coredesk_crm_tnt_v2_nextjs_supabase",
-      "implementation_plan_blueprint_migrasi_coredesk_crm_tnt_v2_nextjs_supabase_blueprint_migrasi_coredesk_crm_tnt_v2_next_js_supabase",
-      "implementation_plan_blueprint_migrasi_coredesk_crm_tnt_v2_nextjs_supabase_daftar_fitur_yang_dijamin_tidak_akan_hilang_feature_parity_guarantee",
-      "implementation_plan_blueprint_migrasi_coredesk_crm_tnt_v2_nextjs_supabase_fase_1_desain_skema_database_relasional_supabase",
-      "implementation_plan_blueprint_migrasi_coredesk_crm_tnt_v2_nextjs_supabase_fase_2_setup_next_js_server_actions",
-      "implementation_plan_blueprint_migrasi_coredesk_crm_tnt_v2_nextjs_supabase_fase_3_migrasi_antarmuka_user_interface",
-      "implementation_plan_blueprint_migrasi_coredesk_crm_tnt_v2_nextjs_supabase_fase_4_export_import_data_asli_cut_over",
-      "implementation_plan_blueprint_migrasi_coredesk_crm_tnt_v2_nextjs_supabase_tahapan_implementasi_migration_strategy",
-      "implementation_plan_blueprint_migrasi_coredesk_crm_tnt_v2_nextjs_supabase_user_review_required"
-    ],
-    "29": [
+    "26": [
       "next_crm_src_app_permissions_page",
       "next_crm_src_app_permissions_page_permissionspage",
       "next_crm_src_components_permissionsettingsclient",
@@ -730,7 +649,7 @@
       "next_crm_src_components_permissionsettingsclient_permissionsettingsclient",
       "next_crm_src_components_permissionsettingsclient_rolepermissions"
     ],
-    "30": [
+    "27": [
       "package_devdependencies",
       "package_devdependencies_autoprefixer",
       "package_devdependencies_firebase_admin",
@@ -741,7 +660,7 @@
       "package_devdependencies_typescript",
       "package_devdependencies_vite"
     ],
-    "31": [
+    "28": [
       "scripts_fix_migration",
       "scripts_fix_migration_createclient",
       "scripts_fix_migration_db",
@@ -752,7 +671,7 @@
       "scripts_fix_migration_serviceaccount",
       "scripts_fix_migration_supabase"
     ],
-    "32": [
+    "29": [
       "scripts_fix_tasks_ts_2",
       "scripts_fix_tasks_ts_2_fs",
       "scripts_fix_tasks_ts_2_pagecontent",
@@ -763,7 +682,7 @@
       "scripts_fix_tasks_ts_2_tasksclientpath",
       "scripts_fix_tasks_ts_2_taskscontent"
     ],
-    "33": [
+    "30": [
       "scripts_migrate",
       "scripts_migrate_createclient",
       "scripts_migrate_db",
@@ -774,7 +693,7 @@
       "scripts_migrate_serviceaccount",
       "scripts_migrate_supabase"
     ],
-    "34": [
+    "31": [
       "scripts_migrate_remaining",
       "scripts_migrate_remaining_createclient",
       "scripts_migrate_remaining_db",
@@ -785,7 +704,7 @@
       "scripts_migrate_remaining_serviceaccount",
       "scripts_migrate_remaining_supabase"
     ],
-    "35": [
+    "32": [
       "scripts_patch_oi_forecasts",
       "scripts_patch_oi_forecasts_createclient",
       "scripts_patch_oi_forecasts_db",
@@ -796,17 +715,7 @@
       "scripts_patch_oi_forecasts_serviceaccount",
       "scripts_patch_oi_forecasts_supabase"
     ],
-    "36": [
-      "implementation_plan_010426",
-      "implementation_plan_010426_1_src_components_importmodal_tsx",
-      "implementation_plan_010426_2_src_components_leadmodal_tsx_tambah_lead_manual",
-      "implementation_plan_010426_3_src_types_ts_firebase_blueprint_json",
-      "implementation_plan_010426_open_questions",
-      "implementation_plan_010426_proposed_changes",
-      "implementation_plan_010426_rencana_peningkatan_sistem_anti_duplikat_import_individu",
-      "implementation_plan_010426_user_review_required"
-    ],
-    "37": [
+    "33": [
       "scripts_fix_modals_logic3",
       "scripts_fix_modals_logic3_fs",
       "scripts_fix_modals_logic3_leadcode",
@@ -816,7 +725,7 @@
       "scripts_fix_modals_logic3_path",
       "scripts_fix_modals_logic3_srcdir"
     ],
-    "38": [
+    "34": [
       "scripts_import_missing",
       "scripts_import_missing_createclient",
       "scripts_import_missing_fs",
@@ -826,7 +735,7 @@
       "scripts_import_missing_supabase",
       "scripts_import_missing_v4_uuidv4"
     ],
-    "39": [
+    "35": [
       "scripts_patch_dates",
       "scripts_patch_dates_backup_dir",
       "scripts_patch_dates_createclient",
@@ -836,7 +745,7 @@
       "scripts_patch_dates_path",
       "scripts_patch_dates_supabase"
     ],
-    "40": [
+    "36": [
       "scripts_sync_new_history_notes",
       "scripts_sync_new_history_notes_createclient",
       "scripts_sync_new_history_notes_fs",
@@ -846,7 +755,7 @@
       "scripts_sync_new_history_notes_supabase",
       "scripts_sync_new_history_notes_v4_uuidv4"
     ],
-    "41": [
+    "37": [
       "scripts_fix_ts_final",
       "scripts_fix_ts_final_bulk",
       "scripts_fix_ts_final_bulkpath",
@@ -855,7 +764,7 @@
       "scripts_fix_ts_final_leadsclientpath",
       "scripts_fix_ts_final_path"
     ],
-    "42": [
+    "38": [
       "scripts_port_admin_approvals",
       "scripts_port_admin_approvals_content",
       "scripts_port_admin_approvals_destclient",
@@ -864,7 +773,7 @@
       "scripts_port_admin_approvals_path",
       "scripts_port_admin_approvals_srclegacy"
     ],
-    "43": [
+    "39": [
       "scripts_port_admin_targets",
       "scripts_port_admin_targets_content",
       "scripts_port_admin_targets_destclient",
@@ -873,7 +782,7 @@
       "scripts_port_admin_targets_path",
       "scripts_port_admin_targets_srclegacy"
     ],
-    "44": [
+    "40": [
       "scripts_port_admin_users",
       "scripts_port_admin_users_content",
       "scripts_port_admin_users_destclient",
@@ -882,7 +791,7 @@
       "scripts_port_admin_users_path",
       "scripts_port_admin_users_srclegacy"
     ],
-    "45": [
+    "41": [
       "funnel_history",
       "leads",
       "supabase_migrations_20240819000000_dashboard_rpcs",
@@ -890,7 +799,7 @@
       "supabase_migrations_20240819000000_dashboard_rpcs_get_ghosted_leads",
       "supabase_migrations_20240819000000_dashboard_rpcs_get_individual_contributions"
     ],
-    "46": [
+    "42": [
       "inspect_fb",
       "inspect_fb_db",
       "inspect_fb_getfirestore",
@@ -898,7 +807,7 @@
       "inspect_fb_inspecttasks",
       "inspect_fb_serviceaccount"
     ],
-    "47": [
+    "43": [
       "package_scripts",
       "package_scripts_build",
       "package_scripts_clean",
@@ -906,7 +815,7 @@
       "package_scripts_lint",
       "package_scripts_preview"
     ],
-    "48": [
+    "44": [
       "scripts_check_firebase_raw",
       "scripts_check_firebase_raw_backup_dir",
       "scripts_check_firebase_raw_data",
@@ -914,7 +823,7 @@
       "scripts_check_firebase_raw_fs",
       "scripts_check_firebase_raw_path"
     ],
-    "49": [
+    "45": [
       "scripts_check_firebase_stats",
       "scripts_check_firebase_stats_backup_dir",
       "scripts_check_firebase_stats_check",
@@ -922,7 +831,7 @@
       "scripts_check_firebase_stats_parsedatestring",
       "scripts_check_firebase_stats_path"
     ],
-    "50": [
+    "46": [
       "scripts_check_logic_2",
       "scripts_check_logic_2_backup_dir",
       "scripts_check_logic_2_check",
@@ -930,7 +839,7 @@
       "scripts_check_logic_2_parsedate",
       "scripts_check_logic_2_path"
     ],
-    "51": [
+    "47": [
       "scripts_check_logic_3",
       "scripts_check_logic_3_backup_dir",
       "scripts_check_logic_3_check",
@@ -938,7 +847,7 @@
       "scripts_check_logic_3_parsedatecorrectly",
       "scripts_check_logic_3_path"
     ],
-    "52": [
+    "48": [
       "scripts_check_logic_4",
       "scripts_check_logic_4_backup_dir",
       "scripts_check_logic_4_check",
@@ -946,7 +855,7 @@
       "scripts_check_logic_4_parsedatecorrectly",
       "scripts_check_logic_4_path"
     ],
-    "53": [
+    "49": [
       "scripts_check_logic_5",
       "scripts_check_logic_5_backup_dir",
       "scripts_check_logic_5_check",
@@ -954,7 +863,7 @@
       "scripts_check_logic_5_parsedatecorrectly",
       "scripts_check_logic_5_path"
     ],
-    "54": [
+    "50": [
       "scripts_compare_latest",
       "scripts_compare_latest_checklatest",
       "scripts_compare_latest_createclient",
@@ -962,7 +871,7 @@
       "scripts_compare_latest_path",
       "scripts_compare_latest_supabase"
     ],
-    "55": [
+    "51": [
       "scripts_find_missing",
       "scripts_find_missing_createclient",
       "scripts_find_missing_findmissing",
@@ -970,7 +879,7 @@
       "scripts_find_missing_path",
       "scripts_find_missing_supabase"
     ],
-    "56": [
+    "52": [
       "scripts_find_missing2",
       "scripts_find_missing2_createclient",
       "scripts_find_missing2_findmissing",
@@ -978,7 +887,7 @@
       "scripts_find_missing2_path",
       "scripts_find_missing2_supabase"
     ],
-    "57": [
+    "53": [
       "scripts_fix_modals_logic2",
       "scripts_fix_modals_logic2_fs",
       "scripts_fix_modals_logic2_path",
@@ -986,7 +895,7 @@
       "scripts_fix_modals_logic2_statuscode",
       "scripts_fix_modals_logic2_statuspath"
     ],
-    "58": [
+    "54": [
       "scripts_port_import_modal",
       "scripts_port_import_modal_content",
       "scripts_port_import_modal_destclient",
@@ -994,7 +903,7 @@
       "scripts_port_import_modal_path",
       "scripts_port_import_modal_srclegacy"
     ],
-    "59": [
+    "55": [
       "scripts_port_lead_detail",
       "scripts_port_lead_detail_code",
       "scripts_port_lead_detail_destfile",
@@ -1002,7 +911,7 @@
       "scripts_port_lead_detail_path",
       "scripts_port_lead_detail_srcfile"
     ],
-    "60": [
+    "56": [
       "scripts_refactor_dashboard",
       "scripts_refactor_dashboard_code",
       "scripts_refactor_dashboard_dashboardpath",
@@ -1010,436 +919,408 @@
       "scripts_refactor_dashboard_path",
       "scripts_refactor_dashboard_srcdir"
     ],
-    "61": [
+    "57": [
       "next_crm_package_scripts",
       "next_crm_package_scripts_build",
       "next_crm_package_scripts_dev",
       "next_crm_package_scripts_lint",
       "next_crm_package_scripts_start"
     ],
-    "62": [
+    "58": [
       "next_crm_src_middleware",
       "next_crm_src_middleware_config",
       "next_crm_src_middleware_middleware",
       "next_crm_src_utils_supabase_middleware",
       "next_crm_src_utils_supabase_middleware_updatesession"
     ],
-    "63": [
+    "59": [
       "scripts_check_all_datechated",
       "scripts_check_all_datechated_backup_dir",
       "scripts_check_all_datechated_check",
       "scripts_check_all_datechated_fs",
       "scripts_check_all_datechated_path"
     ],
-    "64": [
+    "60": [
       "scripts_check_all_time",
       "scripts_check_all_time_backup_dir",
       "scripts_check_all_time_check",
       "scripts_check_all_time_fs",
       "scripts_check_all_time_path"
     ],
-    "65": [
+    "61": [
       "scripts_check_lead_funnel",
       "scripts_check_lead_funnel_backupdir",
       "scripts_check_lead_funnel_files",
       "scripts_check_lead_funnel_fs",
       "scripts_check_lead_funnel_path"
     ],
-    "66": [
+    "62": [
       "scripts_check_status_all",
       "scripts_check_status_all_backup_dir",
       "scripts_check_status_all_check",
       "scripts_check_status_all_fs",
       "scripts_check_status_all_path"
     ],
-    "67": [
+    "63": [
       "scripts_check_string",
       "scripts_check_string_backup_dir",
       "scripts_check_string_check",
       "scripts_check_string_fs",
       "scripts_check_string_path"
     ],
-    "68": [
+    "64": [
       "scripts_extract",
       "scripts_extract_content",
       "scripts_extract_fs",
       "scripts_extract_lines",
       "scripts_extract_startindex"
     ],
-    "69": [
+    "65": [
       "scripts_extract2",
       "scripts_extract2_content",
       "scripts_extract2_fs",
       "scripts_extract2_lines",
       "scripts_extract2_startindex"
     ],
-    "70": [
+    "66": [
       "scripts_fix_bulk_modal",
       "scripts_fix_bulk_modal_content",
       "scripts_fix_bulk_modal_file",
       "scripts_fix_bulk_modal_fs",
       "scripts_fix_bulk_modal_path"
     ],
-    "71": [
+    "67": [
       "scripts_fix_import_modal",
       "scripts_fix_import_modal_content",
       "scripts_fix_import_modal_filepath",
       "scripts_fix_import_modal_fs",
       "scripts_fix_import_modal_path"
     ],
-    "72": [
+    "68": [
       "scripts_force_fix_navigate",
       "scripts_force_fix_navigate_content",
       "scripts_force_fix_navigate_file",
       "scripts_force_fix_navigate_fs",
       "scripts_force_fix_navigate_path"
     ],
-    "73": [
+    "69": [
       "scripts_refactor_leads",
       "scripts_refactor_leads_content",
       "scripts_refactor_leads_filepath",
       "scripts_refactor_leads_fs",
       "scripts_refactor_leads_path"
     ],
-    "74": [
-      "next_crm_readme",
-      "next_crm_readme_deploy_on_vercel",
-      "next_crm_readme_getting_started",
-      "next_crm_readme_learn_more"
-    ],
-    "75": [
+    "70": [
       "public_handle_new_user",
       "supabase_migrations_00000000000003_auth_linking",
       "supabase_migrations_00000000000003_auth_linking_on_auth_user_created",
       "supabase_migrations_00000000000003_auth_linking_public_handle_new_user"
     ],
-    "76": [
+    "71": [
+      "ref_tailwindcss_vite",
+      "ref_vite",
+      "ref_vitejs_plugin_react",
+      "vite_config"
+    ],
+    "72": [
       "scratch_analyze",
       "scratch_analyze_analyze",
       "scratch_analyze_db",
       "scratch_analyze_serviceaccount"
     ],
-    "77": [
+    "73": [
       "scripts_check_08hx",
       "scripts_check_08hx_check",
       "scripts_check_08hx_createclient",
       "scripts_check_08hx_supabase"
     ],
-    "78": [
+    "74": [
       "scripts_check_august",
       "scripts_check_august_check",
       "scripts_check_august_createclient",
       "scripts_check_august_supabase"
     ],
-    "79": [
+    "75": [
       "scripts_check_chated_august",
       "scripts_check_chated_august_check",
       "scripts_check_chated_august_createclient",
       "scripts_check_chated_august_supabase"
     ],
-    "80": [
+    "76": [
       "scripts_check_counts",
       "scripts_check_counts_check",
       "scripts_check_counts_createclient",
       "scripts_check_counts_supabase"
     ],
-    "81": [
+    "77": [
       "scripts_check_date",
       "scripts_check_date_check",
       "scripts_check_date_createclient",
       "scripts_check_date_supabase"
     ],
-    "82": [
+    "78": [
       "scripts_check_duplicates",
       "scripts_check_duplicates_check",
       "scripts_check_duplicates_createclient",
       "scripts_check_duplicates_supabase"
     ],
-    "83": [
+    "79": [
       "scripts_check_forecasts",
       "scripts_check_forecasts_check",
       "scripts_check_forecasts_createclient",
       "scripts_check_forecasts_supabase"
     ],
-    "84": [
+    "80": [
       "scripts_check_funnel",
       "scripts_check_funnel_check",
       "scripts_check_funnel_createclient",
       "scripts_check_funnel_supabase"
     ],
-    "85": [
+    "81": [
       "scripts_check_funnel_schema",
       "scripts_check_funnel_schema_check",
       "scripts_check_funnel_schema_createclient",
       "scripts_check_funnel_schema_supabase"
     ],
-    "86": [
+    "82": [
       "scripts_check_id_length",
       "scripts_check_id_length_check",
       "scripts_check_id_length_createclient",
       "scripts_check_id_length_supabase"
     ],
-    "87": [
+    "83": [
       "scripts_check_lead",
       "scripts_check_lead_check",
       "scripts_check_lead_createclient",
       "scripts_check_lead_supabase"
     ],
-    "88": [
+    "84": [
       "scripts_check_limit",
       "scripts_check_limit_check",
       "scripts_check_limit_createclient",
       "scripts_check_limit_supabase"
     ],
-    "89": [
+    "85": [
       "scripts_check_notes",
       "scripts_check_notes_check",
       "scripts_check_notes_createclient",
       "scripts_check_notes_supabase"
     ],
-    "90": [
+    "86": [
       "scripts_check_notes_schema",
       "scripts_check_notes_schema_check",
       "scripts_check_notes_schema_createclient",
       "scripts_check_notes_schema_supabase"
     ],
-    "91": [
+    "87": [
       "scripts_check_rls",
       "scripts_check_rls_check",
       "scripts_check_rls_createclient",
       "scripts_check_rls_supabase"
     ],
-    "92": [
+    "88": [
       "scripts_check_rls_all",
       "scripts_check_rls_all_check",
       "scripts_check_rls_all_createclient",
       "scripts_check_rls_all_supabase"
     ],
-    "93": [
+    "89": [
       "scripts_check_siti",
       "scripts_check_siti_check",
       "scripts_check_siti_createclient",
       "scripts_check_siti_supabase"
     ],
-    "94": [
+    "90": [
       "scripts_check_siti_2",
       "scripts_check_siti_2_check",
       "scripts_check_siti_2_createclient",
       "scripts_check_siti_2_supabase"
     ],
-    "95": [
+    "91": [
       "scripts_check_stats",
       "scripts_check_stats_check",
       "scripts_check_stats_createclient",
       "scripts_check_stats_supabase"
     ],
-    "96": [
+    "92": [
       "scripts_count_chated_total",
       "scripts_count_chated_total_check",
       "scripts_count_chated_total_createclient",
       "scripts_count_chated_total_supabase"
     ],
-    "97": [
+    "93": [
       "scripts_count_dates",
       "scripts_count_dates_check",
       "scripts_count_dates_createclient",
       "scripts_count_dates_supabase"
     ],
-    "98": [
+    "94": [
       "scripts_count_future_dates",
       "scripts_count_future_dates_check",
       "scripts_count_future_dates_createclient",
       "scripts_count_future_dates_supabase"
     ],
-    "99": [
+    "95": [
       "scripts_find_string",
       "scripts_find_string_check",
       "scripts_find_string_createclient",
       "scripts_find_string_supabase"
     ],
-    "100": [
+    "96": [
       "scripts_fix_future_dates",
       "scripts_fix_future_dates_createclient",
       "scripts_fix_future_dates_run",
       "scripts_fix_future_dates_supabase"
     ],
-    "101": [
+    "97": [
       "scripts_get_rpc_def",
       "scripts_get_rpc_def_check",
       "scripts_get_rpc_def_createclient",
       "scripts_get_rpc_def_supabase"
     ],
-    "102": [
+    "98": [
       "scripts_get_rpc_src",
       "scripts_get_rpc_src_check",
       "scripts_get_rpc_src_createclient",
       "scripts_get_rpc_src_supabase"
     ],
-    "103": [
+    "99": [
       "scripts_refactor_firebase",
       "scripts_refactor_firebase_files",
       "scripts_refactor_firebase_fs",
       "scripts_refactor_firebase_path"
     ],
-    "104": [
+    "100": [
       "scripts_run_sql",
       "scripts_run_sql_check",
       "scripts_run_sql_createclient",
       "scripts_run_sql_supabase"
     ],
-    "105": [
+    "101": [
       "scripts_test_client_logic",
       "scripts_test_client_logic_createclient",
       "scripts_test_client_logic_supabase",
       "scripts_test_client_logic_test"
     ],
-    "106": [
+    "102": [
       "scripts_test_rls_as_user",
       "scripts_test_rls_as_user_createclient",
       "scripts_test_rls_as_user_supabase",
       "scripts_test_rls_as_user_test"
     ],
-    "107": [
+    "103": [
       "scripts_test_server_query",
       "scripts_test_server_query_check",
       "scripts_test_server_query_createclient",
       "scripts_test_server_query_supabase"
     ],
-    "108": [
+    "104": [
       "test_supa",
       "test_supa_checkauth",
       "test_supa_createclient",
       "test_supa_supabase"
     ],
-    "109": [
-      "next_crm_next_config",
-      "next_crm_next_config_nextconfig",
-      "ref_next"
-    ],
-    "110": [
-      "readme",
-      "readme_run_and_deploy_your_ai_studio_app",
-      "readme_run_locally"
-    ],
-    "111": [
+    "105": [
       "ref_firebase_admin",
       "scripts_check_firebase",
       "scripts_check_firebase_admin"
     ],
-    "112": [
+    "106": [
       "supabase_migrations_00000000000001_add_missing_tables",
       "supabase_migrations_00000000000001_add_missing_tables_app_settings",
       "supabase_migrations_00000000000001_add_missing_tables_oi_targets"
     ],
-    "113": [
-      "next_crm_agents",
-      "next_crm_agents_this_is_not_the_next_js_you_know"
-    ],
-    "114": [
+    "107": [
       "next_crm_eslint_config",
       "next_crm_eslint_config_eslintconfig"
     ],
-    "115": [
+    "108": [
       "next_crm_postcss_config",
       "next_crm_postcss_config_config"
     ],
-    "116": [
+    "109": [
       "next_crm_src_app_loading",
       "next_crm_src_app_loading_loading"
     ],
-    "117": [
+    "110": [
       "scratch_migration_history",
       "scratch_migration_history_migratehistory"
     ],
-    "118": [
-      "task",
-      "task_implementation_tasks"
-    ],
-    "119": [
-      "task10010426",
-      "task10010426_eksekusi_fitur_anti_double_import_individu"
-    ],
-    "120": [
+    "111": [
       "test_date",
       "test_date_parsedate"
     ],
-    "121": [
-      "next_crm_claude"
-    ],
-    "122": [
+    "112": [
       "next_crm_supabase_migrations_fix_rls"
     ],
-    "123": [
+    "113": [
       "public_users"
-    ],
-    "124": [
-      "supabase_migrations_20260916000000_rename_basemen_to_mcn"
     ]
   },
   "cohesion": {
-    "0": 0.05123546511627907,
+    "0": 0.05092426952892069,
     "1": 0.043478260869565216,
     "2": 0.10476190476190476,
-    "3": 0.12807881773399016,
-    "4": 0.15079365079365079,
-    "5": 0.08,
-    "6": 0.08695652173913043,
-    "7": 0.1471861471861472,
-    "8": 0.18614718614718614,
-    "9": 0.1761904761904762,
-    "10": 0.1380952380952381,
-    "11": 0.10476190476190476,
-    "12": 0.09523809523809523,
-    "13": 0.1,
-    "14": 0.19298245614035087,
-    "15": 0.10526315789473684,
-    "16": 0.11764705882352941,
-    "17": 0.125,
-    "18": 0.13333333333333333,
-    "19": 0.17582417582417584,
-    "20": 0.15384615384615385,
-    "21": 0.15384615384615385,
-    "22": 0.18181818181818182,
-    "23": 0.2545454545454545,
+    "3": 0.14482758620689656,
+    "4": 0.07407407407407407,
+    "5": 0.07692307692307693,
+    "6": 0.18614718614718614,
+    "7": 0.12987012987012986,
+    "8": 0.1761904761904762,
+    "9": 0.09523809523809523,
+    "10": 0.10526315789473684,
+    "11": 0.11764705882352941,
+    "12": 0.17647058823529413,
+    "13": 0.19166666666666668,
+    "14": 0.125,
+    "15": 0.17582417582417584,
+    "16": 0.15384615384615385,
+    "17": 0.32727272727272727,
+    "18": 0.18181818181818182,
+    "19": 0.2545454545454545,
+    "20": 0.24444444444444444,
+    "21": 0.2,
+    "22": 0.37777777777777777,
+    "23": 0.2222222222222222,
     "24": 0.2,
-    "25": 0.2222222222222222,
-    "26": 0.2,
-    "27": 0.2,
-    "28": 0.2222222222222222,
-    "29": 0.25,
-    "30": 0.2222222222222222,
+    "25": 0.2,
+    "26": 0.25,
+    "27": 0.2222222222222222,
+    "28": 0.25,
+    "29": 0.2222222222222222,
+    "30": 0.25,
     "31": 0.25,
-    "32": 0.2222222222222222,
+    "32": 0.25,
     "33": 0.25,
-    "34": 0.25,
-    "35": 0.25,
-    "36": 0.25,
-    "37": 0.25,
+    "34": 0.2857142857142857,
+    "35": 0.2857142857142857,
+    "36": 0.2857142857142857,
+    "37": 0.2857142857142857,
     "38": 0.2857142857142857,
     "39": 0.2857142857142857,
     "40": 0.2857142857142857,
-    "41": 0.2857142857142857,
-    "42": 0.2857142857142857,
-    "43": 0.2857142857142857,
-    "44": 0.2857142857142857,
-    "45": 0.6,
-    "46": 0.3333333333333333,
-    "47": 0.3333333333333333,
-    "48": 0.3333333333333333,
+    "41": 0.6,
+    "42": 0.3333333333333333,
+    "43": 0.3333333333333333,
+    "44": 0.3333333333333333,
+    "45": 0.4,
+    "46": 0.4,
+    "47": 0.4,
+    "48": 0.4,
     "49": 0.4,
-    "50": 0.4,
-    "51": 0.4,
-    "52": 0.4,
-    "53": 0.4,
+    "50": 0.3333333333333333,
+    "51": 0.3333333333333333,
+    "52": 0.3333333333333333,
+    "53": 0.3333333333333333,
     "54": 0.3333333333333333,
     "55": 0.3333333333333333,
     "56": 0.3333333333333333,
-    "57": 0.3333333333333333,
-    "58": 0.3333333333333333,
-    "59": 0.3333333333333333,
-    "60": 0.3333333333333333,
+    "57": 0.4,
+    "58": 0.6,
+    "59": 0.4,
+    "60": 0.4,
     "61": 0.4,
-    "62": 0.6,
+    "62": 0.4,
     "63": 0.4,
     "64": 0.4,
     "65": 0.4,
@@ -1447,10 +1328,10 @@
     "67": 0.4,
     "68": 0.4,
     "69": 0.4,
-    "70": 0.4,
-    "71": 0.4,
-    "72": 0.4,
-    "73": 0.4,
+    "70": 0.5,
+    "71": 0.5,
+    "72": 0.5,
+    "73": 0.5,
     "74": 0.5,
     "75": 0.5,
     "76": 0.5,
@@ -1482,26 +1363,15 @@
     "102": 0.5,
     "103": 0.5,
     "104": 0.5,
-    "105": 0.5,
-    "106": 0.5,
-    "107": 0.5,
-    "108": 0.5,
-    "109": 0.6666666666666666,
-    "110": 0.6666666666666666,
-    "111": 0.6666666666666666,
-    "112": 0.6666666666666666,
-    "113": 1.0,
-    "114": 1.0,
-    "115": 1.0,
-    "116": 1.0,
-    "117": 1.0,
-    "118": 1.0,
-    "119": 1.0,
-    "120": 1.0,
-    "121": 1.0,
-    "122": 1.0,
-    "123": 1.0,
-    "124": 1.0
+    "105": 0.6666666666666666,
+    "106": 0.6666666666666666,
+    "107": 1.0,
+    "108": 1.0,
+    "109": 1.0,
+    "110": 1.0,
+    "111": 1.0,
+    "112": 1.0,
+    "113": 1.0
   },
   "gods": [
     {
@@ -1568,17 +1438,6 @@
       "why": "connects across different repos/directories; bridges separate communities"
     },
     {
-      "source": "TasksProps",
-      "target": "UserProfile",
-      "source_files": [
-        "next-crm/src/components/TasksClient.tsx",
-        "next-crm/src/types.ts"
-      ],
-      "confidence": "EXTRACTED",
-      "relation": "references",
-      "why": "bridges separate communities; peripheral node `TasksProps` unexpectedly reaches hub `UserProfile`"
-    },
-    {
       "source": "AdminUsersProps",
       "target": "UserProfile",
       "source_files": [
@@ -1601,51 +1460,62 @@
       "why": "bridges separate communities; peripheral node `ImportModalProps` unexpectedly reaches hub `UserProfile`"
     },
     {
-      "source": "TaskCard()",
-      "target": "cn()",
+      "source": "PendingScreen()",
+      "target": "createClient()",
       "source_files": [
-        "next-crm/src/components/TasksClient.tsx",
-        "next-crm/src/lib/utils.ts"
+        "next-crm/src/components/PendingScreen.tsx",
+        "next-crm/src/utils/supabase/client.ts"
       ],
       "confidence": "EXTRACTED",
       "relation": "calls",
-      "why": "bridges separate communities; peripheral node `TaskCard()` unexpectedly reaches hub `cn()`"
+      "why": "bridges separate communities; peripheral node `PendingScreen()` unexpectedly reaches hub `createClient()`"
+    },
+    {
+      "source": "TasksProps",
+      "target": "UserProfile",
+      "source_files": [
+        "next-crm/src/components/TasksClient.tsx",
+        "next-crm/src/types.ts"
+      ],
+      "confidence": "EXTRACTED",
+      "relation": "references",
+      "why": "bridges separate communities; peripheral node `TasksProps` unexpectedly reaches hub `UserProfile`"
     }
   ],
   "questions": [
     {
       "type": "bridge_node",
-      "question": "Why does `react-router-dom` connect `src/types.ts` to `package.json`?",
-      "why": "High betweenness centrality (0.086) - this node is a cross-community bridge."
+      "question": "Why does `react-router-dom` connect `Community 0` to `Community 5`?",
+      "why": "High betweenness centrality (0.026) - this node is a cross-community bridge."
     },
     {
       "type": "bridge_node",
-      "question": "Why does `lucide-react` connect `createClient` to `UserProfile`, `DashboardClient.tsx`, `next-crm/src/components/OIForecast/OIGrid.tsx`, `package.json`, `next-crm/package.json`, `cn`?",
-      "why": "High betweenness centrality (0.068) - this node is a cross-community bridge."
+      "question": "Why does `@supabase/ssr` connect `Community 3` to `Community 4`, `Community 6`, `Community 8`, `Community 17`, `Community 20`, `Community 58`?",
+      "why": "High betweenness centrality (0.019) - this node is a cross-community bridge."
     },
     {
       "type": "bridge_node",
-      "question": "Why does `pg` connect `pg` to `package.json`?",
-      "why": "High betweenness centrality (0.038) - this node is a cross-community bridge."
+      "question": "Why does `pg` connect `Community 1` to `Community 5`?",
+      "why": "High betweenness centrality (0.014) - this node is a cross-community bridge."
     },
     {
       "type": "isolated_nodes",
-      "question": "What connects `CurrencyInputProps`, `ConfirmModalProps`, `ForecastStatus` to the rest of the system?",
-      "why": "557 weakly-connected nodes found - possible documentation gaps or missing edges."
+      "question": "What connects `{ initializeApp, cert }`, `{ getFirestore }`, `serviceAccount` to the rest of the system?",
+      "why": "516 weakly-connected nodes found - possible documentation gaps or missing edges."
     },
     {
       "type": "low_cohesion",
-      "question": "Should `src/types.ts` be split into smaller, more focused modules?",
-      "why": "Cohesion score 0.05123546511627907 - nodes in this community are weakly interconnected."
+      "question": "Should `Community 0` be split into smaller, more focused modules?",
+      "why": "Cohesion score 0.05092426952892069 - nodes in this community are weakly interconnected."
     },
     {
       "type": "low_cohesion",
-      "question": "Should `pg` be split into smaller, more focused modules?",
+      "question": "Should `Community 1` be split into smaller, more focused modules?",
       "why": "Cohesion score 0.043478260869565216 - nodes in this community are weakly interconnected."
     },
     {
       "type": "low_cohesion",
-      "question": "Should `00000000000002_recreate_schema_text.sql` be split into smaller, more focused modules?",
+      "question": "Should `Community 2` be split into smaller, more focused modules?",
       "why": "Cohesion score 0.10476190476190476 - nodes in this community are weakly interconnected."
     }
   ]

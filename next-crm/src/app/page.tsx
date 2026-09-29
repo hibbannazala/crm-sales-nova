@@ -60,8 +60,30 @@ export default async function DashboardPage() {
     name: u.name,
     role: u.role
   }));
-  const { data: globalTargets } = await supabase.from('global_targets').select('*');
-  const { data: individualTargets } = await supabase.from('individual_targets').select('*');
+  const { data: globalTargetsData } = await supabase.from('global_targets').select('*');
+  const { data: individualTargetsData } = await supabase.from('individual_targets').select('*');
+
+  const globalTargets = (globalTargetsData || []).map((t: any) => ({
+    id: t.id,
+    monthYear: t.month_year,
+    targetChat: Number(t.target_chat || 0),
+    targetMeeting: Number(t.target_meeting || 0),
+    targetRevenue: Number(t.target_revenue || 0),
+    updatedAt: t.updated_at,
+    updatedBy: t.updated_by
+  }));
+
+  const individualTargets = (individualTargetsData || []).map((t: any) => ({
+    id: t.id,
+    userId: t.user_id,
+    userName: (rawUsers || []).find((u: any) => u.id === t.user_id)?.name || 'Unknown',
+    monthYear: t.month_year,
+    targetChat: Number(t.target_chat || 0),
+    targetMeeting: Number(t.target_meeting || 0),
+    targetRevenue: Number(t.target_revenue || 0),
+    updatedAt: t.updated_at,
+    updatedBy: t.updated_by
+  }));
 
   // DashboardClient manages its own paginated data via get_dashboard_stats and .range() query
   // Passing empty array avoids fetching 6000+ leads and notes into memory unnecessarily

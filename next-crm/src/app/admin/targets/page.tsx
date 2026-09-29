@@ -14,19 +14,19 @@ export default async function TargetsPage() {
   }
 
   const { data: globalTargetsData } = await supabase.from('global_targets').select('*');
-  const { data: individualTargetsData } = await supabase.from('oi_targets').select('*');
+  const { data: individualTargetsData } = await supabase.from('individual_targets').select('*');
   const { data: users } = await supabase.from('users').select('*').neq('role', 'pending').neq('role', 'lord');
 
   const mapTarget = (t: any) => ({
     id: t.id,
     monthYear: t.month_year,
-    targetChat: t.target_chat,
-    targetMeeting: t.target_meeting,
-    targetRevenue: t.target_revenue,
+    targetChat: Number(t.target_chat || 0),
+    targetMeeting: Number(t.target_meeting || 0),
+    targetRevenue: Number(t.target_revenue || 0),
     updatedAt: t.updated_at,
     updatedBy: t.updated_by,
     userId: t.user_id,
-    userName: t.user_name
+    userName: (users || []).find((u: any) => u.id === t.user_id)?.name || t.user_name || 'Unknown'
   });
 
   return (

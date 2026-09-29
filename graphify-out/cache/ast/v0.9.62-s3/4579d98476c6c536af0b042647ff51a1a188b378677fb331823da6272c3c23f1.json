@@ -1,0 +1,1 @@
+{"nodes": [{"id": "$graphify-root$_supabase_migrations_20260916000000_rename_basemen_to_mcn_sql", "label": "20260916000000_rename_basemen_to_mcn.sql", "file_type": "code", "source_file": "supabase/migrations/20260916000000_rename_basemen_to_mcn.sql", "source_location": null}], "edges": []}
