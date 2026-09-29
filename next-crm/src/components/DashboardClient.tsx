@@ -713,14 +713,22 @@ export default function DashboardClient({ leads, user, users, targets = [], indi
             <div className="space-y-6 overflow-y-auto flex-1 pr-2 custom-scrollbar">
               {(() => {
                 
-                const adminPerformances = individualStats.map(stat => {
-                  return {
+                const adminPerformances = individualStats
+                  .map(stat => ({
                     admin: stat.admin_name || stat.by_user_name,
-                    adminChat: Number(stat.total_chat),
-                    adminMeet: Number(stat.total_meet),
-                    adminRev: Number(stat.total_revenue)
-                  };
-                });
+                    adminChat: Number(stat.total_chat || 0),
+                    adminMeet: Number(stat.total_meet || 0),
+                    adminRev: Number(stat.total_revenue || 0)
+                  }))
+                  .sort((a, b) => {
+                    if (b.adminRev !== a.adminRev) {
+                      return b.adminRev - a.adminRev;
+                    }
+                    if (b.adminMeet !== a.adminMeet) {
+                      return b.adminMeet - a.adminMeet;
+                    }
+                    return b.adminChat - a.adminChat;
+                  });
                 return adminPerformances.map(({ admin, adminChat, adminMeet, adminRev }, index) => {
 
                   let pChat = 0, pMeet = 0, pRev = 0;
